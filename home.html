@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <link rel = "icon" type = "image/png" href = "img/ancora.png">
+    <link rel="stylesheet" type="text/css" href="style_home.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="script_home.js"></script>
+    <title>Leitura Kids</title>
+</head>
+
+<body>
+    <script>
+        // Ir para o topo ao reiniciar a página
+        window.history.scrollRestoration = 'manual';
+        window.scrollTo(0, 0);
+    </script>
+    <!-- Loading Screen -->
+    <div class="loading" id="loading">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <!-- Notificação -->
+    <div class="notification" id="notification">
+        Bem-vindo ao Leitura Kids! 🎉
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="nav-container">
+            <a href="home.html" class="logo">LeituraKids</a>
+            <nav>
+                <div class="mobile-menu-wrapper">
+                    <ul class="nav-menu">
+                        <li><a href="index.html" onclick="showNotification('Página inicial')">Início</a></li>
+                        <li><a href="index.html#about" onclick="showNotification('Sobre nós')">Sobre</a></li>
+                        <li><a href="conteudo.html" onclick="showNotification('Conteúdo educativo')">Tutorial</a></li>
+                        <li><a href="conteudo.html" onclick="showNotification('Conteúdo educativo')">Serviços</a></li>
+                        <li><a href="index.html#contact" onclick="showNotification('Entre em contato')">Contato</a></li>
+                    </ul>
+                </div>
+            </nav>
+            <button class="hamburger" aria-label="Abrir menu">
+                <span class="material-symbols-outlined">menu</span>
+            </button>
+        </div>
+        </div>
+    </header>
+
+    <!-- Menu Vertical -->
+    <nav class="side-nav">
+        <div class="side-nav-item active" onclick="window.location.href='home.html'" onclick="changeSection('perfil')" title="Perfil">
+            👤
+        </div>
+        <div class="side-nav-item" onclick="window.location.href='aulas.html'" onclick="changeSection('aulas')" title="Aulas">
+            📚
+        </div>
+        <div class="side-nav-item" onclick="changeSection('ideias')" title="Ideias">
+            💡
+        </div>
+        <div class="side-nav-item" onclick="changeSection('atividades')" title="Atividades">
+            ✏️
+        </div>
+        <div class="side-nav-item" onclick="changeSection('listas')" title="Listas">
+            📋
+        </div>
+        <div class="side-nav-item" onclick="window.location.href='jogos.html'" onclick="changeSection('jogos')" title="Jogos">
+            🎮
+        </div>
+        <div class="side-nav-item" onclick="changeSection('conquistas')" title="Conquistas">
+            🏆
+        </div>
+    </nav>
+
+    <!-- Conteúdo Principal -->
+    <main class="main-content">
+        <div class="profile-container">
+            <!-- Cabeçalho do Perfil -->
+            <div class="profile-header">
+                <div class="profile-avatar">🧒</div>
+                <h1 class="profile-name">Nome</h1>
+                <div class="profile-level">Nível 3 - Leitor Iniciante</div>
+            </div>
+
+            <!-- Estatísticas -->
+            <div class="profile-stats">
+                <div class="stat-card">
+                    <div class="stat-icon">📚</div>
+                    <div class="stat-number">12</div>
+                    <div class="stat-label">Livros Lidos</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">⭐</div>
+                    <div class="stat-number">340</div>
+                    <div class="stat-label">Pontos</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🔥</div>
+                    <div class="stat-number">7</div>
+                    <div class="stat-label">Dias Seguidos</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🏆</div>
+                    <div class="stat-number">5</div>
+                    <div class="stat-label">Conquistas</div>
+                </div>
+            </div>
+
+            <!-- Progresso -->
+            <div class="progress-section">
+                <h2 class="progress-title">Seu Progresso</h2>
+
+                <div class="progress-item">
+                    <div class="progress-label">
+                        <span>Alfabeto</span>
+                        <span>85%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" data-progress="85"></div>
+                    </div>
+                </div>
+
+                <div class="progress-item">
+                    <div class="progress-label">
+                        <span>Formação de Palavras</span>
+                        <span>70%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" data-progress="70"></div>
+                    </div>
+                </div>
+
+                <div class="progress-item">
+                    <div class="progress-label">
+                        <span>Leitura</span>
+                        <span>60%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" data-progress="60"></div>
+                    </div>
+                </div>
+
+                <div class="progress-item">
+                    <div class="progress-label">
+                        <span>Escrita</span>
+                        <span>45%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" data-progress="45"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Conquistas -->
+            <div class="badges-section">
+                <h2 class="badges-title">Suas Conquistas</h2>
+                <div class="badges-grid">
+                    <div class="badge" onclick="showBadgeInfo('Primeira Letra')" title="Primeira Letra Aprendida">
+                        🔤
+                    </div>
+                    <div class="badge" onclick="showBadgeInfo('Primeira Palavra')" title="Primeira Palavra Formada">
+                        📝
+                    </div>
+                    <div class="badge" onclick="showBadgeInfo('Primeira História')" title="Primeira História Lida">
+                        📖
+                    </div>
+                    <div class="badge" onclick="showBadgeInfo('Memória Excelente')"
+                        title="10 Acertos Seguidos no Jogo da Memória">
+                        🧩
+                    </div>
+                    <div class="badge" onclick="showBadgeInfo('Semana Completa')" title="7 Dias Seguidos de Atividades">
+                        🔥
+                    </div>
+                    <div class="badge locked" title="Bloqueado - Continue praticando!">
+                        🔒
+                    </div>
+                    <div class="badge locked" title="Bloqueado - Continue praticando!">
+                        🔒
+                    </div>
+                    <div class="badge locked" title="Bloqueado - Continue praticando!">
+                        🔒
+                    </div>
+                </div>
+            </div>
+
+            <!-- Atividades Recentes -->
+            <div class="recent-activity">
+                <h2 class="activity-title">Atividades Recentes</h2>
+
+                <div class="activity-item">
+                    <div class="activity-icon">📖</div>
+                    <div class="activity-text">
+                        <div>Leu a história "Os Três Porquinhos"</div>
+                        <div class="activity-date">Hoje, 14:30</div>
+                    </div>
+                </div>
+
+                <div class="activity-item">
+                    <div class="activity-icon">🧩</div>
+                    <div class="activity-text">
+                        <div>Completou o Jogo da Memória - Nível 2</div>
+                        <div class="activity-date">Hoje, 13:15</div>
+                    </div>
+                </div>
+
+                <div class="activity-item">
+                    <div class="activity-icon">✍️</div>
+                    <div class="activity-text">
+                        <div>Praticou escrita das letras M, N, O</div>
+                        <div class="activity-date">Ontem, 16:20</div>
+                    </div>
+                </div>
+
+                <div class="activity-item">
+                    <div class="activity-icon">🔤</div>
+                    <div class="activity-text">
+                        <div>Aprendeu 5 novas letras do alfabeto</div>
+                        <div class="activity-date">Ontem, 15:45</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+</body>
+
+</html>
