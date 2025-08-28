@@ -9,10 +9,6 @@ function showNotification(message) {
     }, 3000);
 }
 
-function abrirConquistas() {
-    window.open("conquistas.html", "_self")
-  }
-
 // Mudança de seção no menu vertical
 function changeSection(section) {
     // Remove classe ativa de todos os itens
