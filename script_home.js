@@ -26,7 +26,6 @@ function changeSection(section) {
         'atividades': 'Atividades ✏️',
         'listas': 'Minhas Listas 📋',
         'jogos': 'Jogos Divertidos 🎮',
-        'conquistas': 'Conquistas 🏆'
     };
 
     showNotification(sectionNames[section] || 'Nova seção');

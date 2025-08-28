@@ -291,48 +291,6 @@ nav a::after {
     transition: width 1s ease;
 }
 
-.badges-section {
-    background: white;
-    border-radius: 20px;
-    padding: 2rem;
-    margin-bottom: 2rem;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-}
-
-.badges-title {
-    font-size: 1.5rem;
-    color: #2c3e50;
-    margin-bottom: 1.5rem;
-    text-align: center;
-}
-
-.badges-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-    gap: 1rem;
-}
-
-.badge {
-    background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
-    border-radius: 15px;
-    padding: 1rem;
-    text-align: center;
-    font-size: 2rem;
-    color: white;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
-    transition: transform 0.3s ease;
-    cursor: pointer;
-}
-
-.badge:hover {
-    transform: scale(1.1);
-}
-
-.badge.locked {
-    background: #bdc3c7;
-    cursor: not-allowed;
-}
-
 .recent-activity {
     background: white;
     border-radius: 20px;
@@ -406,6 +364,328 @@ nav a::after {
 
 .notification.show {
     transform: translateX(0);
+}
+
+.main-content {
+    max-width: 900px;
+    margin: 0 auto;
+    margin-top: 7%;
+    margin-bottom: 5%;
+}
+
+.conquistas-header {
+    background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+    border-radius: 20px;
+    padding: 2rem;
+    text-align: center;
+    color: white;
+    margin-bottom: 2rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.conquistas-header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.conquistas-header p {
+    font-size: 1.2rem;
+    opacity: 0.9;
+}
+
+.conquistas-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background: white;
+    border-radius: 15px;
+    padding: 1.5rem;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+}
+
+.stat-icon {
+    font-size: 3rem;
+    margin-bottom: 0.5rem;
+}
+
+.stat-number {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+}
+
+.stat-label {
+    color: #7f8c8d;
+    font-size: 0.9rem;
+}
+
+.badges-categories {
+    display: grid;
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+.category-section {
+    background: white;
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.category-title {
+    font-size: 1.8rem;
+    color: #2c3e50;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.category-description {
+    color: #7f8c8d;
+    margin-bottom: 1.5rem;
+    font-size: 1rem;
+}
+
+.badges-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 1.5rem;
+}
+
+.badge {
+    background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+    border-radius: 15px;
+    padding: 1.5rem;
+    text-align: center;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+
+.badge::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transform: rotate(45deg);
+    transition: all 0.6s;
+    opacity: 0;
+}
+
+.badge:hover::before {
+    animation: shine 0.6s ease-in-out;
+}
+
+@keyframes shine {
+    0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); opacity: 0; }
+    50% { opacity: 1; }
+    100% { transform: translateX(100%) translateY(100%) rotate(45deg); opacity: 0; }
+}
+
+.badge:hover {
+    transform: scale(1.05) rotateY(5deg);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.badge-icon {
+    font-size: 3rem;
+    margin-bottom: 0.8rem;
+    filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+.badge-name {
+    font-size: 1rem;
+    font-weight: bold;
+    color: white;
+    margin-bottom: 0.5rem;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.badge-description {
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.9);
+    line-height: 1.3;
+}
+
+.badge.locked {
+    background: linear-gradient(135deg, #bdc3c7 0%, #95a5a6 100%);
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.badge.locked .badge-icon {
+    filter: grayscale(100%) drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+.badge.new {
+    position: relative;
+    animation: pulse 2s infinite;
+}
+
+.badge.new::after {
+    content: 'NOVO!';
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: #e74c3c;
+    color: white;
+    padding: 0.2rem 0.5rem;
+    border-radius: 10px;
+    font-size: 0.7rem;
+    font-weight: bold;
+}
+
+@keyframes pulse {
+    0% { box-shadow: 0 5px 15px rgba(255, 215, 0, 0.4); }
+    50% { box-shadow: 0 10px 25px rgba(255, 215, 0, 0.8); }
+    100% { box-shadow: 0 5px 15px rgba(255, 215, 0, 0.4); }
+}
+
+.progress-next {
+    background: white;
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.progress-title {
+    font-size: 1.5rem;
+    color: #2c3e50;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.next-badge {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 15px;
+    margin-bottom: 1rem;
+}
+
+.next-badge-icon {
+    font-size: 2.5rem;
+    opacity: 0.6;
+}
+
+.next-badge-info h3 {
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+}
+
+.next-badge-info p {
+    color: #7f8c8d;
+    font-size: 0.9rem;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 12px;
+    background: #ecf0f1;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-top: 0.5rem;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #4ECDC4 0%, #44A08D 100%);
+    border-radius: 10px;
+    transition: width 1s ease;
+}
+
+.notification {
+    position: fixed;
+    top: 100px;
+    right: 2rem;
+    background: #2ecc71;
+    color: white;
+    padding: 1rem 2rem;
+    border-radius: 50px;
+    transform: translateX(400px);
+    transition: transform 0.3s ease;
+    z-index: 1001;
+}
+
+.notification.show {
+    transform: translateX(0);
+}
+
+/* Modal para detalhes da conquista */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 2000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+    background-color: white;
+    margin: 10% auto;
+    padding: 2rem;
+    border-radius: 20px;
+    width: 90%;
+    max-width: 500px;
+    text-align: center;
+    position: relative;
+}
+
+.close {
+    position: absolute;
+    right: 1rem;
+    top: 1rem;
+    font-size: 2rem;
+    cursor: pointer;
+    color: #aaa;
+}
+
+.close:hover {
+    color: #000;
+}
+
+.modal-badge-icon {
+    font-size: 5rem;
+    margin-bottom: 1rem;
+}
+
+.modal-badge-title {
+    font-size: 2rem;
+    color: #2c3e50;
+    margin-bottom: 1rem;
+}
+
+.modal-badge-description {
+    color: #7f8c8d;
+    line-height: 1.5;
+    margin-bottom: 1rem;
+}
+
+.modal-badge-date {
+    color: #95a5a6;
+    font-size: 0.9rem;
 }
 
 @media (max-width: 1000px) {
