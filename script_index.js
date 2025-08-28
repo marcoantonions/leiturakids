@@ -194,9 +194,11 @@ function login() {
   var senha = document.getElementById("senha").value;
 
   if (user === "ADM" && senha === "123") {
-    alert("Login Bem-Sucedido!");
     abrirPagina();
-  } else {
+  } else if (user === "adm" && senha === "123") {
+    abrirPagina();
+  }
+  else {
     alert("Usuário ou Senha Inválidos. Tente Novamente.");
   }
 }

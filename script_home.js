@@ -39,13 +39,6 @@ window.addEventListener('load', () => {
     }, 1000);
 });
 
-// Loading screen
-window.addEventListener('load', function () {
-    setTimeout(() => {
-        document.getElementById('loading').classList.add('hidden');
-    }, 500);
-});
-
 // Menu responsivo
 document.addEventListener("DOMContentLoaded", function() {
     const hamburger = document.querySelector(".hamburger");
