@@ -1,5 +1,7 @@
+// ==========================
 // Mudança de seção no menu vertical
-function changeSection(section) {
+// ==========================
+function changeSection(section, event) {
     // Remove classe ativa de todos os itens
     document.querySelectorAll('.side-nav-item').forEach(item => {
         item.classList.remove('active');
@@ -8,6 +10,7 @@ function changeSection(section) {
     // Adiciona classe ativa ao item clicado
     event.target.classList.add('active');
 
+    // Nomes das seções
     const sectionNames = {
         'perfil': 'Meu Perfil 👤',
         'aulas': 'Aulas 📚',
@@ -17,41 +20,47 @@ function changeSection(section) {
         'jogos': 'Jogos Divertidos 🎮',
     };
 
+    // Mostra notificação da seção
     showNotification(sectionNames[section] || 'Nova seção');
 }
 
-
-// Menu responsivo
-document.addEventListener("DOMContentLoaded", function() {
+// ==========================
+// Menu responsivo (hamburger)
+// ==========================
+document.addEventListener("DOMContentLoaded", function () {
     const hamburger = document.querySelector(".hamburger");
     const navMenu = document.querySelector(".nav-menu");
-  
-    hamburger.addEventListener("click", () => {
-      navMenu.classList.toggle("mobile-active");
-  
-      // troca o ícone de menu para 'close' e vice-versa
-      const icon = hamburger.querySelector(".material-symbols-outlined");
-      if(navMenu.classList.contains("mobile-active")){
-        icon.textContent = "close";
-        hamburger.setAttribute("aria-label", "Fechar menu");
-      } else {
-        icon.textContent = "menu";
-        hamburger.setAttribute("aria-label", "Abrir menu");
-      }
-    });
-  
-    // Opcional: fechar menu ao clicar em algum link do menu
-    navMenu.querySelectorAll("a").forEach(link => {
-      link.addEventListener("click", () => {
-        if(navMenu.classList.contains("mobile-active")){
-          navMenu.classList.remove("mobile-active");
-          hamburger.querySelector(".material-symbols-outlined").textContent = "menu";
-          hamburger.setAttribute("aria-label", "Abrir menu");
-        }
-      });
-    });
-  });
 
+    // Abre/fecha menu ao clicar no ícone
+    hamburger.addEventListener("click", () => {
+        navMenu.classList.toggle("mobile-active");
+
+        // Troca ícone de "menu" para "close"
+        const icon = hamburger.querySelector(".material-symbols-outlined");
+        if (navMenu.classList.contains("mobile-active")) {
+            icon.textContent = "close";
+            hamburger.setAttribute("aria-label", "Fechar menu");
+        } else {
+            icon.textContent = "menu";
+            hamburger.setAttribute("aria-label", "Abrir menu");
+        }
+    });
+
+    // Fecha menu ao clicar em um link
+    navMenu.querySelectorAll("a").forEach(link => {
+        link.addEventListener("click", () => {
+            if (navMenu.classList.contains("mobile-active")) {
+                navMenu.classList.remove("mobile-active");
+                hamburger.querySelector(".material-symbols-outlined").textContent = "menu";
+                hamburger.setAttribute("aria-label", "Abrir menu");
+            }
+        });
+    });
+});
+
+// ==========================
+// Controle das lições
+// ==========================
 let currentLesson = 0;
 const totalLessons = 4;
 
@@ -91,6 +100,12 @@ const sentences = [
     'JUNTOS PODEMOS APRENDER MUITO!'
 ];
 
+// Mapeia sílabas para pronúncias fonéticas
+const syllablePronunciations = { BA: 'bá', BE: 'bê', BI: 'bi', BO: 'bô', BU: 'bu', CA: 'cá', CE: 'cê', CI: 'ci', CO: 'cô', CU: 'cu', DA: 'dá', DE: 'dê', DI: 'di', DO: 'dô', DU: 'du', FA: 'fá', FE: 'fê', FI: 'fi', FO: 'fô', FU: 'fu', GA: 'gá', GE: 'gê', GI: 'gi', GO: 'gô', GU: 'gu', LA: 'lá', LE: 'lê', LI: 'li', LO: 'lô', LU: 'lu', MA: 'má', ME: 'mê', MI: 'mi', MO: 'mô', MU: 'mu', PA: 'pá', PE: 'pê', PI: 'pi', PO: 'pô', PU: 'pu', RA: 'rá', RE: 'rê', RI: 'ri', RO: 'rô', RU: 'ru', SA: 'sá', SE: 'sê', SI: 'si', SO: 'sô', SU: 'su' };
+
+// ==========================
+// Sistema de Notificação
+// ==========================
 function showNotification(message) {
     const notification = document.getElementById('notification');
     notification.textContent = message;
@@ -100,30 +115,42 @@ function showNotification(message) {
     }, 3000);
 }
 
+// ==========================
+// Reprodução de áudio (TTS)
+// ==========================
 function playSound(text) {
-    // Mostrar indicador de áudio
     const indicator = document.getElementById('audio-indicator');
     indicator.classList.add('show');
 
-    // Simular reprodução de áudio (substituir por áudio real)
+    // Interrompe áudio anterior
+    if (speechSynthesis.speaking || speechSynthesis.pending) {
+        speechSynthesis.cancel();
+    }
+
     if ('speechSynthesis' in window) {
         const utterance = new SpeechSynthesisUtterance(text);
         utterance.lang = 'pt-BR';
-        utterance.rate = 0.7;
+        utterance.rate = 0.8;
         utterance.pitch = 1.2;
 
+        // Remove indicador ao terminar
         utterance.onend = () => {
+            indicator.classList.remove('show');
+        };
+
+        utterance.onerror = () => {
             indicator.classList.remove('show');
         };
 
         speechSynthesis.speak(utterance);
     } else {
-        // Fallback se não houver suporte a síntese de voz
-        setTimeout(() => {
-            indicator.classList.remove('show');
-        }, 1500);
+        indicator.classList.remove('show');
     }
 }
+
+// ==========================
+// Geração dinâmica das lições
+// ==========================
 
 function createLettersGrid() {
     const grid = document.getElementById('letters-grid');
@@ -146,11 +173,13 @@ function createSyllablesGrid() {
         const button = document.createElement('button');
         button.className = 'syllable-card';
         button.textContent = syllable;
-        button.onclick = () => playSound(syllable);
+
+        const soundText = syllablePronunciations[syllable] || syllable;
+        button.onclick = () => playSound(soundText);
+
         grid.appendChild(button);
     });
 }
-
 function createWordsGrid() {
     const grid = document.getElementById('words-grid');
     grid.innerHTML = '';
@@ -177,16 +206,20 @@ function createSentencesContainer() {
     });
 }
 
+// ==========================
+// Controle de navegação das lições
+// ==========================
+
 function showLesson(lessonIndex) {
     // Ocultar todas as lições
     document.querySelectorAll('.lesson-section').forEach(section => {
         section.classList.remove('active');
     });
 
-    // Mostrar lição selecionada
+    // Mostrar a lição atual
     document.getElementById(`lesson-${lessonIndex}`).classList.add('active');
 
-    // Atualizar indicador de progresso
+    // Atualiza a barra de progresso
     document.querySelectorAll('.progress-step').forEach((step, index) => {
         step.classList.remove('active', 'completed');
         if (index < lessonIndex) {
@@ -222,11 +255,18 @@ function updateNavigationButtons() {
     nextBtn.disabled = currentLesson === totalLessons - 1;
 }
 
+// ==========================
+// Navegação entre seções
+// ==========================
+
 function changeSection(section) {
     showNotification(`Navegando para ${section}...`);
 }
 
+// ==========================
 // Inicialização
+// ==========================
+
 document.addEventListener('DOMContentLoaded', () => {
     createLettersGrid();
     createSyllablesGrid();
@@ -235,3 +275,9 @@ document.addEventListener('DOMContentLoaded', () => {
     updateNavigationButtons();
     showNotification('Vamos para as aulas! 🎓');
 });
+
+// ==========================
+// Ir para o topo ao recarregar
+// ==========================
+window.history.scrollRestoration = 'manual';
+window.scrollTo(0, 0);

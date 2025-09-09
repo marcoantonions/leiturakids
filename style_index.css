@@ -576,6 +576,7 @@ nav a::after {
 .contact-content {
     position: relative;
     z-index: 5;
+    margin-bottom: 15%;
 }
 
 .contact-form {
@@ -646,7 +647,6 @@ nav a::after {
 .footer {
     background: #FFBE4C;
     color: white;
-    margin-top: -0.1%;
     padding: 5rem 0 1rem;
 }
 

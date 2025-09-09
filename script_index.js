@@ -1,34 +1,68 @@
-// Carousel
+// =====================================================
+// DESTACAR SEÇÃO ATUAL NO MENU AO ROLAR A PÁGINA
+// =====================================================
+const sections = document.querySelectorAll("section[id]");
+const navLinks = document.querySelectorAll(".nav-link");
+
+window.addEventListener("scroll", () => {
+  let current = "";
+
+  sections.forEach((section) => {
+    const sectionTop = section.offsetTop;
+    const sectionHeight = section.offsetHeight;
+
+    // Verifica se o scroll está dentro da área da seção
+    if (scrollY >= sectionTop - sectionHeight / 3) {
+      current = section.getAttribute("id");
+    }
+  });
+
+  // Atualiza os links do menu com a classe "active"
+  navLinks.forEach((link) => {
+    link.classList.remove("active");
+    if (link.getAttribute("href") === "#" + current) {
+      link.classList.add("active");
+    }
+  });
+});
+
+// =====================================================
+// CAROUSEL AUTOMÁTICO
+// =====================================================
 document.addEventListener("DOMContentLoaded", function () {
   const track = document.querySelector('#carousel-track');
   const cards = document.querySelectorAll('.service-card');
   const cardCount = cards.length;
   let currentIndex = 0;
 
+  // Duplica os cards para dar efeito de loop
   cards.forEach(card => {
     const clone = card.cloneNode(true);
     track.appendChild(clone);
   });
 
+  // Calcula largura total de cada card (inclui margem)
   function getCardWidth() {
     const style = window.getComputedStyle(cards[0]);
     const margin = parseInt(style.marginRight);
     return cards[0].offsetWidth + margin;
   }
 
+  // Move o carrossel para o card no índice atual
   function scrollToIndex(index) {
     const cardWidth = getCardWidth();
     track.style.transition = "transform 0.5s ease-in-out";
     track.style.transform = `translateX(-${index * cardWidth}px)`;
   }
 
+  // Reseta o carrossel para o início (efeito infinito)
   function resetToStart() {
-    const cardWidth = getCardWidth();
     track.style.transition = "none";
     track.style.transform = `translateX(0px)`;
     currentIndex = 0;
   }
 
+  // Avança automaticamente o carrossel
   function autoScroll() {
     currentIndex++;
     scrollToIndex(currentIndex);
@@ -40,11 +74,16 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
+  // Roda a cada 2 segundos
   setInterval(autoScroll, 2000);
 
+  // Recalcula largura quando a tela é redimensionada
   window.addEventListener("resize", () => scrollToIndex(currentIndex));
 });
 
+// =====================================================
+// ROLAGEM SUAVE PARA ÂNCORAS
+// =====================================================
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
   anchor.addEventListener('click', function (e) {
     e.preventDefault();
@@ -58,16 +97,21 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
   });
 });
 
+// =====================================================
+// FORMULÁRIO DE CONTATO
+// =====================================================
 const form = document.getElementById('contactForm');
 
 form.addEventListener('submit', function (event) {
   event.preventDefault();
 
   alert("Obrigado pelo seu Feedback, Entraremos em Contato em Breve!");
-
   form.reset();
 });
 
+// =====================================================
+// MENU FIXO DESTACANDO A SEÇÃO ATUAL
+// =====================================================
 window.addEventListener('scroll', function () {
   const sections = document.querySelectorAll('section[id]');
   const navLinks = document.querySelectorAll('.nav-menu a[href^="#"]');
@@ -91,6 +135,9 @@ window.addEventListener('scroll', function () {
   });
 });
 
+// =====================================================
+// ANIMAÇÃO DE CARDS DE SERVIÇO
+// =====================================================
 document.querySelectorAll('.service-card').forEach(card => {
   card.addEventListener('mouseenter', function () {
     this.style.transform = 'translateY(-15px) scale(1.02)';
@@ -101,6 +148,9 @@ document.querySelectorAll('.service-card').forEach(card => {
   });
 });
 
+// =====================================================
+// EFEITO DE TEXTO DIGITADO
+// =====================================================
 function typeWriter(element, text, speed = 100) {
   let i = 0;
   element.innerHTML = '';
@@ -115,14 +165,18 @@ function typeWriter(element, text, speed = 100) {
   type();
 }
 
+// =====================================================
+// MENU RESPONSIVO (HAMBÚRGUER)
+// =====================================================
 document.addEventListener("DOMContentLoaded", function () {
   const hamburger = document.querySelector(".hamburger");
   const navMenu = document.querySelector(".nav-menu");
 
+  // Abrir/fechar menu
   hamburger.addEventListener("click", () => {
     navMenu.classList.toggle("mobile-active");
 
-    // troca o ícone de menu para 'close' e vice-versa
+    // Troca ícone entre "menu" e "close"
     const icon = hamburger.querySelector(".material-symbols-outlined");
     if (navMenu.classList.contains("mobile-active")) {
       icon.textContent = "close";
@@ -133,7 +187,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
-  // Opcional: fechar menu ao clicar em algum link do menu
+  // Fechar menu ao clicar em um link
   navMenu.querySelectorAll("a").forEach(link => {
     link.addEventListener("click", () => {
       if (navMenu.classList.contains("mobile-active")) {
@@ -145,35 +199,41 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 });
 
+// =====================================================
+// MODAL DE LOGIN
+// =====================================================
 const openBtn = document.getElementById("abrirLogin");
 const closeBtn = document.getElementById("closeModal");
 const modal = document.getElementById("modal");
 
+// Abrir modal
 openBtn.addEventListener("click", () => {
   modal.style.display = "flex";
 });
 
+// Fechar modal
 closeBtn.addEventListener("click", () => {
   modal.style.display = "none";
 });
 
+// Fechar ao clicar fora
 window.addEventListener("click", (e) => {
   if (e.target === modal) {
     modal.style.display = "none";
   }
 });
 
+// Atalhos para abrir modal
 document.querySelectorAll(".abrirLogin").forEach(button => {
   button.addEventListener("click", () => {
     document.getElementById("modal").style.display = "flex";
   });
 });
 
-
-
-//LOGIN
+// =====================================================
+// LOGIN SIMPLES (SIMULAÇÃO)
+// =====================================================
 function trocarlogin() {
-  // Trocar de cadastro para login
   cancelCadastro.addEventListener("click", () => {
     modalCadastro.style.display = "none";
     modalLogin.style.display = "flex";
@@ -181,24 +241,20 @@ function trocarlogin() {
 }
 
 function abrirPagina() {
-  window.open("home.html", "_self")
+  window.open("home.html", "_self");
 }
 
 function reiniciar() {
-  window.open("index.html", "_self")
+  window.open("index.html", "_self");
 }
 
 function login() {
-
   var user = document.getElementById("user").value;
   var senha = document.getElementById("senha").value;
 
-  if (user === "ADM" && senha === "123") {
+  if ((user === "ADM" && senha === "123") || (user === "adm" && senha === "123")) {
     abrirPagina();
-  } else if (user === "adm" && senha === "123") {
-    abrirPagina();
-  }
-  else {
+  } else {
     alert("Usuário ou Senha Inválidos. Tente Novamente.");
   }
 }
@@ -208,7 +264,6 @@ function dado() {
 }
 
 function cadastro() {
-
   var nome = document.getElementById("nome").value;
   var email = document.getElementById("email").value;
   var usuario = document.getElementById("usuario").value;
@@ -217,12 +272,14 @@ function cadastro() {
   if (nome != "" && email != "" && usuario != "" && password != "") {
     alert("Cadastro Realizado com Sucesso!\n\nFaça o Login na Sua Nova Conta!");
     reiniciar();
-
   } else {
     alert("Dados Incompletos!");
   }
 }
 
+// =====================================================
+// MODAIS DE CADASTRO E LOGIN
+// =====================================================
 document.addEventListener("DOMContentLoaded", () => {
   const modalCadastro = document.getElementById("modal-cadastro");
   const modalLogin = document.getElementById("modal-login");
@@ -258,19 +315,18 @@ document.addEventListener("DOMContentLoaded", () => {
     modalLogin.style.display = "none";
   });
 
-  // Trocar de cadastro para login
+  // Trocar entre login e cadastro
   cancelCadastro.addEventListener("click", () => {
     modalCadastro.style.display = "none";
     modalLogin.style.display = "flex";
   });
 
-  // Trocar de login para cadastro
   cancelLogin.addEventListener("click", () => {
     modalLogin.style.display = "none";
     modalCadastro.style.display = "flex";
   });
 
-  // Fechar ao clicar fora
+  // Fechar ao clicar fora do conteúdo
   modalCadastro.addEventListener("click", (e) => {
     if (!cadastroContent.contains(e.target)) {
       modalCadastro.style.display = "none";
@@ -284,8 +340,9 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
-
-
+// =====================================================
+// MODAL DE CADASTRO ISOLADO
+// =====================================================
 document.addEventListener("DOMContentLoaded", () => {
   const modalCadastro = document.getElementById("modal-cadastro");
   const abrirCadastro = document.getElementById("abrirCadastro");
@@ -309,7 +366,7 @@ document.addEventListener("DOMContentLoaded", () => {
     modal.style.display = "flex";
   });
 
-  // Fechar ao clicar fora do conteúdo
+  // Fechar ao clicar fora
   modalCadastro.addEventListener("click", (e) => {
     if (!modalContent.contains(e.target)) {
       modalCadastro.style.display = "none";
@@ -317,11 +374,15 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
-// Ir para o topo ao reiniciar a página
+// =====================================================
+// CONFIGURAÇÕES INICIAIS
+// =====================================================
+
+// Sempre iniciar no topo ao carregar
 window.history.scrollRestoration = 'manual';
 window.scrollTo(0, 0);
 
-// Animação do título Leitura Kids
+// Animação do título "Leitura Kids"
 setTimeout(() => {
   const heroTitle = document.querySelector('.hero-title');
   if (heroTitle) {

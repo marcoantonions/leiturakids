@@ -164,26 +164,6 @@ nav a::after {
     background: rgb(111, 242, 254);
 }
 
-.btn-blue {
-    background-color: #298ac1;
-    color: white;
-    border: none;
-    padding: 0.6rem 1.2rem;
-    border-radius: 8px;
-    font-size: 1rem;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-.btn-gray {
-    background-color: #bdc3c7;
-    color: black;
-    border: none;
-    padding: 0.6rem 1.2rem;
-    border-radius: 8px;
-    font-weight: bold;
-    cursor: pointer;
-}
 
 /* Estilos específicos para a página de perfil */
 .profile-container {

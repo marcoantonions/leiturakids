@@ -1,20 +1,26 @@
-// Sistema de notificações
+// =====================================================
+// IR PARA O TOPO AO REINICIAR A PÁGINA
+// =====================================================
+window.history.scrollRestoration = 'manual'; // Impede o navegador de lembrar a posição de rolagem
+window.scrollTo(0, 0); // Força voltar ao topo da página
+
+// =====================================================
+// SISTEMA DE NOTIFICAÇÕES
+// =====================================================
 function showNotification(message) {
-    const notification = document.getElementById('notification');
-    notification.textContent = message + ' 🎉';
-    notification.classList.add('show');
+    const notification = document.getElementById('notification'); // Seleciona elemento de notificação
+    notification.textContent = message + ' 🎉'; // Define texto da mensagem
+    notification.classList.add('show'); // Exibe a notificação
 
     setTimeout(() => {
-        notification.classList.remove('show');
+        notification.classList.remove('show'); // Esconde após 3 segundos
     }, 3000);
 }
 
-function abrirConquistas() {
-    window.open("conquistas.html", "_self")
-  }
-
-// Mudança de seção no menu vertical
-function changeSection(section) {
+// =====================================================
+// MUDANÇA DE SEÇÃO NO MENU VERTICAL
+// =====================================================
+function changeSection(section, event) {
     // Remove classe ativa de todos os itens
     document.querySelectorAll('.side-nav-item').forEach(item => {
         item.classList.remove('active');
@@ -23,6 +29,7 @@ function changeSection(section) {
     // Adiciona classe ativa ao item clicado
     event.target.classList.add('active');
 
+    // Nomes para cada seção
     const sectionNames = {
         'perfil': 'Meu Perfil 👤',
         'aulas': 'Aulas 📚',
@@ -32,71 +39,85 @@ function changeSection(section) {
         'jogos': 'Jogos Divertidos 🎮',
     };
 
+    // Mostra notificação com nome da seção
     showNotification(sectionNames[section] || 'Nova seção');
 }
 
-// Animação de entrada
+// =====================================================
+// ANIMAÇÃO DE ENTRADA (mensagem de boas-vindas)
+// =====================================================
 window.addEventListener('load', () => {
     setTimeout(() => {
         showNotification('Bem-vindo ao Leitura Kids!');
     }, 1000);
 });
 
-// Menu responsivo
+// =====================================================
+// MENU RESPONSIVO (HAMBÚRGUER PARA MOBILE)
+// =====================================================
 document.addEventListener("DOMContentLoaded", function() {
-    const hamburger = document.querySelector(".hamburger");
-    const navMenu = document.querySelector(".nav-menu");
+    const hamburger = document.querySelector(".hamburger"); // Botão hambúrguer
+    const navMenu = document.querySelector(".nav-menu");   // Menu de navegação
   
+    // Clique no hambúrguer abre/fecha o menu
     hamburger.addEventListener("click", () => {
-      navMenu.classList.toggle("mobile-active");
+        navMenu.classList.toggle("mobile-active");
   
-      // troca o ícone de menu para 'close' e vice-versa
-      const icon = hamburger.querySelector(".material-symbols-outlined");
-      if(navMenu.classList.contains("mobile-active")){
-        icon.textContent = "close";
-        hamburger.setAttribute("aria-label", "Fechar menu");
-      } else {
-        icon.textContent = "menu";
-        hamburger.setAttribute("aria-label", "Abrir menu");
-      }
-    });
-  
-    // Opcional: fechar menu ao clicar em algum link do menu
-    navMenu.querySelectorAll("a").forEach(link => {
-      link.addEventListener("click", () => {
+        // Troca ícone de "menu" ↔ "close"
+        const icon = hamburger.querySelector(".material-symbols-outlined");
         if(navMenu.classList.contains("mobile-active")){
-          navMenu.classList.remove("mobile-active");
-          hamburger.querySelector(".material-symbols-outlined").textContent = "menu";
-          hamburger.setAttribute("aria-label", "Abrir menu");
+            icon.textContent = "close";
+            hamburger.setAttribute("aria-label", "Fechar menu");
+        } else {
+            icon.textContent = "menu";
+            hamburger.setAttribute("aria-label", "Abrir menu");
         }
-      });
     });
-  });
+  
+    // Fecha menu automaticamente ao clicar em algum link
+    navMenu.querySelectorAll("a").forEach(link => {
+        link.addEventListener("click", () => {
+            if(navMenu.classList.contains("mobile-active")){
+                navMenu.classList.remove("mobile-active");
+                hamburger.querySelector(".material-symbols-outlined").textContent = "menu";
+                hamburger.setAttribute("aria-label", "Abrir menu");
+            }
+        });
+    });
+});
 
-// Informações do usuário
-  function showNotification(message) {
-    const notification = document.getElementById('notification');
-    notification.textContent = message;
-    notification.classList.add('show');
+// =====================================================
+// INFORMAÇÕES DO USUÁRIO (conquistas)
+// =====================================================
+function showNotification(message) {
+    const notification = document.getElementById('notification'); // Seleciona elemento de notificação
+    notification.textContent = message; // Define texto da mensagem
+    notification.classList.add('show'); // Mostra notificação
     setTimeout(() => {
-        notification.classList.remove('show');
+        notification.classList.remove('show'); // Esconde após 3s
     }, 3000);
 }
 
 function showBadgeInfo(badgeName) {
-    showNotification(`Conquista: ${badgeName}! 🏆`);
+    showNotification(`Conquista: ${badgeName}! 🏆`); // Mostra conquista desbloqueada
 }
 
-    // Animação da barra de progresso
+// =====================================================
+// ANIMAÇÃO DA BARRA DE PROGRESSO
+// =====================================================
 window.addEventListener('load', () => {
     setTimeout(() => {
-        const progressBars = document.querySelectorAll('.progress-fill');
+        const progressBars = document.querySelectorAll('.progress-fill'); // Todas as barras
         progressBars.forEach(bar => {
-            const width = bar.getAttribute('data-progress');
-            bar.style.width = width + '%';
+            const width = bar.getAttribute('data-progress'); // Valor armazenado no atributo
+            bar.style.width = width + '%'; // Preenche a barra de acordo com o progresso
         });
     }, 500);
 });
+
+// =====================================================
+// FUNÇÕES PLACEHOLDER (exemplo futuro)
+// =====================================================
 
     // Função para alternar seções (placeholder)
 function changeSection(section) {

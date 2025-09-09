@@ -1,5 +1,5 @@
 // Mudança de seção no menu vertical
-function changeSection(section) {
+function changeSection(section, event) {
     // Remove classe ativa de todos os itens
     document.querySelectorAll('.side-nav-item').forEach(item => {
         item.classList.remove('active');
@@ -298,3 +298,7 @@ document.addEventListener('DOMContentLoaded', () => {
     loadQuestion();
     showNotification('Hora dos jogos! 🎯');
 });
+
+// Ir para o topo ao reiniciar a página
+window.history.scrollRestoration = 'manual';
+window.scrollTo(0, 0);
