@@ -2,13 +2,13 @@
 <html lang="pt-BR">
 
 <head>
-    <link rel = "icon" type = "image/png" href = "img/ancora.png">
+    <link rel="icon" type="image/png" href="img/ancora.png">
     <link rel="stylesheet" type="text/css" href="style_jogos.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="script_jogos.js" defer></script>
+    <script src="script_jogos.js"></script>
     <title>Jogos - Leitura Kids</title>
 </head>
 
@@ -23,15 +23,13 @@
         <div class="nav-container">
             <a href="jogos.html" class="logo">LeituraKids</a>
             <nav>
-                <div class="mobile-menu-wrapper">
-                    <ul class="nav-menu">
-                        <li><a href="index.html" onclick="showNotification('Página inicial')">Início</a></li>
-                        <li><a href="index.html#about" onclick="showNotification('Sobre nós')">Sobre</a></li>
-                        <li><a href="conteudo.html" onclick="showNotification('Conteúdo educativo')">Tutorial</a></li>
-                        <li><a href="conteudo.html" onclick="showNotification('Conteúdo educativo')">Serviços</a></li>
-                        <li><a href="index.html#contact" onclick="showNotification('Entre em contato')">Contato</a></li>
-                    </ul>
-                </div>
+                <ul class="nav-menu">
+                    <li><a href="index.html">Início</a></li>
+                    <li><a href="index.html#about">Sobre</a></li>
+                    <li><a href="conteudo.html">Tutorial</a></li>
+                    <li><a href="conteudo.html">Serviços</a></li>
+                    <li><a href="index.html#contact">Contato</a></li>
+                </ul>
             </nav>
             <button class="hamburger" aria-label="Abrir menu">
                 <span class="material-symbols-outlined">menu</span>
@@ -41,95 +39,149 @@
 
     <!-- Menu Vertical -->
     <nav class="side-nav">
-        <div class="side-nav-item" onclick="window.location.href='home.html'" onclick="changeSection('perfil')" title="Perfil">
-            👤
-        </div>
-        <div class="side-nav-item" onclick="window.location.href='aulas.html'" onclick="changeSection('aulas')" title="Aulas">
-            📚
-        </div>
-        <div class="side-nav-item" onclick="window.location.href='#.html'" onclick="changeSection('ideias')" title="Ideias">
-            💡
-        </div>
-        <div class="side-nav-item" onclick="window.location.href='atividades.html'" onclick="changeSection('atividades')" title="Atividades">
-            ✏️
-        </div>
-        <div class="side-nav-item" onclick="window.location.href='#.html'" onclick="changeSection('listas')" title="Listas">
-            📋
-        </div>
-        <div class="side-nav-item active" onclick="window.location.href='jogos.html'" onclick="changeSection('jogos')" title="Jogos">
-            🎮
-        </div>
+        <div class="side-nav-item" onclick="window.location.href='home.html'" title="Perfil">👤</div>
+        <div class="side-nav-item" onclick="window.location.href='aulas.html'" title="Aulas">📚</div>
+        <div class="side-nav-item" onclick="window.location.href='#.html'" title="Ideias">💡</div>
+        <div class="side-nav-item" onclick="window.location.href='atividades.html'" title="Atividades">✏️</div>
+        <div class="side-nav-item" onclick="window.location.href='#.html'" title="Listas">📋</div>
+        <div class="side-nav-item active" onclick="window.location.href='jogos.html'" title="Jogos">🎮</div>
     </nav>
 
     <!-- Conteúdo Principal -->
     <main class="main-content">
         <div class="games-container">
-            <!-- Cabeçalho dos Jogos -->
+            <!-- Cabeçalho -->
             <div class="games-header">
-                <h1 class="games-title">Jogos Educativos</h1>
-                <p class="games-subtitle">Aprenda brincando com jogos divertidos!</p>
+                <h1 class="games-title">Central de Jogos</h1>
+                <p class="games-subtitle">Divirta-se aprendendo com jogos educativos!</p>
             </div>
 
-            <!-- Seletor de Jogos -->
-            <div class="game-selector">
-                <div class="game-option active" onclick="selectGame(0)">
-                    <div class="game-icon">🐾</div>
-                    <div class="game-name">Adivinhe o Animal</div>
-                    <div class="game-description">Veja a imagem e escolha o nome correto</div>
+            <!-- Pontuação Global -->
+            <div class="global-score">
+                <div class="score-item">🏆 <span id="total-score">0</span> pontos</div>
+                <div class="score-item">⭐ <span id="total-correct">0</span> acertos</div>
+                <div class="score-item">🎮 <span id="games-played">0</span> jogos</div>
+                <div class="score-item">🔥 Sequência: <span id="streak">0</span></div>
+            </div>
+
+            <!-- Menu de Jogos -->
+            <div class="games-menu" id="games-menu">
+                <div class="game-card" onclick="showGame('word-search')">
+                    <span class="game-icon">🔍</span>
+                    <h3 class="game-title">Caça Palavras</h3>
+                    <p class="game-description">Encontre as palavras escondidas na grade! Clique e arraste para
+                        encontrar cada palavra.</p>
                 </div>
-                <div class="game-option" onclick="selectGame(1)">
-                    <div class="game-icon">🧩</div>
-                    <div class="game-name">Monte as Sílabas</div>
-                    <div class="game-description">Forme palavras juntando as sílabas</div>
+
+                <div class="game-card" onclick="showGame('memory-game')">
+                    <span class="game-icon">🧠</span>
+                    <h3 class="game-title">Jogo da Memória</h3>
+                    <p class="game-description">Encontre os pares iguais! Vire duas cartas por vez e tente combinar
+                        todas.</p>
+                </div>
+
+                <div class="game-card" onclick="showGame('word-match')">
+                    <span class="game-icon">🔗</span>
+                    <h3 class="game-title">Associar Palavra e Emoji</h3>
+                    <p class="game-description">Combine as palavras com seus emojis correspondentes. Teste sua
+                        associação!</p>
+                </div>
+
+                <div class="game-card coming-soon">
+                    <div class="coming-soon-badge">Em Breve!</div>
+                    <span class="game-icon">🎯</span>
+                    <h3 class="game-title">Tiro ao Alvo</h3>
+                    <p class="game-description">Mire e acerte as letras corretas para formar palavras. Precisão é tudo!
+                    </p>
+                </div>
+
+                <div class="game-card coming-soon">
+                    <div class="coming-soon-badge">Em Breve!</div>
+                    <span class="game-icon">🏃</span>
+                    <h3 class="game-title">Corrida das Letras</h3>
+                    <p class="game-description">Corra coletando as letras na ordem certa para formar palavras
+                        rapidamente!</p>
+                </div>
+
+                <div class="game-card coming-soon">
+                    <div class="coming-soon-badge">Em Breve!</div>
+                    <span class="game-icon">🧩</span>
+                    <h3 class="game-title">Quebra-Cabeça de Palavras</h3>
+                    <p class="game-description">Monte as peças do quebra-cabeça para revelar palavras e imagens!</p>
                 </div>
             </div>
 
-            <!-- Estatísticas -->
-            <div class="game-stats">
-                <div class="stat-item">
-                    <div class="stat-number" id="correct-count">0</div>
-                    <div class="stat-label">Acertos</div>
+            <!-- Jogo 1: Caça Palavras -->
+            <div class="game-container" id="word-search">
+                <div class="game-header">
+                    <h2 class="game-title-header">🔍 Caça Palavras</h2>
+                    <button class="back-button" onclick="showMenu()">Voltar</button>
                 </div>
-                <div class="stat-item">
-                    <div class="stat-number" id="total-count">0</div>
-                    <div class="stat-label">Tentativas</div>
+
+                <div class="words-to-find" id="words-to-find">
+                    <!-- Será preenchido via JavaScript -->
                 </div>
-                <div class="stat-item">
-                    <div class="stat-number" id="current-question">1</div>
-                    <div class="stat-label">Pergunta</div>
+
+                <div class="word-search-grid" id="word-search-grid">
+                    <!-- Será preenchido via JavaScript -->
                 </div>
+
+                <div class="action-buttons">
+                    <button class="action-button" onclick="generateNewWordSearch()">Nova Grade</button>
+                    <button class="action-button" onclick="giveHint()">Dica</button>
+                </div>
+
+                <div class="feedback" id="search-feedback"></div>
             </div>
 
-            <!-- Jogo 1: Adivinhe o Animal -->
-            <div class="game-area active" id="game-0">
-                <div class="game-question">Qual é o nome deste animal?</div>
-                <img class="animal-image" id="animal-image" src="" alt="Animal">
-                <div class="options-container" id="options-container">
-                    <!-- Opções serão geradas via JavaScript -->
+            <!-- Jogo 2: Jogo da Memória -->
+            <div class="game-container" id="memory-game">
+                <div class="game-header">
+                    <h2 class="game-title-header">🧠 Jogo da Memória</h2>
+                    <button class="back-button" onclick="showMenu()">Voltar</button>
                 </div>
-                <div class="game-message" id="game1-message"></div>
-                <button class="reset-btn" onclick="resetCurrentQuestion(0)" style="display: none;" id="reset-btn-0">
-                    🔄 Tentar Novamente
-                </button>
+
+                <div class="memory-grid" id="memory-grid">
+                    <!-- Será preenchido via JavaScript -->
+                </div>
+
+                <div class="action-buttons">
+                    <button class="action-button" onclick="resetMemoryGame()">Novo Jogo</button>
+                    <button class="action-button" onclick="showAllCards()">Mostrar Tudo (5s)</button>
+                </div>
+
+                <div class="feedback" id="memory-feedback"></div>
             </div>
 
-            <!-- Jogo 2: Monte as Sílabas -->
-            <div class="game-area" id="game-1">
-                <div class="game-question">Monte a palavra com as sílabas!</div>
-                <img class="animal-image" id="syllable-image" src="" alt="Animal">
-                <div class="syllables-container" id="syllables-container">
-                    <!-- Sílabas serão geradas via JavaScript -->
+            <!-- Jogo 3: Associar Palavra e Emoji -->
+            <div class="game-container" id="word-match">
+                <div class="game-header">
+                    <h2 class="game-title-header">🔗 Associar Palavra e Emoji</h2>
+                    <button class="back-button" onclick="showMenu()">Voltar</button>
                 </div>
-                <div class="constructed-word" id="constructed-word">
-                    Clique nas sílabas para formar a palavra
+
+                <div class="matching-container">
+                    <div class="matching-column">
+                        <h3 style="text-align: center; color: #2c3e50; margin-bottom: 1rem;">Palavras</h3>
+                        <div id="words-column">
+                            <!-- Será preenchido via JavaScript -->
+                        </div>
+                    </div>
+                    <div class="matching-column">
+                        <h3 style="text-align: center; color: #2c3e50; margin-bottom: 1rem;">Emojis</h3>
+                        <div id="emojis-column">
+                            <!-- Será preenchido via JavaScript -->
+                        </div>
+                    </div>
                 </div>
-                <div class="game-message" id="game2-message"></div>
-                <button class="reset-btn" onclick="resetCurrentQuestion(1)" style="display: none;" id="reset-btn-1">
-                    🔄 Tentar Novamente
-                </button>
+
+                <div class="action-buttons">
+                    <button class="action-button" onclick="resetMatchingGame()">Novo Jogo</button>
+                </div>
+
+                <div class="feedback" id="matching-feedback"></div>
             </div>
         </div>
     </main>
 </body>
-
 </html>

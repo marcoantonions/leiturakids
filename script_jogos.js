@@ -1,304 +1,439 @@
-// Mudança de seção no menu vertical
-function changeSection(section, event) {
-    // Remove classe ativa de todos os itens
-    document.querySelectorAll('.side-nav-item').forEach(item => {
-        item.classList.remove('active');
-    });
+// ============================
+        //  CONFIGURAÇÕES INICIAIS
+        // ============================
+        window.history.scrollRestoration = 'manual';
+        window.scrollTo(0, 0);
 
-    // Adiciona classe ativa ao item clicado
-    event.target.classList.add('active');
+        // ============================
+        //  VARIÁVEIS GLOBAIS
+        // ============================
+        let totalScore = 0;
+        let totalCorrect = 0;
+        let gamesPlayed = 0;
+        let currentStreak = 0;
+        let selectedMatchingItem = null;
 
-    const sectionNames = {
-        'perfil': 'Meu Perfil 👤',
-        'aulas': 'Aulas 📚',
-        'ideias': 'Novas Ideias 💡',
-        'atividades': 'Atividades ✏️',
-        'listas': 'Minhas Listas 📋',
-        'jogos': 'Jogos Divertidos 🎮',
-    };
+        // Dados dos jogos
+        let wordSearchData = {
+            words: ['SOL', 'LUA', 'CÉU', 'MAR'],
+            grid: [],
+            foundWords: []
+        };
 
-    showNotification(sectionNames[section] || 'Nova seção');
-}
+        let memoryCards = [];
+        let flippedCards = [];
+        let matchedPairs = 0;
 
-// Menu responsivo
-document.addEventListener("DOMContentLoaded", function () {
-    const hamburger = document.querySelector(".hamburger");
-    const navMenu = document.querySelector(".nav-menu");
+        const matchingPairs = [
+            { word: 'CASA', emoji: '🏠' },
+            { word: 'GATO', emoji: '🐱' },
+            { word: 'CARRO', emoji: '🚗' },
+            { word: 'FLOR', emoji: '🌸' },
+            { word: 'SOL', emoji: '☀️' },
+            { word: 'ÁGUA', emoji: '💧' }
+        ];
 
-    hamburger.addEventListener("click", () => {
-        navMenu.classList.toggle("mobile-active");
+        let selectedCells = [];
 
-        // troca o ícone de menu para 'close' e vice-versa
-        const icon = hamburger.querySelector(".material-symbols-outlined");
-        if (navMenu.classList.contains("mobile-active")) {
-            icon.textContent = "close";
-            hamburger.setAttribute("aria-label", "Fechar menu");
-        } else {
-            icon.textContent = "menu";
-            hamburger.setAttribute("aria-label", "Abrir menu");
+        // ============================
+        //  FUNÇÕES DE INTERFACE
+        // ============================
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.classList.add('show');
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
         }
-    });
 
-    // Opcional: fechar menu ao clicar em algum link do menu
-    navMenu.querySelectorAll("a").forEach(link => {
-        link.addEventListener("click", () => {
-            if (navMenu.classList.contains("mobile-active")) {
-                navMenu.classList.remove("mobile-active");
-                hamburger.querySelector(".material-symbols-outlined").textContent = "menu";
-                hamburger.setAttribute("aria-label", "Abrir menu");
+        function updateGlobalScore(points) {
+            totalScore += points;
+            if (points > 0) {
+                totalCorrect++;
+                currentStreak++;
+            } else {
+                currentStreak = 0;
             }
-        });
-    });
-});
 
-let currentGame = 0;
-let currentQuestionIndex = 0;
-let correctAnswers = 0;
-let totalAttempts = 0;
-let currentWordFormed = "";
+            document.getElementById('total-score').textContent = totalScore;
+            document.getElementById('total-correct').textContent = totalCorrect;
+            document.getElementById('streak').textContent = currentStreak;
+        }
 
-// Dados dos jogos
-const game1Data = [
-    {
-        imagem: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=300&h=300&fit=crop",
-        correta: "gato",
-        opcoes: ["gato", "cachorro", "pato"]
-    },
-    {
-        imagem: "https://images.unsplash.com/photo-1583337130417-3346a1be7dee?w=300&h=300&fit=crop",
-        correta: "cachorro",
-        opcoes: ["gato", "cachorro", "coelho"]
-    },
-    {
-        imagem: "https://images.unsplash.com/photo-1557804506-669a67965ba0?w=300&h=300&fit=crop",
-        correta: "papagaio",
-        opcoes: ["papagaio", "leão", "peixe"]
-    },
-    {
-        imagem: "https://images.unsplash.com/photo-1546026423-cc4642628d2b?w=300&h=300&fit=crop",
-        correta: "pato",
-        opcoes: ["pato", "urso", "gato"]
-    },
-    {
-        imagem: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=300&h=300&fit=crop",
-        correta: "coelho",
-        opcoes: ["coelho", "rato", "porco"]
-    }
-];
+        function playSound(text) {
+            if ('speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'pt-BR';
+                utterance.rate = 0.7;
+                utterance.pitch = 1.2;
+                speechSynthesis.speak(utterance);
+            }
+        }
 
-const game2Data = [
-    {
-        imagem: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=300&h=300&fit=crop",
-        silabas: ["ga", "to"],
-        correta: "gato"
-    },
-    {
-        imagem: "https://images.unsplash.com/photo-1583337130417-3346a1be7dee?w=300&h=300&fit=crop",
-        silabas: ["ca", "chor", "ro"],
-        correta: "cachorro"
-    },
-    {
-        imagem: "https://images.unsplash.com/photo-1546026423-cc4642628d2b?w=300&h=300&fit=crop",
-        silabas: ["pa", "to"],
-        correta: "pato"
-    },
-    {
-        imagem: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=300&h=300&fit=crop",
-        silabas: ["coe", "lho"],
-        correta: "coelho"
-    },
-    {
-        imagem: "https://images.unsplash.com/photo-1557804506-669a67965ba0?w=300&h=300&fit=crop",
-        silabas: ["pa", "pa", "gai", "o"],
-        correta: "papagaio"
-    }
-];
+        function showFeedback(elementId, message, type) {
+            const feedback = document.getElementById(elementId);
+            feedback.textContent = message;
+            feedback.className = `feedback ${type} show`;
+            setTimeout(() => feedback.classList.remove('show'), 3000);
+        }
 
-function showNotification(message) {
-    const notification = document.getElementById('notification');
-    notification.textContent = message;
-    notification.classList.add('show');
-    setTimeout(() => {
-        notification.classList.remove('show');
-    }, 3000);
-}
+        function showGame(gameId) {
+            document.getElementById('games-menu').style.display = 'none';
+            document.querySelectorAll('.game-container').forEach(container => {
+                container.classList.remove('active');
+            });
+            document.getElementById(gameId).classList.add('active');
+            gamesPlayed++;
+            document.getElementById('games-played').textContent = gamesPlayed;
+        }
 
-function selectGame(gameIndex) {
-    // Atualizar seletor visual
-    document.querySelectorAll('.game-option').forEach((option, index) => {
-        option.classList.toggle('active', index === gameIndex);
-    });
+        function showMenu() {
+            document.querySelectorAll('.game-container').forEach(container => {
+                container.classList.remove('active');
+            });
+            document.getElementById('games-menu').style.display = 'grid';
+        }
 
-    // Mostrar jogo selecionado
-    document.querySelectorAll('.game-area').forEach((area, index) => {
-        area.classList.toggle('active', index === gameIndex);
-    });
+        // ============================
+        //  JOGO 1: CAÇA PALAVRAS
+        // ============================
+        function generateWordSearchGrid() {
+            const grid = Array(8).fill().map(() => Array(8).fill(''));
+            const words = wordSearchData.words;
 
-    currentGame = gameIndex;
-    currentQuestionIndex = 0;
-    resetStats();
-    loadQuestion();
-}
+            words.forEach(word => {
+                let placed = false;
+                let attempts = 0;
 
-function resetStats() {
-    correctAnswers = 0;
-    totalAttempts = 0;
-    updateStats();
-}
+                while (!placed && attempts < 50) {
+                    const direction = Math.random() < 0.5 ? 'horizontal' : 'vertical';
+                    const row = Math.floor(Math.random() * 8);
+                    const col = Math.floor(Math.random() * 8);
 
-function updateStats() {
-    document.getElementById('correct-count').textContent = correctAnswers;
-    document.getElementById('total-count').textContent = totalAttempts;
-    document.getElementById('current-question').textContent = currentQuestionIndex + 1;
-}
+                    if (canPlaceWord(grid, word, row, col, direction)) {
+                        placeWord(grid, word, row, col, direction);
+                        placed = true;
+                    }
+                    attempts++;
+                }
+            });
 
-function shuffle(array) {
-    return array.sort(() => Math.random() - 0.5);
-}
+            const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            for (let i = 0; i < 8; i++) {
+                for (let j = 0; j < 8; j++) {
+                    if (grid[i][j] === '') {
+                        grid[i][j] = letters[Math.floor(Math.random() * letters.length)];
+                    }
+                }
+            }
 
-function loadQuestion() {
-    if (currentGame === 0) {
-        loadGame1Question();
-    } else {
-        loadGame2Question();
-    }
-    updateStats();
-}
+            wordSearchData.grid = grid;
+            renderWordSearchGrid();
+        }
 
-function loadGame1Question() {
-    const question = game1Data[currentQuestionIndex];
-    document.getElementById('animal-image').src = question.imagem;
-    document.getElementById('game1-message').textContent = '';
-    document.getElementById('reset-btn-0').style.display = 'none';
+        function canPlaceWord(grid, word, row, col, direction) {
+            if (direction === 'horizontal') {
+                if (col + word.length > 8) return false;
+                for (let i = 0; i < word.length; i++) {
+                    if (grid[row][col + i] !== '' && grid[row][col + i] !== word[i]) {
+                        return false;
+                    }
+                }
+            } else {
+                if (row + word.length > 8) return false;
+                for (let i = 0; i < word.length; i++) {
+                    if (grid[row + i][col] !== '' && grid[row + i][col] !== word[i]) {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
 
-    const container = document.getElementById('options-container');
-    container.innerHTML = '';
+        function placeWord(grid, word, row, col, direction) {
+            if (direction === 'horizontal') {
+                for (let i = 0; i < word.length; i++) {
+                    grid[row][col + i] = word[i];
+                }
+            } else {
+                for (let i = 0; i < word.length; i++) {
+                    grid[row + i][col] = word[i];
+                }
+            }
+        }
 
-    const shuffledOptions = shuffle([...question.opcoes]);
-    shuffledOptions.forEach(option => {
-        const button = document.createElement('button');
-        button.className = 'option-btn';
-        button.textContent = option;
-        button.onclick = () => checkGame1Answer(option, question.correta);
-        container.appendChild(button);
-    });
-}
+        function renderWordSearchGrid() {
+            const gridElement = document.getElementById('word-search-grid');
+            gridElement.innerHTML = '';
 
-function loadGame2Question() {
-    const question = game2Data[currentQuestionIndex];
-    document.getElementById('syllable-image').src = question.imagem;
-    document.getElementById('game2-message').textContent = '';
-    document.getElementById('constructed-word').textContent = 'Clique nas sílabas para formar a palavra';
-    document.getElementById('reset-btn-1').style.display = 'none';
-    currentWordFormed = '';
+            wordSearchData.grid.forEach((row, i) => {
+                row.forEach((cell, j) => {
+                    const cellElement = document.createElement('div');
+                    cellElement.className = 'grid-cell';
+                    cellElement.textContent = cell;
+                    cellElement.dataset.row = i;
+                    cellElement.dataset.col = j;
+                    cellElement.onclick = () => selectGridCell(i, j);
+                    gridElement.appendChild(cellElement);
+                });
+            });
 
-    const container = document.getElementById('syllables-container');
-    container.innerHTML = '';
+            const wordsElement = document.getElementById('words-to-find');
+            wordsElement.innerHTML = '';
+            wordSearchData.words.forEach(word => {
+                const wordElement = document.createElement('div');
+                wordElement.className = 'word-to-find';
+                wordElement.textContent = word;
+                wordElement.id = `word-${word}`;
+                wordsElement.appendChild(wordElement);
+            });
+        }
 
-    const shuffledSyllables = shuffle([...question.silabas]);
-    shuffledSyllables.forEach(syllable => {
-        const button = document.createElement('button');
-        button.className = 'syllable-btn';
-        button.textContent = syllable;
-        button.onclick = () => addSyllable(syllable, button);
-        container.appendChild(button);
-    });
-}
+        function selectGridCell(row, col) {
+            const cell = document.querySelector(`[data-row="${row}"][data-col="${col}"]`);
 
-function checkGame1Answer(selected, correct) {
-    totalAttempts++;
-    const messageEl = document.getElementById('game1-message');
-    const buttons = document.querySelectorAll('#options-container .option-btn');
+            if (cell.classList.contains('selected')) {
+                selectedCells = selectedCells.filter(c => !(c.row === row && c.col === col));
+                cell.classList.remove('selected');
+            } else {
+                selectedCells.push({ row, col, letter: wordSearchData.grid[row][col] });
+                cell.classList.add('selected');
+                checkForWord();
+            }
+        }
 
-    if (selected === correct) {
-        correctAnswers++;
-        messageEl.textContent = '🎉 Parabéns! Você acertou!';
-        messageEl.className = 'game-message success-message';
+        function checkForWord() {
+            const selectedWord = selectedCells.map(c => c.letter).join('');
+            const reversedWord = selectedCells.map(c => c.letter).reverse().join('');
 
-        // Desabilitar todos os botões
-        buttons.forEach(btn => btn.disabled = true);
+            wordSearchData.words.forEach(word => {
+                if ((selectedWord === word || reversedWord === word) && !wordSearchData.foundWords.includes(word)) {
+                    wordSearchData.foundWords.push(word);
 
-        setTimeout(() => {
-            nextQuestion();
-        }, 2000);
-    } else {
-        messageEl.textContent = '❌ Ops! Tente novamente!';
-        messageEl.className = 'game-message error-message';
+                    selectedCells.forEach(cell => {
+                        const cellElement = document.querySelector(`[data-row="${cell.row}"][data-col="${cell.col}"]`);
+                        cellElement.classList.remove('selected');
+                        cellElement.classList.add('found');
+                    });
 
-        // Desabilitar todos os botões e mostrar botão de reset
-        buttons.forEach(btn => btn.disabled = true);
-        document.getElementById('reset-btn-0').style.display = 'block';
-    }
-    updateStats();
-}
+                    document.getElementById(`word-${word}`).classList.add('found');
+                    updateGlobalScore(10);
+                    playSound(`Encontrou ${word}!`);
+                    showFeedback('search-feedback', `🎉 Você encontrou: ${word}!`, 'success');
 
-function addSyllable(syllable, button) {
-    currentWordFormed += syllable;
-    document.getElementById('constructed-word').textContent = currentWordFormed;
-    button.disabled = true;
+                    selectedCells = [];
 
-    const question = game2Data[currentQuestionIndex];
-    const messageEl = document.getElementById('game2-message');
+                    if (wordSearchData.foundWords.length === wordSearchData.words.length) {
+                        setTimeout(() => {
+                            showFeedback('search-feedback', '🏆 Parabéns! Encontrou todas as palavras!', 'success');
+                            updateGlobalScore(20);
+                        }, 1000);
+                    }
+                }
+            });
+        }
 
-    if (currentWordFormed.length >= question.correta.length) {
-        totalAttempts++;
+        function generateNewWordSearch() {
+            wordSearchData.foundWords = [];
+            selectedCells = [];
+            document.querySelectorAll('.grid-cell').forEach(cell => {
+                cell.classList.remove('selected', 'found');
+            });
+            generateWordSearchGrid();
+        }
 
-        if (currentWordFormed === question.correta) {
-            correctAnswers++;
-            messageEl.textContent = '🎉 Muito bem! Palavra formada!';
-            messageEl.className = 'game-message success-message';
+        function giveHint() {
+            const unFoundWords = wordSearchData.words.filter(w => !wordSearchData.foundWords.includes(w));
+            if (unFoundWords.length > 0) {
+                const hintWord = unFoundWords[0];
+                showFeedback('search-feedback', `💡 Procure pela palavra: ${hintWord}`, 'success');
+                playSound(`Procure pela palavra ${hintWord}`);
+            }
+        }
 
-            // Desabilitar todos os botões restantes
-            document.querySelectorAll('#syllables-container .syllable-btn').forEach(btn => btn.disabled = true);
+        // ============================
+        //  JOGO 2: JOGO DA MEMÓRIA
+        // ============================
+        function initMemoryGame() {
+            const letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
+            memoryCards = [...letters, ...letters].sort(() => Math.random() - 0.5);
+            flippedCards = [];
+            matchedPairs = 0;
+
+            const grid = document.getElementById('memory-grid');
+            grid.innerHTML = '';
+
+            memoryCards.forEach((letter, index) => {
+                const card = document.createElement('button');
+                card.className = 'memory-card';
+                card.dataset.index = index;
+                card.dataset.letter = letter;
+                card.onclick = () => flipCard(index);
+
+                card.innerHTML = `
+                    <div class="card-back">❓</div>
+                    <div class="card-front">${letter}</div>
+                `;
+
+                grid.appendChild(card);
+            });
+        }
+
+        function flipCard(index) {
+            const card = document.querySelector(`[data-index="${index}"]`);
+
+            if (card.classList.contains('flipped') || card.classList.contains('matched') || flippedCards.length >= 2) {
+                return;
+            }
+
+            card.classList.add('flipped');
+            flippedCards.push({ index, letter: card.dataset.letter, element: card });
+
+            if (flippedCards.length === 2) {
+                setTimeout(checkMemoryMatch, 1000);
+            }
+        }
+
+        function checkMemoryMatch() {
+            const [card1, card2] = flippedCards;
+
+            if (card1.letter === card2.letter) {
+                card1.element.classList.add('matched');
+                card2.element.classList.add('matched');
+                matchedPairs++;
+                updateGlobalScore(10);
+                playSound('Par encontrado!');
+
+                if (matchedPairs === 8) {
+                    showFeedback('memory-feedback', '🏆 Parabéns! Você encontrou todos os pares!', 'success');
+                    updateGlobalScore(30);
+                }
+            } else {
+                card1.element.classList.remove('flipped');
+                card2.element.classList.remove('flipped');
+            }
+
+            flippedCards = [];
+        }
+
+        function resetMemoryGame() {
+            document.querySelectorAll('.memory-card').forEach(card => {
+                card.classList.remove('flipped', 'matched');
+            });
+            initMemoryGame();
+        }
+
+        function showAllCards() {
+            document.querySelectorAll('.memory-card').forEach(card => {
+                card.classList.add('flipped');
+            });
 
             setTimeout(() => {
-                nextQuestion();
-            }, 2000);
-        } else {
-            messageEl.textContent = '❌ Palavra incorreta! Tente novamente!';
-            messageEl.className = 'game-message error-message';
-
-            // Desabilitar todos os botões e mostrar botão de reset
-            document.querySelectorAll('#syllables-container .syllable-btn').forEach(btn => btn.disabled = true);
-            document.getElementById('reset-btn-1').style.display = 'block';
+                document.querySelectorAll('.memory-card:not(.matched)').forEach(card => {
+                    card.classList.remove('flipped');
+                });
+            }, 5000);
         }
-        updateStats();
-    }
-}
 
-function resetCurrentQuestion(gameIndex) {
-    if (gameIndex === 0) {
-        loadGame1Question();
-    } else {
-        loadGame2Question();
-    }
-    showNotification('Vamos tentar novamente! 💪');
-}
+        // ============================
+        //  JOGO 3: ASSOCIAR PALAVRA E EMOJI
+        // ============================
+        function initMatchingGame() {
+            const wordsCol = document.getElementById('words-column');
+            const emojisCol = document.getElementById('emojis-column');
+            wordsCol.innerHTML = '';
+            emojisCol.innerHTML = '';
 
-function nextQuestion() {
-    const maxQuestions = currentGame === 0 ? game1Data.length : game2Data.length;
-    currentQuestionIndex = (currentQuestionIndex + 1) % maxQuestions;
+            const shuffledWords = [...matchingPairs].sort(() => Math.random() - 0.5);
+            const shuffledEmojis = [...matchingPairs].sort(() => Math.random() - 0.5);
 
-    if (currentQuestionIndex === 0) {
-        showNotification('Parabéns! Você completou todas as perguntas! 🎊');
-        setTimeout(() => {
-            showNotification(`Resultado: ${correctAnswers} acertos em ${totalAttempts} tentativas! 📊`);
-        }, 2000);
-    }
+            shuffledWords.forEach(item => {
+                const btn = document.createElement('button');
+                btn.className = 'matching-item';
+                btn.textContent = item.word;
+                btn.dataset.word = item.word;
+                btn.onclick = () => selectMatchingItem(btn, 'word');
+                wordsCol.appendChild(btn);
+            });
 
-    loadQuestion();
-}
+            shuffledEmojis.forEach(item => {
+                const btn = document.createElement('button');
+                btn.className = 'matching-item';
+                btn.textContent = item.emoji;
+                btn.dataset.word = item.word;
+                btn.onclick = () => selectMatchingItem(btn, 'emoji');
+                emojisCol.appendChild(btn);
+            });
+        }
 
-function changeSection(section) {
-    showNotification(`Navegando para ${section}...`);
-}
+        function selectMatchingItem(element, type) {
+            if (element.classList.contains('matched')) return;
 
-// Inicialização
-document.addEventListener('DOMContentLoaded', () => {
-    loadQuestion();
-    showNotification('Hora dos jogos! 🎯');
-});
+            if (selectedMatchingItem === null) {
+                selectedMatchingItem = { element, type, word: element.dataset.word };
+                element.classList.add('selected');
+            } else {
+                if (selectedMatchingItem.word === element.dataset.word && selectedMatchingItem.type !== type) {
+                    selectedMatchingItem.element.classList.remove('selected');
+                    selectedMatchingItem.element.classList.add('matched');
+                    element.classList.add('matched');
 
-// Ir para o topo ao reiniciar a página
-window.history.scrollRestoration = 'manual';
-window.scrollTo(0, 0);
+                    updateGlobalScore(5);
+                    playSound('Correto!');
+                    showFeedback('matching-feedback', '🎉 Combinação perfeita!', 'success');
+
+                    const allMatched = document.querySelectorAll('.matching-item:not(.matched)').length === 0;
+                    if (allMatched) {
+                        setTimeout(() => {
+                            showFeedback('matching-feedback', '🏆 Parabéns! Você completou todas as associações!', 'success');
+                            updateGlobalScore(20);
+                        }, 1000);
+                    }
+                } else {
+                    selectedMatchingItem.element.classList.remove('selected');
+                    showFeedback('matching-feedback', '❌ Essa combinação não está correta. Tente novamente!', 'error');
+                    playSound('Tente novamente');
+                }
+
+                selectedMatchingItem = null;
+            }
+        }
+
+        function resetMatchingGame() {
+            selectedMatchingItem = null;
+            initMatchingGame();
+        }
+
+        // ============================
+        //  MENU RESPONSIVO
+        // ============================
+        document.addEventListener("DOMContentLoaded", function () {
+            const hamburger = document.querySelector(".hamburger");
+            const navMenu = document.querySelector(".nav-menu");
+
+            if (hamburger && navMenu) {
+                hamburger.addEventListener("click", () => {
+                    navMenu.classList.toggle("mobile-active");
+
+                    const icon = hamburger.querySelector(".material-symbols-outlined");
+                    if (navMenu.classList.contains("mobile-active")) {
+                        icon.textContent = "close";
+                        hamburger.setAttribute("aria-label", "Fechar menu");
+                    } else {
+                        icon.textContent = "menu";
+                        hamburger.setAttribute("aria-label", "Abrir menu");
+                    }
+                });
+            }
+        });
+
+        // ============================
+        //  INICIALIZAÇÃO
+        // ============================
+        window.onload = function () {
+            generateWordSearchGrid();
+            initMemoryGame();
+            initMatchingGame();
+            showNotification('Vamos jogar e aprender! 🎮');
+        };
