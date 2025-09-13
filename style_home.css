@@ -8,6 +8,9 @@ body {
     font-family: 'Comic Sans MS';
     background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
     min-height: 100vh;
+    max-width: 100%;
+    overflow-x: hidden;
+    /* bloqueia rolagem lateral */
 }
 
 /* Header */
@@ -38,6 +41,10 @@ body {
     font-weight: bold;
     color: white;
     text-decoration: none;
+}
+
+.hamburger {
+    display: block;
 }
 
 .nav-menu {
@@ -164,6 +171,12 @@ nav a::after {
     background: rgb(111, 242, 254);
 }
 
+.side-nav-item img {
+    width: 30px;  
+    height: 30px;
+    object-fit: contain;
+    pointer-events: none; /* garante que o clique seja na div, não na img */
+}
 
 /* Estilos específicos para a página de perfil */
 .profile-container {
@@ -359,10 +372,11 @@ nav a::after {
     border-radius: 50px;
     transform: translateX(400px);
     transition: transform 0.3s ease;
-    z-index: 1001;
+    z-index: 1;
 }
 
 .notification.show {
+    z-index: 1;
     transform: translateX(0);
 }
 
@@ -494,9 +508,19 @@ nav a::after {
 }
 
 @keyframes shine {
-    0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); opacity: 0; }
-    50% { opacity: 1; }
-    100% { transform: translateX(100%) translateY(100%) rotate(45deg); opacity: 0; }
+    0% {
+        transform: translateX(-100%) translateY(-100%) rotate(45deg);
+        opacity: 0;
+    }
+
+    50% {
+        opacity: 1;
+    }
+
+    100% {
+        transform: translateX(100%) translateY(100%) rotate(45deg);
+        opacity: 0;
+    }
 }
 
 .badge:hover {
@@ -508,6 +532,22 @@ nav a::after {
     font-size: 3rem;
     margin-bottom: 0.8rem;
     filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+.badge-icon img {
+    width: 55px;
+    height: 55px;
+    object-fit: contain;/* mantém proporção */
+    display: block;
+    margin: 0 auto 10px auto; /* centraliza e dá espaçamento embaixo */
+}
+
+.icon img {
+    width: 55px;
+    height: 55px;
+    object-fit: contain;/* mantém proporção */
+    display: block;
+    margin: 0 auto 10px auto; /* centraliza e dá espaçamento embaixo */
 }
 
 .badge-name {
@@ -553,9 +593,17 @@ nav a::after {
 }
 
 @keyframes pulse {
-    0% { box-shadow: 0 5px 15px rgba(255, 215, 0, 0.4); }
-    50% { box-shadow: 0 10px 25px rgba(255, 215, 0, 0.8); }
-    100% { box-shadow: 0 5px 15px rgba(255, 215, 0, 0.4); }
+    0% {
+        box-shadow: 0 5px 15px rgba(255, 215, 0, 0.4);
+    }
+
+    50% {
+        box-shadow: 0 10px 25px rgba(255, 215, 0, 0.8);
+    }
+
+    100% {
+        box-shadow: 0 5px 15px rgba(255, 215, 0, 0.4);
+    }
 }
 
 .progress-next {
@@ -689,6 +737,75 @@ nav a::after {
 }
 
 @media (max-width: 1000px) {
+
+    .btn-blue0 {
+        background-color: #298ac1;
+        margin-left: 70%;
+        width: 33%;
+        color: white;
+        border: none;
+        padding: 0.6rem 1.2rem;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .btn-text {
+        display: none;
+    }
+
+    .btn-blue {
+        padding: 0.6rem;
+        /* padding mais compacto */
+        border-radius: 6px;
+    }
+
+    /* Container do dropdown */
+    .dropdown {
+        position: relative;
+        display: inline-block;
+    }
+
+    /* Conteúdo do menu */
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        right: 0;
+        margin-top: 0.5rem;
+        background-color: #1a2a32;
+        min-width: 160px;
+        border-radius: 8px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+        overflow: hidden;
+        z-index: 1;
+    }
+
+    /* Itens do menu */
+    .dropdown-content a {
+        color: white;
+        padding: 12px 16px;
+        text-decoration: none;
+        display: block;
+        font-weight: bold;
+    }
+
+    .dropdown-content a:hover {
+        background-color: #298ac1;
+    }
+
+    /* Mostrar menu quando ativo */
+    .show {
+        display: block;
+    }
+
+    /* Ícone alinhado */
+    .material-symbols-outlined {
+        font-size: 20px;
+        vertical-align: middle;
+
+    }
+
     /* Mover o menu para fora da tela quando estiver em mobile e não ativo */
     .hamburger {
         display: block;
@@ -715,7 +832,7 @@ nav a::after {
         display: none;
     }
 
-    .nav-menu a{
+    .nav-menu a {
         margin-left: 10%;
     }
 
@@ -729,10 +846,9 @@ nav a::after {
         height: 60px;
         padding: 0 10px;
         gap: 20px; /* espaço maior entre os botões */
-        overflow-x: auto; /* habilita rolagem horizontal */
         overflow-y: hidden;
         white-space: nowrap; /* impede quebra de linha */
-        justify-content: flex-start; /* começa alinhado à esquerda */
+        justify-content: center;
         box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
     }
 
@@ -740,13 +856,15 @@ nav a::after {
     .side-nav::-webkit-scrollbar {
         height: 6px;
     }
+
     .side-nav::-webkit-scrollbar-thumb {
-        background: rgba(0,0,0,0.2);
+        background: rgba(0, 0, 0, 0.2);
         border-radius: 3px;
     }
 
     .side-nav-item {
-        flex: 0 0 auto; /* não encolhe */
+        flex: 0 0 auto;
+        /* não encolhe */
         margin: 0;
         width: 50px;
         height: 50px;
@@ -774,4 +892,140 @@ nav a::after {
         height: 50px;
         font-size: 1.2rem;
     }
+}
+
+.btn {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.btn-text {
+    display: inline;
+}
+
+/* Botão principal */
+.btn-blue {
+    background-color: #298ac1;
+    color: white;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 50px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.btn-blue:hover {
+    transition: 0.3s ease-in-out;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgb(41, 138, 193);
+    ;
+}
+
+/* Container do dropdown */
+.dropdown {
+    position: relative;
+    display: inline-block;
+    z-index: 100;
+}
+
+/* Conteúdo do menu */
+.dropdown-content {
+    display: none;
+    position: absolute;
+    right: 0;
+    margin-top: 0.5rem;
+    background-color: #2c3e50;
+    min-width: 160px;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px #1a2530;
+    overflow: hidden;
+    z-index: 100;
+}
+
+/* Itens do menu */
+.dropdown-content a {
+    color: white;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    font-weight: bold;
+}
+
+.dropdown-content a:hover {
+    transition: 0.3s ease-in-out;
+    transform: translateY(-2px);
+    background-color: #2c3e50;
+}
+
+/* Mostrar menu quando ativo */
+.show {
+    display: block;
+}
+
+/* Ícone alinhado */
+.material-symbols-outlined {
+    font-size: 20px;
+    vertical-align: middle;
+}
+
+.btn-blue0 {
+    background-color: #298ac1;
+    margin-left: 70%;
+    width: 14%;
+    color: white;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.button-container {
+    display: flex;
+    justify-content: flex-end;
+    padding: 1rem;
+}
+
+.back-button {
+    background-color: #298ac1;
+    border: none;
+    display: flex;
+    margin-top: 2%;
+    border-radius: 50px;
+    padding: 0.8rem 2rem;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+}
+
+.back-button:hover {
+    transform: translateY(-2px);
+    transition: 0.3s ease-in-out;
+    box-shadow: 0 5px 15px rgb(41, 138, 193);
+}
+
+.btn-gray {
+    background-color: rgb(67, 174, 184);
+    color: white;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.btn-gray:hover {
+    transition: 0.3s ease-in-out;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px #2c3e50;
 }

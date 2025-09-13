@@ -128,3 +128,14 @@ function changeSection(section) {
 function startActivity(activity) {
     showNotification(`Iniciando ${activity}...`);
 }
+
+function toggleMenu() {
+    document.getElementById("menuDropdown").classList.toggle("show");
+}
+
+// Fecha o menu se clicar fora
+window.addEventListener("click", function (event) {
+    if (!event.target.closest(".dropdown")) {
+        document.getElementById("menuDropdown").classList.remove("show");
+    }
+});

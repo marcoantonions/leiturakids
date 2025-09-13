@@ -34,12 +34,21 @@
 
     <!-- Menu Vertical -->
     <nav class="side-nav">
-        <div class="side-nav-item" onclick="window.location.href='home.html'" title="Perfil">👤</div>
-        <div class="side-nav-item" onclick="window.location.href='aulas.html'" title="Aulas">📚</div>
-        <div class="side-nav-item" onclick="window.location.href='#.html'" title="Ideias">💡</div>
-        <div class="side-nav-item active" onclick="window.location.href='atividades.html'" title="Atividades">✏️</div>
-        <div class="side-nav-item" onclick="window.location.href='#.html'" title="Listas">📋</div>
-        <div class="side-nav-item" onclick="window.location.href='jogos.html'" title="Jogos">🎮</div>
+        <div class="side-nav-item" onclick="window.location.href='home.html'" title="Perfil">
+            <img src="img/casa.png" alt="Perfil">
+        </div>
+        <div class="side-nav-item" onclick="window.location.href='aulas.html'" title="Aulas">
+            <img src="img/livro.png" alt="Aulas">
+        </div>
+        <div class="side-nav-item active" onclick="window.location.href='atividades.html'" title="Atividades">
+            <img src="img/lapis.png" alt="Atividades">
+        </div>
+        <div class="side-nav-item" onclick="window.location.href='#.html'" title="Listas">
+            <img src="img/mapa.png" alt="Listas">
+        </div>
+        <div class="side-nav-item" onclick="window.location.href='jogos.html'" title="Jogos">
+            <img src="img/controle.png" alt="Jogos">
+        </div>
     </nav>
 
     <!-- Conteúdo Principal -->
@@ -53,48 +62,74 @@
 
             <!-- Pontuação Global -->
             <div class="global-score">
-                <div class="score-item">🏆 <span id="total-score">0</span> pontos</div>
-                <div class="score-item">⭐ <span id="total-correct">0</span> acertos</div>
-                <div class="score-item">🎮 <span id="games-played">0</span> jogos</div>
-                <div class="score-item">🔥 Sequência: <span id="streak">0</span></div>
+                <div class="score-item">
+                    <img src="img/trofeu.png" alt="Troféu" class="icon">
+                    <span id="total-score">0</span> pontos
+                </div>
+                <div class="score-item">
+                    <img src="img/estrela.png" alt="Estrela" class="icon">
+                    <span id="total-correct">0</span> acertos
+                </div>
+                <div class="score-item">
+                    <img src="img/lapis.png" alt="Lápis" class="icon">
+                    <span id="games-played">0</span> atividades
+                </div>
+                <div class="score-item">
+                    <img src="img/fogo.png" alt="Fogo" class="icon">
+                    Sequência: <span id="streak">0</span>
+                </div>
             </div>
 
             <!-- Menu de Atividades -->
             <div class="activities-menu" id="activities-menu">
                 <div class="activity-card" onclick="showGame('complete-word')">
-                    <span class="activity-icon">✏️</span>
+                    <span class="activity-icon">
+                        <img src="img/carangueijo.png" alt="Complete a Palavra">
+                    </span>
                     <h3 class="activity-title">Complete a Palavra</h3>
-                    <p class="activity-description">Clique nas letras corretas para formar a palavra. Use as dicas visuais para descobrir qual palavra completar!</p>
+                    <p class="activity-description">Clique nas letras corretas para formar a palavra. Use as dicas
+                        visuais para descobrir qual palavra completar!</p>
                 </div>
 
                 <div class="activity-card" onclick="showGame('sentence-builder')">
-                    <span class="activity-icon">📝</span>
+                    <span class="activity-icon">
+                        <img src="img/polvo.png" alt="Complete a Palavra">
+                    </span>
                     <h3 class="activity-title">Forme a Frase</h3>
-                    <p class="activity-description">Organize as palavras na ordem correta para criar frases que fazem sentido. Teste sua compreensão gramatical!</p>
+                    <p class="activity-description">Organize as palavras na ordem correta para criar frases que fazem
+                        sentido. Teste sua compreensão gramatical!</p>
                 </div>
 
                 <div class="activity-card" onclick="showGame('sound-quiz')">
-                    <span class="activity-icon">🔊</span>
+                    <span class="activity-icon">
+                        <img src="img/cavalom.png" alt="Complete a Palavra">
+                    </span>
                     <h3 class="activity-title">Quiz de Sons</h3>
-                    <p class="activity-description">Ouça a palavra falada e escolha a grafia correta entre as opções. Desenvolva sua percepção auditiva!</p>
+                    <p class="activity-description">Ouça a palavra falada e escolha a grafia correta entre as opções.
+                        Desenvolva sua percepção auditiva!</p>
                 </div>
 
                 <div class="activity-card" onclick="showGame('rhyme-game')">
                     <span class="activity-icon">🎵</span>
                     <h3 class="activity-title">Encontre a Rima</h3>
-                    <p class="activity-description">Identifique qual palavra rima com a palavra apresentada. Aprenda sobre sonoridade e terminações similares!</p>
+                    <p class="activity-description">Identifique qual palavra rima com a palavra apresentada. Aprenda
+                        sobre sonoridade e terminações similares!</p>
                 </div>
 
                 <div class="activity-card" onclick="showGame('syllable-order')">
                     <span class="activity-icon">🔀</span>
                     <h3 class="activity-title">Ordene as Sílabas</h3>
-                    <p class="activity-description">Clique nas sílabas na sequência correta para formar palavras. Pratique divisão silábica de forma divertida!</p>
+                    <p class="activity-description">Clique nas sílabas na sequência correta para formar palavras.
+                        Pratique divisão silábica de forma divertida!</p>
                 </div>
 
                 <div class="activity-card" onclick="showGame('letter-hunt')">
-                    <span class="activity-icon">🔍</span>
+                    <span class="activity-icon">
+                        <img src="img/golfinho.png" alt="Complete a Palavra">
+                    </span>
                     <h3 class="activity-title">Caça Letras</h3>
-                    <p class="activity-description">Encontre rapidamente a letra solicitada entre todas as opções. Melhore sua velocidade de reconhecimento!</p>
+                    <p class="activity-description">Encontre rapidamente a letra solicitada entre todas as opções.
+                        Melhore sua velocidade de reconhecimento!</p>
                 </div>
             </div>
 
@@ -104,11 +139,11 @@
                     <h2 class="game-title">✏️ Complete a Palavra</h2>
                     <button class="back-button" onclick="showMenu()">Voltar</button>
                 </div>
-                
+
                 <div class="target-letter-display" id="word-hint">🏠 CASA</div>
                 <div class="word-puzzle" id="word-puzzle"></div>
                 <div class="letter-options" id="letter-options"></div>
-                
+
                 <div class="action-buttons">
                     <button class="action-button" onclick="checkWord()">Verificar</button>
                     <button class="action-button" onclick="nextWord()">Próxima Palavra</button>
@@ -122,13 +157,13 @@
                     <h2 class="game-title">📝 Forme a Frase</h2>
                     <button class="back-button" onclick="showMenu()">Voltar</button>
                 </div>
-                
+
                 <div class="sentence-target" id="sentence-target">Monte a frase: "O gato subiu na árvore"</div>
                 <div class="sentence-drop-zone" id="sentence-drop-zone">
                     <span style="color: #7f8c8d;">Clique nas palavras abaixo na ordem correta</span>
                 </div>
                 <div class="letter-options" id="sentence-words"></div>
-                
+
                 <div class="action-buttons">
                     <button class="action-button" onclick="checkSentence()">Verificar Frase</button>
                     <button class="action-button" onclick="nextSentence()">Nova Frase</button>
@@ -142,11 +177,11 @@
                     <h2 class="game-title">🔊 Quiz de Sons</h2>
                     <button class="back-button" onclick="showMenu()">Voltar</button>
                 </div>
-                
+
                 <div class="target-letter-display">Clique no botão para ouvir a palavra:</div>
                 <button class="sound-button" onclick="playCurrentWord()">🔊</button>
                 <div class="quiz-options" id="quiz-options"></div>
-                
+
                 <div class="action-buttons">
                     <button class="action-button" onclick="nextSoundQuiz()">Próxima Palavra</button>
                 </div>
@@ -159,10 +194,10 @@
                     <h2 class="game-title">🎵 Encontre a Rima</h2>
                     <button class="back-button" onclick="showMenu()">Voltar</button>
                 </div>
-                
+
                 <div class="rhyme-word-display" id="rhyme-word-display">GATO</div>
                 <div class="rhyme-options" id="rhyme-options"></div>
-                
+
                 <div class="action-buttons">
                     <button class="action-button" onclick="nextRhymeWord()">Próxima Palavra</button>
                 </div>
@@ -175,13 +210,13 @@
                     <h2 class="game-title">🔀 Ordene as Sílabas</h2>
                     <button class="back-button" onclick="showMenu()">Voltar</button>
                 </div>
-                
+
                 <div class="target-letter-display" id="syllable-target">Forme a palavra: CASA</div>
                 <div class="syllable-drop-zone" id="syllable-drop-zone">
                     <span style="color: #7f8c8d;">Clique nas sílabas na ordem correta</span>
                 </div>
                 <div class="letter-options" id="syllable-options"></div>
-                
+
                 <div class="action-buttons">
                     <button class="action-button" onclick="checkSyllableOrder()">Verificar</button>
                     <button class="action-button" onclick="nextSyllableWord()">Nova Palavra</button>
@@ -195,10 +230,10 @@
                     <h2 class="game-title">🔍 Caça Letras</h2>
                     <button class="back-button" onclick="showMenu()">Voltar</button>
                 </div>
-                
+
                 <div class="target-letter-display" id="target-letter-display">Encontre a letra: A</div>
                 <div class="alphabet-grid" id="alphabet-grid"></div>
-                
+
                 <div class="action-buttons">
                     <button class="action-button" onclick="nextLetterHunt()">Nova Letra</button>
                 </div>

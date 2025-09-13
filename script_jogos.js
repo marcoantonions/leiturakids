@@ -13,17 +13,46 @@
         let currentStreak = 0;
         let selectedMatchingItem = null;
 
-        // Dados dos jogos
+        // Dados dos jogos de animais
+        let gameStats = {
+            currentAnimalIndex: 0,
+            currentSyllableIndex: 0,
+            correctAnswers: 0,
+            totalAttempts: 0,
+            currentWordFormed: ""
+        };
+
+        // Dados do Jogo: Adivinhe o Animal
+        const animalData = [
+            { imagem: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=300&h=300&fit=crop", correta: "gato", opcoes: ["gato", "cachorro", "pato"] },
+            { imagem: "https://images.unsplash.com/photo-1583337130417-3346a1be7dee?w=300&h=300&fit=crop", correta: "cachorro", opcoes: ["gato", "cachorro", "coelho"] },
+            { imagem: "https://images.unsplash.com/photo-1557804506-669a67965ba0?w=300&h=300&fit=crop", correta: "papagaio", opcoes: ["papagaio", "leão", "peixe"] },
+            { imagem: "https://images.unsplash.com/photo-1546026423-cc4642628d2b?w=300&h=300&fit=crop", correta: "pato", opcoes: ["pato", "urso", "gato"] },
+            { imagem: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=300&h=300&fit=crop", correta: "coelho", opcoes: ["coelho", "rato", "porco"] }
+        ];
+
+        // Dados do Jogo: Monte as Sílabas
+        const syllableData = [
+            { imagem: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=300&h=300&fit=crop", silabas: ["ga", "to"], correta: "gato" },
+            { imagem: "https://images.unsplash.com/photo-1583337130417-3346a1be7dee?w=300&h=300&fit=crop", silabas: ["ca", "chor", "ro"], correta: "cachorro" },
+            { imagem: "https://images.unsplash.com/photo-1546026423-cc4642628d2b?w=300&h=300&fit=crop", silabas: ["pa", "to"], correta: "pato" },
+            { imagem: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=300&h=300&fit=crop", silabas: ["coe", "lho"], correta: "coelho" },
+            { imagem: "https://images.unsplash.com/photo-1557804506-669a67965ba0?w=300&h=300&fit=crop", silabas: ["pa", "pa", "gai", "o"], correta: "papagaio" }
+        ];
+
+        // Dados do jogo 1: Caça Palavras
         let wordSearchData = {
             words: ['SOL', 'LUA', 'CÉU', 'MAR'],
             grid: [],
             foundWords: []
         };
 
+        // Dados do jogo 2: Jogo da Memória
         let memoryCards = [];
         let flippedCards = [];
         let matchedPairs = 0;
 
+        // Dados do jogo 3: Associar Palavra e Emoji
         const matchingPairs = [
             { word: 'CASA', emoji: '🏠' },
             { word: 'GATO', emoji: '🐱' },
@@ -61,14 +90,8 @@
             document.getElementById('streak').textContent = currentStreak;
         }
 
-        function playSound(text) {
-            if ('speechSynthesis' in window) {
-                const utterance = new SpeechSynthesisUtterance(text);
-                utterance.lang = 'pt-BR';
-                utterance.rate = 0.7;
-                utterance.pitch = 1.2;
-                speechSynthesis.speak(utterance);
-            }
+        function shuffle(array) {
+            return array.sort(() => Math.random() - 0.5);
         }
 
         function showFeedback(elementId, message, type) {
@@ -86,6 +109,10 @@
             document.getElementById(gameId).classList.add('active');
             gamesPlayed++;
             document.getElementById('games-played').textContent = gamesPlayed;
+
+            // Inicializar jogos específicos
+            if (gameId === 'animal-quiz') loadAnimalQuestion();
+            if (gameId === 'syllable-game') loadSyllableQuestion();
         }
 
         function showMenu() {
@@ -93,6 +120,117 @@
                 container.classList.remove('active');
             });
             document.getElementById('games-menu').style.display = 'grid';
+        }
+
+        // ============================
+        //  JOGO: ADIVINHE O ANIMAL
+        // ============================
+        function loadAnimalQuestion() {
+            const question = animalData[gameStats.currentAnimalIndex];
+            document.getElementById('animal-image').src = question.imagem;
+            document.getElementById('game1-message').textContent = '';
+            document.getElementById('reset-btn-animal').style.display = 'none';
+
+            const container = document.getElementById('options-container');
+            container.innerHTML = '';
+
+            shuffle([...question.opcoes]).forEach(option => {
+                const button = document.createElement('button');
+                button.className = 'option-btn';
+                button.textContent = option;
+                button.onclick = () => checkAnimalAnswer(option, question.correta);
+                container.appendChild(button);
+            });
+        }
+
+        function checkAnimalAnswer(selected, correct) {
+            gameStats.totalAttempts++;
+            const messageEl = document.getElementById('game1-message');
+            const buttons = document.querySelectorAll('#options-container .option-btn');
+
+            if (selected === correct) {
+                gameStats.correctAnswers++;
+                updateGlobalScore(10);
+                messageEl.textContent = '🎉 Parabéns! Você acertou!';
+                messageEl.className = 'game-message success-message';
+                buttons.forEach(btn => btn.disabled = true);
+            } else {
+                messageEl.textContent = '❌ Ops! Tente novamente!';
+                messageEl.className = 'game-message error-message';
+                buttons.forEach(btn => btn.disabled = true);
+                document.getElementById('reset-btn-animal').style.display = 'block';
+            }
+        }
+
+        function resetAnimalQuestion() {
+            loadAnimalQuestion();
+            showNotification('Vamos tentar novamente! 💪');
+        }
+
+        function nextAnimalQuestion() {
+            gameStats.currentAnimalIndex = (gameStats.currentAnimalIndex + 1) % animalData.length;
+            loadAnimalQuestion();
+        }
+
+        // ============================
+        //  JOGO: MONTE AS SÍLABAS
+        // ============================
+        function loadSyllableQuestion() {
+            const question = syllableData[gameStats.currentSyllableIndex];
+            document.getElementById('syllable-image').src = question.imagem;
+            document.getElementById('game2-message').textContent = '';
+            document.getElementById('constructed-word').textContent = 'Clique nas sílabas para formar a palavra';
+            document.getElementById('reset-btn-syllable').style.display = 'none';
+            gameStats.currentWordFormed = '';
+
+            const container = document.getElementById('syllables-container');
+            container.innerHTML = '';
+
+            shuffle([...question.silabas]).forEach(syllable => {
+                const button = document.createElement('button');
+                button.className = 'syllable-btn';
+                button.textContent = syllable;
+                button.onclick = () => addSyllable(syllable, button);
+                container.appendChild(button);
+            });
+        }
+
+        function addSyllable(syllable, button) {
+            gameStats.currentWordFormed += syllable;
+            document.getElementById('constructed-word').textContent = gameStats.currentWordFormed;
+            button.disabled = true;
+
+            const question = syllableData[gameStats.currentSyllableIndex];
+            const messageEl = document.getElementById('game2-message');
+
+            if (gameStats.currentWordFormed.length >= question.correta.length) {
+                gameStats.totalAttempts++;
+
+                if (gameStats.currentWordFormed === question.correta) {
+                    gameStats.correctAnswers++;
+                    updateGlobalScore(10);
+                    messageEl.textContent = '🎉 Muito bem! Palavra formada!';
+                    messageEl.className = 'game-message success-message';
+                    document.querySelectorAll('#syllables-container .syllable-btn').forEach(btn => btn.disabled = true);
+                } else {
+                    messageEl.textContent = '❌ Palavra incorreta! Tente novamente!';
+                    messageEl.className = 'game-message error-message';
+                    document.querySelectorAll('#syllables-container .syllable-btn').forEach(btn => btn.disabled = true);
+                    document.getElementById('reset-btn-syllable').style.display = 'block';
+                }
+            }
+        }
+
+        function resetSyllableQuestion() {
+            gameStats.currentWordFormed = '';
+            loadSyllableQuestion();
+            showNotification('Vamos tentar novamente! 💪');
+        }
+
+        function nextSyllableQuestion() {
+            gameStats.currentSyllableIndex = (gameStats.currentSyllableIndex + 1) % syllableData.length;
+            gameStats.currentWordFormed = '';
+            loadSyllableQuestion();
         }
 
         // ============================
@@ -219,7 +357,6 @@
 
                     document.getElementById(`word-${word}`).classList.add('found');
                     updateGlobalScore(10);
-                    playSound(`Encontrou ${word}!`);
                     showFeedback('search-feedback', `🎉 Você encontrou: ${word}!`, 'success');
 
                     selectedCells = [];
@@ -248,7 +385,6 @@
             if (unFoundWords.length > 0) {
                 const hintWord = unFoundWords[0];
                 showFeedback('search-feedback', `💡 Procure pela palavra: ${hintWord}`, 'success');
-                playSound(`Procure pela palavra ${hintWord}`);
             }
         }
 
@@ -303,7 +439,6 @@
                 card2.element.classList.add('matched');
                 matchedPairs++;
                 updateGlobalScore(10);
-                playSound('Par encontrado!');
 
                 if (matchedPairs === 8) {
                     showFeedback('memory-feedback', '🏆 Parabéns! Você encontrou todos os pares!', 'success');
@@ -380,7 +515,6 @@
                     element.classList.add('matched');
 
                     updateGlobalScore(5);
-                    playSound('Correto!');
                     showFeedback('matching-feedback', '🎉 Combinação perfeita!', 'success');
 
                     const allMatched = document.querySelectorAll('.matching-item:not(.matched)').length === 0;
@@ -393,7 +527,6 @@
                 } else {
                     selectedMatchingItem.element.classList.remove('selected');
                     showFeedback('matching-feedback', '❌ Essa combinação não está correta. Tente novamente!', 'error');
-                    playSound('Tente novamente');
                 }
 
                 selectedMatchingItem = null;

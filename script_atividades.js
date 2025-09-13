@@ -53,7 +53,7 @@ let rhymeData = {
     currentIndex: 0,
     words: [
         { word: 'GATO', options: ['PATO', 'CASA', 'BOLA', 'FLOR'], correct: 'PATO' },
-        { word: 'CASA', options: ['MESA', 'GATO', 'SOL', 'ASA'], correct: 'MESA' },
+        { word: 'CASA', options: ['BONECA', 'GATO', 'SOL', 'ASA'], correct: 'ASA' },
         { word: 'FLOR', options: ['AMOR', 'GATO', 'BOLA', 'CASA'], correct: 'AMOR' },
         { word: 'BOLA', options: ['COLA', 'GATO', 'FLOR', 'MESA'], correct: 'COLA' },
         { word: 'CORAÇÃO', options: ['LIMÃO', 'GATO', 'CASA', 'BOLA'], correct: 'LIMÃO' }

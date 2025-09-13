@@ -163,6 +163,12 @@ nav a::after {
     background: rgb(111, 242, 254);
 }
 
+.side-nav-item img {
+    width: 30px;  
+    height: 30px;
+    object-fit: contain;
+    pointer-events: none; /* garante que o clique seja na div, não na img */
+}
 
 /* Estilos específicos para a página de aulas */
 .lessons-container {
@@ -512,10 +518,9 @@ nav a::after {
         height: 60px;
         padding: 0 10px;
         gap: 20px; /* espaço maior entre os botões */
-        overflow-x: auto; /* habilita rolagem horizontal */
         overflow-y: hidden;
         white-space: nowrap; /* impede quebra de linha */
-        justify-content: flex-start; /* começa alinhado à esquerda */
+        justify-content: center;
         box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
     }
 

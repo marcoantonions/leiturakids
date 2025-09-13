@@ -106,6 +106,13 @@ body {
     background: rgb(111, 242, 254);
 }
 
+.side-nav-item img {
+    width: 30px;  
+    height: 30px;
+    object-fit: contain;
+    pointer-events: none; /* garante que o clique seja na div, não na img */
+}
+
 /* Conteúdo Principal */
 .main-content {
     margin-left: 80px;
@@ -164,6 +171,14 @@ body {
     border-radius: 15px;
 }
 
+.score-item img {
+    width: 32px;   /* ajusta para o mesmo tamanho dos emojis */
+    height: 32px;
+    object-fit: contain;
+    vertical-align: middle;
+    margin-right: 5px;
+}
+
 /* Menu de Atividades */
 .activities-menu {
     display: grid;
@@ -210,9 +225,14 @@ body {
 
 .activity-icon {
     font-size: 4rem;
-    margin-bottom: 1rem;
     display: block;
 }
+
+.activity-icon img {
+    width: 80%;
+    height: 80%;
+}
+
 
 .activity-title {
     font-size: 1.5rem;
@@ -673,9 +693,10 @@ body {
         width: 100%;
         height: 60px;
         padding: 0 10px;
-        gap: 20px;
-        overflow-x: auto;
-        justify-content: flex-start;
+        gap: 20px; /* espaço maior entre os botões */
+        overflow-y: hidden;
+        white-space: nowrap; /* impede quebra de linha */
+        justify-content: center;
         box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
     }
 
@@ -694,4 +715,12 @@ body {
     .activities-title { font-size: 2.5rem; }
     .alphabet-grid { grid-template-columns: repeat(4, 1fr); }
     .quiz-options { grid-template-columns: 1fr; }
+}
+
+.score-item {
+    margin-bottom: 10px;
+}
+
+.score-item :last-child{
+    margin-bottom: 0;
 }

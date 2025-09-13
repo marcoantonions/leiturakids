@@ -164,6 +164,52 @@ nav a::after {
     background: rgb(111, 242, 254);
 }
 
+.btn {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.btn-blue {
+    background-color: #298ac1;
+    color: white;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.back-button {
+    background-color: #298ac1;
+    border: none;
+    border-radius: 50px;
+    padding: 0.8rem 2rem;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+}
+
+.back-button:hover {
+    transform: translateY(-2px);
+    transition: 0.3s ease-in-out;
+    box-shadow: 0 5px 15px rgb(41, 138, 193);
+}
+
+.btn-gray {
+    background-color: #bdc3c7;
+    color: black;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+}
 
 /* Estilos específicos para a página de perfil */
 .profile-container {
@@ -380,6 +426,7 @@ nav a::after {
     text-align: center;
     color: white;
     margin-bottom: 2rem;
+    margin-top: 1%;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
 }
 

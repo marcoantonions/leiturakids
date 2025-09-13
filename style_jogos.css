@@ -106,6 +106,14 @@ body {
     background: rgb(111, 242, 254);
 }
 
+.side-nav-item img {
+    width: 30px;
+    height: 30px;
+    object-fit: contain;
+    pointer-events: none;
+    /* garante que o clique seja na div, não na img */
+}
+
 /* Conteúdo Principal */
 .main-content {
     margin-left: 80px;
@@ -162,6 +170,14 @@ body {
     padding: 0.5rem 1rem;
     background: rgba(255, 255, 255, 0.3);
     border-radius: 15px;
+}
+
+.score-item img {
+    width: 32px;   /* ajusta para o mesmo tamanho dos emojis */
+    height: 32px;
+    object-fit: contain;
+    vertical-align: middle;
+    margin-right: 5px;
 }
 
 /* Menu de Jogos */
@@ -298,6 +314,142 @@ body {
 .back-button:hover {
     transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(231, 76, 60, 0.4);
+}
+
+/* Estilos para jogos de animais */
+.animal-image {
+    max-width: 200px;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 15px;
+    margin: 1rem auto;
+    display: block;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.game-question {
+    font-size: 1.5rem;
+    color: #2c3e50;
+    margin: 1.5rem 0;
+    text-align: center;
+}
+
+.options-container {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin: 2rem 0;
+}
+
+.option-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    border-radius: 15px;
+    padding: 1rem 2rem;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 120px;
+}
+
+.option-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.option-btn:disabled {
+    background: #bdc3c7;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.syllables-container {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin: 2rem 0;
+}
+
+.syllable-btn {
+    background: linear-gradient(135deg, #4ECDC4 0%, #44A08D 100%);
+    border: none;
+    border-radius: 15px;
+    padding: 1rem 1.5rem;
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 80px;
+}
+
+.syllable-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.syllable-btn:disabled {
+    background: #95a5a6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.constructed-word {
+    background: #f8f9fa;
+    border: 3px dashed #3498db;
+    border-radius: 15px;
+    padding: 1.5rem;
+    font-size: 2rem;
+    font-weight: bold;
+    color: #2c3e50;
+    text-align: center;
+    margin: 1.5rem 0;
+    min-height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.game-message {
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin: 1.5rem 0;
+    min-height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.success-message {
+    color: #27ae60;
+}
+
+.error-message {
+    color: #e74c3c;
+}
+
+.reset-btn {
+    background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+    border: none;
+    border-radius: 25px;
+    padding: 0.8rem 1.5rem;
+    font-size: 1rem;
+    font-weight: bold;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin: 1rem auto;
+    display: block;
+}
+
+.reset-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 
 /* Caça Palavras */
@@ -571,8 +723,11 @@ body {
         height: 60px;
         padding: 0 10px;
         gap: 20px;
-        overflow-x: auto;
-        justify-content: flex-start;
+        /* espaço maior entre os botões */
+        overflow-y: hidden;
+        white-space: nowrap;
+        /* impede quebra de linha */
+        justify-content: center;
         box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
     }
 
@@ -618,4 +773,27 @@ body {
         grid-template-columns: 1fr;
         gap: 1rem;
     }
+
+    .animal-image {
+        max-width: 150px;
+        height: 150px;
+    }
+
+    .option-btn,
+    .syllable-btn {
+        min-width: 200px;
+        margin-bottom: 0.5rem;
+    }
+
+    .constructed-word {
+        font-size: 1.5rem;
+    }
+}
+
+.score-item {
+    margin-bottom: 10px;
+}
+
+.score-item :last-child{
+    margin-bottom: 0;
 }

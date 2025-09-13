@@ -39,12 +39,21 @@
 
     <!-- Menu Vertical -->
     <nav class="side-nav">
-        <div class="side-nav-item" onclick="window.location.href='home.html'" title="Perfil">👤</div>
-        <div class="side-nav-item" onclick="window.location.href='aulas.html'" title="Aulas">📚</div>
-        <div class="side-nav-item" onclick="window.location.href='#.html'" title="Ideias">💡</div>
-        <div class="side-nav-item" onclick="window.location.href='atividades.html'" title="Atividades">✏️</div>
-        <div class="side-nav-item" onclick="window.location.href='#.html'" title="Listas">📋</div>
-        <div class="side-nav-item active" onclick="window.location.href='jogos.html'" title="Jogos">🎮</div>
+        <div class="side-nav-item" onclick="window.location.href='home.html'" title="Perfil">
+            <img src="img/casa.png" alt="Perfil">
+        </div>
+        <div class="side-nav-item" onclick="window.location.href='aulas.html'" title="Aulas">
+            <img src="img/livro.png" alt="Aulas">
+        </div>
+        <div class="side-nav-item" onclick="window.location.href='atividades.html'" title="Atividades">
+            <img src="img/lapis.png" alt="Atividades">
+        </div>
+        <div class="side-nav-item" onclick="window.location.href='#.html'" title="Listas">
+            <img src="img/mapa.png" alt="Listas">
+        </div>
+        <div class="side-nav-item active" onclick="window.location.href='jogos.html'" title="Jogos">
+            <img src="img/controle.png" alt="Jogos">
+        </div>
     </nav>
 
     <!-- Conteúdo Principal -->
@@ -58,10 +67,22 @@
 
             <!-- Pontuação Global -->
             <div class="global-score">
-                <div class="score-item">🏆 <span id="total-score">0</span> pontos</div>
-                <div class="score-item">⭐ <span id="total-correct">0</span> acertos</div>
-                <div class="score-item">🎮 <span id="games-played">0</span> jogos</div>
-                <div class="score-item">🔥 Sequência: <span id="streak">0</span></div>
+                <div class="score-item">
+                    <img src="img/trofeu.png" alt="Troféu" class="icon">
+                    <span id="total-score">0</span> pontos
+                </div>
+                <div class="score-item">
+                    <img src="img/estrela.png" alt="Estrela" class="icon">
+                    <span id="total-correct">0</span> acertos
+                </div>
+                <div class="score-item">
+                    <img src="img/controle.png" alt="Controle" class="icon">
+                    <span id="games-played">0</span> jogos
+                </div>
+                <div class="score-item">
+                    <img src="img/fogo.png" alt="Fogo" class="icon">
+                    Sequência: <span id="streak">0</span>
+                </div>
             </div>
 
             <!-- Menu de Jogos -->
@@ -69,38 +90,31 @@
                 <div class="game-card" onclick="showGame('word-search')">
                     <span class="game-icon">🔍</span>
                     <h3 class="game-title">Caça Palavras</h3>
-                    <p class="game-description">Encontre as palavras escondidas na grade! Clique e arraste para
-                        encontrar cada palavra.</p>
+                    <p class="game-description">Encontre as palavras escondidas na grade! Clique e arraste para encontrar cada palavra.</p>
                 </div>
 
                 <div class="game-card" onclick="showGame('memory-game')">
                     <span class="game-icon">🧠</span>
                     <h3 class="game-title">Jogo da Memória</h3>
-                    <p class="game-description">Encontre os pares iguais! Vire duas cartas por vez e tente combinar
-                        todas.</p>
+                    <p class="game-description">Encontre os pares iguais! Vire duas cartas por vez e tente combinar todas.</p>
                 </div>
 
                 <div class="game-card" onclick="showGame('word-match')">
                     <span class="game-icon">🔗</span>
                     <h3 class="game-title">Associar Palavra e Emoji</h3>
-                    <p class="game-description">Combine as palavras com seus emojis correspondentes. Teste sua
-                        associação!</p>
+                    <p class="game-description">Combine as palavras com seus emojis correspondentes. Teste sua associação!</p>
                 </div>
 
-                <div class="game-card coming-soon">
-                    <div class="coming-soon-badge">Em Breve!</div>
-                    <span class="game-icon">🎯</span>
-                    <h3 class="game-title">Tiro ao Alvo</h3>
-                    <p class="game-description">Mire e acerte as letras corretas para formar palavras. Precisão é tudo!
-                    </p>
+                <div class="game-card" onclick="showGame('animal-quiz')">
+                    <span class="game-icon">🐾</span>
+                    <h3 class="game-title">Adivinhe o Animal</h3>
+                    <p class="game-description">Veja a imagem e escolha o nome correto do animal. Teste seus conhecimentos!</p>
                 </div>
 
-                <div class="game-card coming-soon">
-                    <div class="coming-soon-badge">Em Breve!</div>
-                    <span class="game-icon">🏃</span>
-                    <h3 class="game-title">Corrida das Letras</h3>
-                    <p class="game-description">Corra coletando as letras na ordem certa para formar palavras
-                        rapidamente!</p>
+                <div class="game-card" onclick="showGame('syllable-game')">
+                    <span class="game-icon">🧩</span>
+                    <h3 class="game-title">Monte as Sílabas</h3>
+                    <p class="game-description">Forme palavras juntando as sílabas na ordem correta. Diversão garantida!</p>
                 </div>
 
                 <div class="game-card coming-soon">
@@ -118,13 +132,8 @@
                     <button class="back-button" onclick="showMenu()">Voltar</button>
                 </div>
 
-                <div class="words-to-find" id="words-to-find">
-                    <!-- Será preenchido via JavaScript -->
-                </div>
-
-                <div class="word-search-grid" id="word-search-grid">
-                    <!-- Será preenchido via JavaScript -->
-                </div>
+                <div class="words-to-find" id="words-to-find"></div>
+                <div class="word-search-grid" id="word-search-grid"></div>
 
                 <div class="action-buttons">
                     <button class="action-button" onclick="generateNewWordSearch()">Nova Grade</button>
@@ -141,9 +150,7 @@
                     <button class="back-button" onclick="showMenu()">Voltar</button>
                 </div>
 
-                <div class="memory-grid" id="memory-grid">
-                    <!-- Será preenchido via JavaScript -->
-                </div>
+                <div class="memory-grid" id="memory-grid"></div>
 
                 <div class="action-buttons">
                     <button class="action-button" onclick="resetMemoryGame()">Novo Jogo</button>
@@ -163,15 +170,11 @@
                 <div class="matching-container">
                     <div class="matching-column">
                         <h3 style="text-align: center; color: #2c3e50; margin-bottom: 1rem;">Palavras</h3>
-                        <div id="words-column">
-                            <!-- Será preenchido via JavaScript -->
-                        </div>
+                        <div id="words-column"></div>
                     </div>
                     <div class="matching-column">
                         <h3 style="text-align: center; color: #2c3e50; margin-bottom: 1rem;">Emojis</h3>
-                        <div id="emojis-column">
-                            <!-- Será preenchido via JavaScript -->
-                        </div>
+                        <div id="emojis-column"></div>
                     </div>
                 </div>
 
@@ -180,6 +183,49 @@
                 </div>
 
                 <div class="feedback" id="matching-feedback"></div>
+            </div>
+
+            <!-- Jogo 4: Adivinhe o Animal -->
+            <div class="game-container" id="animal-quiz">
+                <div class="game-header">
+                    <h2 class="game-title-header">🐾 Adivinhe o Animal</h2>
+                    <button class="back-button" onclick="showMenu()">Voltar</button>
+                </div>
+
+                <div class="game-question">Qual é o nome deste animal?</div>
+                <img class="animal-image" id="animal-image" src="" alt="Animal">
+                <div class="options-container" id="options-container"></div>
+                <div class="game-message" id="game1-message"></div>
+                <button class="reset-btn" onclick="resetAnimalQuestion()" style="display: none;" id="reset-btn-animal">
+                    🔄 Tentar Novamente
+                </button>
+
+                <div class="action-buttons">
+                    <button class="action-button" onclick="nextAnimalQuestion()">Próxima Pergunta</button>
+                </div>
+            </div>
+
+            <!-- Jogo 5: Monte as Sílabas -->
+            <div class="game-container" id="syllable-game">
+                <div class="game-header">
+                    <h2 class="game-title-header">🧩 Monte as Sílabas</h2>
+                    <button class="back-button" onclick="showMenu()">Voltar</button>
+                </div>
+
+                <div class="game-question">Monte a palavra com as sílabas!</div>
+                <img class="animal-image" id="syllable-image" src="" alt="Animal">
+                <div class="syllables-container" id="syllables-container"></div>
+                <div class="constructed-word" id="constructed-word">
+                    Clique nas sílabas para formar a palavra
+                </div>
+                <div class="game-message" id="game2-message"></div>
+                <button class="reset-btn" onclick="resetSyllableQuestion()" style="display: none;" id="reset-btn-syllable">
+                    🔄 Tentar Novamente
+                </button>
+
+                <div class="action-buttons">
+                    <button class="action-button" onclick="nextSyllableQuestion()">Próxima Pergunta</button>
+                </div>
             </div>
         </div>
     </main>

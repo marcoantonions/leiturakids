@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 
 <head>
-    <link rel = "icon" type = "image/png" href = "img/ancora.png">
+    <link rel="icon" type="image/png" href="img/ancora.png">
     <link rel="stylesheet" type="text/css" href="style_home.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
@@ -13,7 +13,7 @@
 </head>
 
 <body>
-    
+
     <!-- Notificação -->
     <div class="notification" id="notification">
         Bem-vindo ao Leitura Kids! 🎉
@@ -24,42 +24,37 @@
         <div class="nav-container">
             <a href="home.html" class="logo">LeituraKids</a>
             <nav>
-                <div class="mobile-menu-wrapper">
-                    <ul class="nav-menu">
-                        <li><a href="index.html" onclick="showNotification('Página inicial')">Início</a></li>
-                        <li><a href="index.html#about" onclick="showNotification('Sobre nós')">Sobre</a></li>
-                        <li><a href="conteudo.html" onclick="showNotification('Conteúdo educativo')">Tutorial</a></li>
-                        <li><a href="conteudo.html" onclick="showNotification('Conteúdo educativo')">Serviços</a></li>
-                        <li><a href="index.html#contact" onclick="showNotification('Entre em contato')">Contato</a></li>
-                    </ul>
+
+                <div class="dropdown">
+                    <button onclick="toggleMenu()" class="btn btn-gray">
+                        <span class="material-symbols-outlined">menu</span>
+                    </button>
+                    <div id="menuDropdown" class="dropdown-content">
+                        <a href="ajuda.html">Ajuda</a>
+                        <a href="index.html">Sair</a>
+                    </div>
                 </div>
             </nav>
-            <button class="hamburger" aria-label="Abrir menu">
-                <span class="material-symbols-outlined">menu</span>
-            </button>
         </div>
         </div>
     </header>
 
     <!-- Menu Vertical -->
     <nav class="side-nav">
-        <div class="side-nav-item active" onclick="window.location.href='home.html'" onclick="changeSection('perfil')" title="Perfil">
-            👤
+        <div class="side-nav-item active" onclick="window.location.href='home.html'" title="Perfil">
+            <img src="img/casa.png" alt="Perfil">
         </div>
-        <div class="side-nav-item" onclick="window.location.href='aulas.html'" onclick="changeSection('aulas')" title="Aulas">
-            📚
+        <div class="side-nav-item" onclick="window.location.href='aulas.html'" title="Aulas">
+            <img src="img/livro.png" alt="Aulas">
         </div>
-        <div class="side-nav-item" onclick="window.location.href='#.html'" onclick="changeSection('ideias')" title="Ideias">
-            💡
+        <div class="side-nav-item" onclick="window.location.href='atividades.html'" title="Atividades">
+            <img src="img/lapis.png" alt="Atividades">
         </div>
-        <div class="side-nav-item" onclick="window.location.href='atividades.html'" onclick="changeSection('atividades')" title="Atividades">
-            ✏️
+        <div class="side-nav-item" onclick="window.location.href='#.html'" title="Listas">
+            <img src="img/mapa.png" alt="Listas">
         </div>
-        <div class="side-nav-item" onclick="window.location.href='#.html'" onclick="changeSection('listas')" title="Listas">
-            📋
-        </div>
-        <div class="side-nav-item" onclick="window.location.href='jogos.html'" onclick="changeSection('jogos')" title="Jogos">
-            🎮
+        <div class="side-nav-item" onclick="window.location.href='jogos.html'" title="Jogos">
+            <img src="img/controle.png" alt="Jogos">
         </div>
     </nav>
 
@@ -76,22 +71,22 @@
             <!-- Estatísticas -->
             <div class="profile-stats">
                 <div class="stat-card">
-                    <div class="stat-icon">📚</div>
+                    <div class="stat-icon icon"><img src="img/livro.png" alt="Livros"/></div>
                     <div class="stat-number">12</div>
                     <div class="stat-label">Livros Lidos</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-icon">⭐</div>
+                    <div class="stat-icon icon"><img src="img/estrela.png" alt="Pontos"/></div>
                     <div class="stat-number">340</div>
                     <div class="stat-label">Pontos</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-icon">🔥</div>
+                    <div class="stat-icon icon"><img src="img/fogo.png" alt="Sequência"/></div>
                     <div class="stat-number">7</div>
                     <div class="stat-label">Dias Seguidos</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-icon">🏆</div>
+                    <div class="stat-icon icon"><img src="img/trofeu.png" alt="Conquistas"/></div>
                     <div class="stat-number">5</div>
                     <div class="stat-label">Conquistas</div>
                 </div>
@@ -147,7 +142,7 @@
                 <h2 class="activity-title">Atividades Recentes</h2>
 
                 <div class="activity-item">
-                    <div class="activity-icon">📖</div>
+                    <div class="activity-icon icon"><img src="img/livro-leitura.png" alt="Leitura"/></div>
                     <div class="activity-text">
                         <div>Leu a história "Os Três Porquinhos"</div>
                         <div class="activity-date">Hoje, 14:30</div>
@@ -155,7 +150,7 @@
                 </div>
 
                 <div class="activity-item">
-                    <div class="activity-icon">🧩</div>
+                    <div class="activity-icon icon"><img src="img/quebracabeca.png" alt="Quebra-Cabeça"/></div>
                     <div class="activity-text">
                         <div>Completou o Jogo da Memória - Nível 2</div>
                         <div class="activity-date">Hoje, 13:15</div>
@@ -163,7 +158,7 @@
                 </div>
 
                 <div class="activity-item">
-                    <div class="activity-icon">✍️</div>
+                    <div class="activity-icon icon"><img src="img/lapismao.png" alt="Escrita"/></div>
                     <div class="activity-text">
                         <div>Praticou escrita das letras M, N, O</div>
                         <div class="activity-date">Ontem, 16:20</div>
@@ -171,7 +166,7 @@
                 </div>
 
                 <div class="activity-item">
-                    <div class="activity-icon">🔤</div>
+                    <div class="activity-icon icon"><img src="img/abc.png" alt="Alfabeto"/></div>
                     <div class="activity-text">
                         <div>Aprendeu 5 novas letras do alfabeto</div>
                         <div class="activity-date">Ontem, 15:45</div>
@@ -180,184 +175,79 @@
             </div>
         </div>
         <!-- Conteúdo Conquistas -->
-    <main class="main-content">
-        <!-- Cabeçalho das Conquistas -->
-        <div class="conquistas-header">
-            <h1>🏆 Suas Conquistas 🏆</h1>
-            <p>Continue aprendendo e colete todas as medalhas especiais!</p>
-        </div>
+        <main class="main-content">
+            <!-- Cabeçalho das Conquistas -->
+            <div class="conquistas-header">
+                <h1>🏆 Suas Conquistas 🏆</h1>
+                <p>Continue aprendendo e colete todas as medalhas especiais!</p>
+            </div>
 
-        <!-- Estatísticas das Conquistas -->
-        <div class="conquistas-stats">
-            <div class="stat-card">
-                <div class="stat-icon">🏅</div>
-                <div class="stat-number">8</div>
-                <div class="stat-label">Conquistadas</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon">🔒</div>
-                <div class="stat-number">15</div>
-                <div class="stat-label">Bloqueadas</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon">⭐</div>
-                <div class="stat-number">34.8%</div>
-                <div class="stat-label">Completado</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon">🎯</div>
-                <div class="stat-number">3</div>
-                <div class="stat-label">Próximas</div>
-            </div>
-        </div>
-
-        <!-- Categorias de Conquistas -->
-        <div class="badges-categories">
-            <!-- Alfabeto -->
-            <div class="category-section">
-                <h2 class="category-title">
-                    🔤 Conquistas do Alfabeto
-                </h2>
-                <p class="category-description">Medalhas por aprender as letras e seus sons</p>
-                <div class="badges-grid">
-                    <div class="badge"
-                        onclick="showBadgeDetail('Primeira Letra', '🔤', 'Parabéns! Você aprendeu sua primeira letra!', 'Conquistado em 15/08/2024')">
-                        <div class="badge-icon">🔤</div>
-                        <div class="badge-name">Primeira Letra</div>
-                        <div class="badge-description">Aprenda sua primeira letra</div>
-                    </div>
-                    <div class="badge"
-                        onclick="showBadgeDetail('ABC Completo', '🌟', 'Incrível! Você conhece todo o alfabeto!', 'Conquistado em 20/08/2024')">
-                        <div class="badge-icon">🌟</div>
-                        <div class="badge-name">ABC Completo</div>
-                        <div class="badge-description">Aprenda todas as 26 letras</div>
-                    </div>
-                    <div class="badge locked">
-                        <div class="badge-icon">🎵</div>
-                        <div class="badge-name">Cantando o ABC</div>
-                        <div class="badge-description">Cante o alfabeto 5 vezes</div>
-                    </div>
-                    <div class="badge locked">
-                        <div class="badge-icon">🔍</div>
-                        <div class="badge-name">Detetive das Letras</div>
-                        <div class="badge-description">Encontre 50 letras escondidas</div>
-                    </div>
+            <!-- Estatísticas das Conquistas -->
+            <div class="conquistas-stats">
+                <div class="stat-card">
+                    <div class="stat-icon icon"><img src="img/medalha.png" alt="Conquistas"/></div>
+                    <div class="stat-number">8</div>
+                    <div class="stat-label">Conquistadas</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon icon"><img src="img/cadeado.png" alt="Bloqueado"/></div>
+                    <div class="stat-number">15</div>
+                    <div class="stat-label">Bloqueadas</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon icon"><img src="img/estrela.png" alt="Estrela"/></div>
+                    <div class="stat-number">34.8%</div>
+                    <div class="stat-label">Completado</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon icon"><img src="img/alvo.png" alt="Alvo"/></div>
+                    <div class="stat-number">3</div>
+                    <div class="stat-label">Próximas</div>
                 </div>
             </div>
 
-            <!-- Palavras -->
-            <div class="category-section">
-                <h2 class="category-title">
-                    📝 Conquistas de Palavras
-                </h2>
-                <p class="category-description">Medalhas por formar e escrever palavras</p>
-                <div class="badges-grid">
-                    <div class="badge"
-                        onclick="showBadgeDetail('Primeira Palavra', '📝', 'Você formou sua primeira palavra! Que emocionante!', 'Conquistado em 17/08/2024')">
-                        <div class="badge-icon">📝</div>
-                        <div class="badge-name">Primeira Palavra</div>
-                        <div class="badge-description">Forme sua primeira palavra</div>
+            <!-- Categorias de Conquistas -->
+            <div class="badges-categories">
+                <!-- Alfabeto -->
+                <div class="category-section">
+                    <h2 class="category-title">
+                        🔤 Conquistas Recentes
+                    </h2>
+                    <p class="category-description">Medalhas por aprender as letras e seus sons</p>
+                    <div class="badges-grid">
+                        <div class="badge new"
+                            onclick="showBadgeDetail('Colecionador', '📚', 'Você já conhece muitas palavras!', 'Conquistado hoje!')">
+                            <div class="badge-icon icon"><img src="img/livro.png" alt="Palavras"/></div>
+                            <div class="badge-name">Colecionador</div>
+                            <div class="badge-description">Aprenda 50 palavras</div>
+                        </div>
+                        <div class="badge"
+                            onclick="showBadgeDetail('Primeira Letra', '🔤', 'Parabéns! Você aprendeu sua primeira letra!', 'Conquistado em 15/08/2024')">
+                            <div class="badge-icon icon"><img src="img/abc.png" alt="Alfabeto"/></div>
+                            <div class="badge-name">Primeira Letra</div>
+                            <div class="badge-description">Aprenda sua primeira letra</div>
+                        </div>
+                        <div class="badges-grid">
+                            <div class="badge"
+                                onclick="showBadgeDetail('Semana Completa', '🔥', 'Você é muito dedicado! Parabéns!', 'Conquistado em 26/08/2024')">
+                                <div class="badge-icon icon"><img src="img/fogo.png" alt="Sequência"/></div>
+                                <div class="badge-name">Semana Completa</div>
+                                <div class="badge-description">7 dias seguidos praticando</div>
+                            </div>
+                        </div>
+                        <div class="badge"
+                            onclick="showBadgeDetail('Quebra-Cabeça', '🧩', 'Você é expert em quebra-cabeças!', 'Conquistado em 24/08/2024')">
+                            <div class="badge-icon icon"><img src="img/quebracabeca.png" alt="Quebra-Cabeça"/></div>
+                            <div class="badge-name">Quebra-Cabeça</div>
+                            <div class="badge-description">Complete 5 quebra-cabeças</div>
+                        </div>
                     </div>
-                    <div class="badge new"
-                        onclick="showBadgeDetail('Colecionador', '📚', 'Você já conhece muitas palavras!', 'Conquistado hoje!')">
-                        <div class="badge-icon">📚</div>
-                        <div class="badge-name">Colecionador</div>
-                        <div class="badge-description">Aprenda 50 palavras</div>
-                    </div>
-                    <div class="badge locked">
-                        <div class="badge-icon">🏗️</div>
-                        <div class="badge-name">Construtor</div>
-                        <div class="badge-description">Monte 100 palavras</div>
-                    </div>
-                    <div class="badge locked">
-                        <div class="badge-icon">🎪</div>
-                        <div class="badge-name">Malabarista</div>
-                        <div class="badge-description">Forme 3 palavras em 1 minuto</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Leitura -->
-            <div class="category-section">
-                <h2 class="category-title">
-                    📖 Conquistas de Leitura
-                </h2>
-                <p class="category-description">Medalhas por ler histórias e textos</p>
-                <div class="badges-grid">
-                    <div class="badge"
-                        onclick="showBadgeDetail('Primeira História', '📖', 'Você leu sua primeira história completa!', 'Conquistado em 22/08/2024')">
-                        <div class="badge-icon">📖</div>
-                        <div class="badge-name">Primeira História</div>
-                        <div class="badge-description">Leia sua primeira história</div>
-                    </div>
-                    <div class="badge"
-                        onclick="showBadgeDetail('Explorador', '🗺️', 'Você é um verdadeiro explorador de histórias!', 'Conquistado em 25/08/2024')">
-                        <div class="badge-icon">🗺️</div>
-                        <div class="badge-name">Explorador</div>
-                        <div class="badge-description">Leia 10 histórias diferentes</div>
-                    </div>
-                    <div class="badge locked">
-                        <div class="badge-icon">📚</div>
-                        <div class="badge-name">Bibliotecário</div>
-                        <div class="badge-description">Leia 25 histórias</div>
-                    </div>
-                    <div class="badge locked">
-                        <div class="badge-icon">⚡</div>
-                        <div class="badge-name">Leitor Veloz</div>
-                        <div class="badge-description">Leia uma história em 3 minutos</div>
+                    <div class="button-container">
+                        <button class="back-button" onclick="location.href='conquistas.html'">Ver Todas</button>
                     </div>
                 </div>
             </div>
-
-            <!-- Jogos -->
-            <div class="category-section">
-                <h2 class="category-title">
-                    🎮 Conquistas dos Jogos
-                </h2>
-                <p class="category-description">Medalhas por jogar e se divertir aprendendo</p>
-                <div class="badges-grid">
-                    <div class="badge"
-                        onclick="showBadgeDetail('Memória Excelente', '🧩', 'Sua memória é incrível!', 'Conquistado em 21/08/2024')">
-                        <div class="badge-icon">🧩</div>
-                        <div class="badge-name">Memória Excelente</div>
-                        <div class="badge-description">10 acertos seguidos na memória</div>
-                    </div>
-                    <div class="badge"
-                        onclick="showBadgeDetail('Quebra-Cabeça', '🧩', 'Você é expert em quebra-cabeças!', 'Conquistado em 24/08/2024')">
-                        <div class="badge-icon">🧩</div>
-                        <div class="badge-name">Quebra-Cabeça</div>
-                        <div class="badge-description">Complete 5 quebra-cabeças</div>
-                    </div>
-                    <div class="badge locked">
-                        <div class="badge-icon">🏃</div>
-                        <div class="badge-name">Corredor</div>
-                        <div class="badge-description">Complete o jogo de corrida</div>
-                    </div>
-                    <div class="badge locked">
-                        <div class="badge-icon">🎯</div>
-                        <div class="badge-name">Mira Certeira</div>
-                        <div class="badge-description">Acerte 20 alvos seguidos</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Especiais -->
-            <div class="category-section">
-                <h2 class="category-title">
-                    ⭐ Conquistas Especiais
-                </h2>
-                <p class="category-description">Medalhas raras por dedicação e esforço</p>
-                <div class="badges-grid">
-                    <div class="badge"
-                        onclick="showBadgeDetail('Semana Completa', '🔥', 'Você é muito dedicado! Parabéns!', 'Conquistado em 26/08/2024')">
-                        <div class="badge-icon">🔥</div>
-                        <div class="badge-name">Semana Completa</div>
-                        <div class="badge-description">7 dias seguidos praticando</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </main>
+        </main>
 </body>
 
 </html>
