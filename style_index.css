@@ -26,6 +26,63 @@ body {
     z-index: 1000;
 }
 
+/* Container do dropdown */
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+/* Conteúdo do menu */
+.dropdown-content {
+    display: none;
+    position: absolute;
+    right: 0;
+    margin-top: 0.5rem;
+    background-color: #1a2a32;
+    min-width: 160px;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+    overflow: hidden;
+    z-index: 1;
+}
+
+/* Itens do menu */
+.dropdown-content a {
+    color: white;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    font-weight: bold;
+}
+
+.dropdown-content a:hover {
+    transition: 0.3s ease-in-out;
+    transform: translateY(-2px);
+    background-color: #2c3e50;
+}
+
+/* Mostrar menu quando ativo */
+.show {
+    display: block;
+}
+
+/* Ícone alinhado */
+.material-symbols-outlined {
+    font-size: 20px;
+    vertical-align: middle;
+
+}
+
+.icon img {
+    width: 55px;
+    height: 55px;
+    object-fit: contain;
+    /* mantém proporção */
+    display: block;
+    margin: 0 auto 10px auto;
+    /* centraliza e dá espaçamento embaixo */
+}
+
 .nav-container {
     max-width: 1200px;
     max-height: 30px;
@@ -709,7 +766,7 @@ nav a::after {
         display: none;
     }
 
-    .nav-menu a{
+    .nav-menu a {
         margin-left: 10%;
     }
 

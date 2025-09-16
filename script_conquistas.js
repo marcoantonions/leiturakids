@@ -31,6 +31,10 @@ function changeSection(section) {
     showNotification(sectionNames[section] || 'Nova seção');
 }
 
+function toggleMenu() {
+    document.getElementById("menuDropdown").classList.toggle("show");
+}
+
 // Animação de entrada
 window.addEventListener('load', () => {
     setTimeout(() => {

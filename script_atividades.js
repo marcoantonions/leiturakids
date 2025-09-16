@@ -510,7 +510,7 @@ function nextSyllableWord() {
 }
 
 // =====================================================
-// JOGO 6: CAÇA LETRAS (NOVA ATIVIDADE)
+// JOGO 6: CAÇA LETRAS
 // =====================================================
 
 function initLetterHunt() {
@@ -561,6 +561,10 @@ function startLetterHuntTimer() {
             addPoints(0, false);
         }
     }, 1000);
+}
+
+function toggleMenu() {
+    document.getElementById("menuDropdown").classList.toggle("show");
 }
 
 function checkLetterHunt(selectedLetter, button) {

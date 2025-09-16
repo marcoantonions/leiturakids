@@ -35,7 +35,7 @@ function changeSection(section, event) {
         'aulas': 'Aulas 📚',
         'ideias': 'Novas Ideias 💡',
         'atividades': 'Atividades ✏️',
-        'listas': 'Minhas Listas 📋',
+        'listas': 'Mapa 🏴‍☠️',
         'jogos': 'Jogos Divertidos 🎮',
     };
 

@@ -24,6 +24,10 @@ function changeSection(section, event) {
     showNotification(sectionNames[section] || 'Nova seção');
 }
 
+function toggleMenu() {
+    document.getElementById("menuDropdown").classList.toggle("show");
+}
+
 // ==========================
 // Menu responsivo (hamburger)
 // ==========================
@@ -237,6 +241,9 @@ function nextLesson() {
     if (currentLesson < totalLessons - 1) {
         showLesson(currentLesson + 1);
         showNotification('Parabéns! Vamos para a próxima lição! 🎉');
+    } else if (currentLesson = totalLessons) {
+        showNotification('Parabéns! Você concluiu a atividade! 🎉');
+        window.open('aulas.html', '_self');
     }
 }
 
@@ -252,7 +259,7 @@ function updateNavigationButtons() {
     const nextBtn = document.getElementById('next-btn');
 
     prevBtn.disabled = currentLesson === 0;
-    nextBtn.disabled = currentLesson === totalLessons - 1;
+    // nextBtn.disabled = currentLesson === totalLessons - 1;
 }
 
 // ==========================

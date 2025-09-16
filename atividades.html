@@ -16,19 +16,20 @@
     <!-- Header -->
     <header class="header">
         <div class="nav-container">
-            <a href="aulas.html" class="logo">LeituraKids</a>
+            <a href="home.html" class="logo">LeituraKids</a>
             <nav>
-                <ul class="nav-menu">
-                    <li><a href="index.html">Início</a></li>
-                    <li><a href="index.html#about">Sobre</a></li>
-                    <li><a href="conteudo.html">Tutorial</a></li>
-                    <li><a href="conteudo.html">Serviços</a></li>
-                    <li><a href="index.html#contact">Contato</a></li>
-                </ul>
+
+                <div class="dropdown">
+                    <button onclick="toggleMenu()" class="btn btn-gray">
+                        <span class="material-symbols-outlined">menu</span>
+                    </button>
+                    <div id="menuDropdown" class="dropdown-content">
+                        <a href="index.html#contact">Ajuda</a>
+                        <a href="index.html">Sair</a>
+                    </div>
+                </div>
             </nav>
-            <button class="hamburger" aria-label="Abrir menu">
-                <span class="material-symbols-outlined">menu</span>
-            </button>
+        </div>
         </div>
     </header>
 
@@ -43,8 +44,8 @@
         <div class="side-nav-item active" onclick="window.location.href='atividades.html'" title="Atividades">
             <img src="img/lapis.png" alt="Atividades">
         </div>
-        <div class="side-nav-item" onclick="window.location.href='#.html'" title="Listas">
-            <img src="img/mapa.png" alt="Listas">
+        <div class="side-nav-item" onclick="window.location.href='mapa.html'" title="Mapa">
+            <img src="img/mapa.png" alt="Mapa">
         </div>
         <div class="side-nav-item" onclick="window.location.href='jogos.html'" title="Jogos">
             <img src="img/controle.png" alt="Jogos">
@@ -110,14 +111,14 @@
                 </div>
 
                 <div class="activity-card" onclick="showGame('rhyme-game')">
-                    <span class="activity-icon">🎵</span>
+                    <div class="icon"><img src="img/som.png" alt="Encontre a Rima"></div>
                     <h3 class="activity-title">Encontre a Rima</h3>
                     <p class="activity-description">Identifique qual palavra rima com a palavra apresentada. Aprenda
                         sobre sonoridade e terminações similares!</p>
                 </div>
 
                 <div class="activity-card" onclick="showGame('syllable-order')">
-                    <span class="activity-icon">🔀</span>
+                    <div class="icon"><img src="img/aleatorio.png" alt="Ordene as Sílabas"></div>
                     <h3 class="activity-title">Ordene as Sílabas</h3>
                     <p class="activity-description">Clique nas sílabas na sequência correta para formar palavras.
                         Pratique divisão silábica de forma divertida!</p>
@@ -241,6 +242,9 @@
             </div>
         </div>
     </main>
+    <a href="#" class="ancora">
+        <span class="material-symbols-outlined">anchor</span>
+    </a>
 </body>
 
 </html>

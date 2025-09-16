@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <link rel="icon" type="image/png" href="img/ancora.png">
+    <link rel="stylesheet" type="text/css" href="style_mapa.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="script_mapa.js"></script>
+    <title>Leitura Kids</title>
+</head>
+
+<body>
+
+    <!-- Notificação -->
+    <div class="notification" id="notification">
+        Mapa do Tesouro, Avante Marujo!
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="nav-container">
+            <a href="home.html" class="logo">LeituraKids</a>
+            <nav>
+
+                <div class="dropdown">
+                    <button onclick="toggleMenu()" class="btn btn-gray">
+                        <span class="material-symbols-outlined">menu</span>
+                    </button>
+                    <div id="menuDropdown" class="dropdown-content">
+                        <a href="index.html#contact">Ajuda</a>
+                        <a href="index.html">Sair</a>
+                    </div>
+                </div>
+            </nav>
+        </div>
+        </div>
+    </header>
+
+    <!-- Menu Vertical -->
+    <nav class="side-nav">
+        <div class="side-nav-item" onclick="window.location.href='home.html'" title="Perfil">
+            <img src="img/casa.png" alt="Perfil">
+        </div>
+        <div class="side-nav-item" onclick="window.location.href='aulas.html'" title="Aulas">
+            <img src="img/livro.png" alt="Aulas">
+        </div>
+        <div class="side-nav-item" onclick="window.location.href='atividades.html'" title="Atividades">
+            <img src="img/lapis.png" alt="Atividades">
+        </div>
+        <div class="side-nav-item active" onclick="window.location.href='#.html'" title="Mapa">
+            <img src="img/mapa.png" alt="Mapa">
+        </div>
+        <div class="side-nav-item" onclick="window.location.href='jogos.html'" title="Jogos">
+            <img src="img/controle.png" alt="Jogos">
+        </div>
+    </nav>
+
+    <!-- Elementos decorativos -->
+    <div class="decorative-elements">
+        <div class="compass">🧭</div>
+        <div class="treasure-marks mark-1">✗</div>
+        <div class="treasure-marks mark-2">✗</div>
+        <div class="treasure-marks mark-3">✗</div>
+        <div class="treasure-marks mark-4">✗</div>
+    </div>
+
+    <!-- Conteúdo Principal -->
+    <main class="main-content">
+        <div class="map-header">
+            <h1 class="map-title">
+                <div class="icon"><img src="img/mapa.png" alt="Mapa do Tesouro" /></div>
+                Mapa da Aventura Pirata
+            </h1>
+            <p class="map-subtitle">Navegue pelos mares do conhecimento e colete todos os tesouros!</p>
+        </div>
+
+        <div class="adventure-map">
+
+            <!-- ===========================================
+                 NOVOS ELEMENTOS: Rio, Lagos e Vegetação
+                 Adicionados para criar ambiente natural
+                 =========================================== -->
+
+            <!-- Rio serpenteante de fundo -->
+            <svg class="river" viewBox="0 0 800 1000">
+                <path class="river-path" d="M -50 200 Q 150 180 300 220 Q 450 260 600 200 Q 750 140 850 180 
+                     Q 700 240 550 280 Q 400 320 250 360 Q 100 400 -50 380
+                     Q 150 420 300 460 Q 450 500 600 540 Q 750 580 850 620
+                     Q 700 660 550 700 Q 400 740 250 780 Q 100 820 -50 800" />
+            </svg>
+
+            <!-- Lagos -->
+            <div class="lake lake-1"></div>
+            <div class="lake lake-2"></div>
+
+            <!-- Vegetação - Coqueiros -->
+            <div class="vegetation palm-tree palm-1">🌴</div>
+            <div class="vegetation palm-tree palm-2">🌴</div>
+            <div class="vegetation palm-tree palm-3">🌴</div>
+            <div class="vegetation palm-tree palm-4">🌴</div>
+            <div class="vegetation palm-tree palm-5">🌴</div>
+
+            <!-- Vegetação - Árvores -->
+            <div class="vegetation tree tree-1">🌳</div>
+            <div class="vegetation tree tree-2">🌳</div>
+            <div class="vegetation tree tree-3">🌳</div>
+            <div class="vegetation tree tree-4">🌳</div>
+            <div class="vegetation tree tree-5">🌳</div>
+            <div class="vegetation tree tree-6">🌳</div>
+
+            <!-- Vegetação - Arbustos -->
+            <div class="vegetation bush bush-1">🌿</div>
+            <div class="vegetation bush bush-2">🌿</div>
+            <div class="vegetation bush bush-3">🌿</div>
+            <div class="vegetation bush bush-4">🌿</div>
+
+            <!-- SVG Path Tracejado Vermelho (mantido por cima da vegetação) -->
+            <svg class="treasure-path" viewBox="0 0 800 1000">
+                <path class="path-stroke"
+                    d="M 400 70 Q 200 150 200 220 Q 200 290 600 370 Q 160 450 160 520 Q 160 590 640 670 Q 280 750 280 820 Q 280 890 400 970" />
+            </svg>
+
+            <!-- Nível 1 - Porto Inicial -->
+            <div class="map-node node-1">
+                <div class="node-content">
+                    <a href="home.html">
+                        <div class="node-circle node-completed" alt="Crie seu Perfil">
+                            <div class="icon"><img src="img/navio.png" alt="Crie seu Perfil"></div>
+                        </div>
+                    </a>
+                    <div class="node-label">Porto Inicial</div>
+                    <div class="node-progress">Completo!</div>
+                </div>
+            </div>
+
+            <!-- Nível 2 - Ilha das Letras -->
+            <div class="map-node node-2">
+                <div class="node-content">
+                    <a href="aulas.html">
+                        <div class="node-circle node-completed" alt="Aprendendo as Letras">
+                            <div class="icon"><img src="img/ilha.png" alt="Aprendendo as Letras"></div>
+                        </div>
+                    </a>
+                    <div class="node-label">Ilha das Letras</div>
+                    <div class="node-progress">Completo!</div>
+                </div>
+            </div>
+
+            <!-- Nível 3 - Baía dos Piratas -->
+            <div class="map-node node-3">
+                <div class="node-content">
+                    <a href="atividades.html">
+                        <div class="node-circle node-completed" alt="Primeiras Atividades">
+                            <div class="icon"><img src="img/pirata-bandeira.png" alt="Primeiras Atividades"></div>
+                        </div>
+                    </a>
+                    <div class="node-label">Baía dos Piratas</div>
+                </div>
+            </div>
+
+            <!-- Nível 4 - Caverna do Tesouro -->
+            <div class="map-node node-4">
+                <div class="node-content">
+                    <a href="jogos.html">
+                        <div class="node-circle node-current" alt="Hora da Jogatina">
+                            <div class="icon"><img src="img/bau.png" alt="Hora da Jogatina"></div>
+                        </div>
+                    </a>
+                    <div class="node-label">Caverna do Tesouro</div>
+                    <div class="node-progress0">3/6 Jogos Finalizados</div>
+                </div>
+            </div>
+
+            <!-- Nível 5 - Navio Fantasma -->
+            <div class="map-node node-5">
+                <div class="node-content">
+                    <div class="node-circle node-locked">
+                        🔒
+                    </div>
+                    <div class="node-label">Navio Fantasma</div>
+                </div>
+            </div>
+
+            <!-- Nível 6 - Ilha do Capitão -->
+            <div class="map-node node-6">
+                <div class="node-content">
+                    <div class="node-circle node-locked">
+                        🔒
+                    </div>
+                    <div class="node-label">Ilha do Capitão</div>
+                </div>
+            </div>
+
+            <!-- Boss Final - Reino dos Leitores -->
+            <div class="map-node node-7">
+                <div class="node-content">
+                    <div class="node-circle node-locked" style="width: 120px; height: 120px; font-size: 3rem;">
+                        <div class="icon"><img src="img/coroa.png" alt="Reino dos Leitores"></div>
+                    </div>
+                    <div class="node-label">Reino dos Leitores</div>
+                </div>
+            </div>
+            <!-- Papagaio -->
+            <div class="papagaio">
+                <img src="img/papagaio.png" alt="papagaio">
+            </div>
+            <!-- Pirata -->
+            <div class="pirata">
+                <img src="img/pirata.png" alt="pirata">
+            </div>
+
+        </div>
+
+        <!-- Elementos animados -->
+        <div class="pirate-ship">🚢</div>
+        <div class="pirate-flag">🏴‍☠️</div>
+        <div class="treasure-chest">💎</div>
+    </main>
+    <a href="#" class="ancora">
+        <span class="material-symbols-outlined">anchor</span>
+    </a>
+</body>
+
+</html>

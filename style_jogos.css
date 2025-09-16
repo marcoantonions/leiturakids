@@ -21,6 +21,109 @@ body {
     z-index: 1000;
 }
 
+/* Container do dropdown */
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+/* Conteúdo do menu */
+.dropdown-content {
+    display: none;
+    position: absolute;
+    right: 0;
+    margin-top: 0.5rem;
+    background-color: #1a2a32;
+    min-width: 160px;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+    overflow: hidden;
+    z-index: 1;
+}
+
+/* Itens do menu */
+.dropdown-content a {
+    color: white;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    font-weight: bold;
+}
+
+.dropdown-content a:hover {
+    transition: 0.3s ease-in-out;
+    transform: translateY(-2px);
+    background-color: #2c3e50;
+}
+
+/* Mostrar menu quando ativo */
+.show {
+    display: block;
+}
+
+/* Ícone alinhado */
+.material-symbols-outlined {
+    font-size: 20px;
+    vertical-align: middle;
+
+}
+
+.btn-gray {
+    background-color: rgb(67, 174, 184);
+    color: white;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.btn-gray:hover {
+    transition: 0.3s ease-in-out;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px #2c3e50;
+}
+
+.ancora {
+    position: fixed;
+    width: 55px;
+    align-items: center;
+    bottom: 20px;
+    right: 20px;
+    background-color: transparent;
+    color: white;
+    border: 3px solid #298ac1;
+    border-radius: 50%;
+    padding: 12px;
+    text-decoration: none;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    z-index: 9999;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.ancora:hover {
+    transform: scale(1.1);
+}
+
+.icon img {
+    width: 55px;
+    height: 55px;
+    object-fit: contain;
+    /* mantém proporção */
+    display: block;
+    margin: 0 auto 10px auto;
+    /* centraliza e dá espaçamento embaixo */
+}
+
+.icon0 img {
+    width: 30px;
+    object-fit: contain;
+    /* mantém proporção */
+    display: block;
+    margin: 0 auto 0 auto;
+    /* centraliza e dá espaçamento embaixo */
+}
+
 .nav-container {
     max-width: 1200px;
     margin: 0 auto;
@@ -173,7 +276,8 @@ body {
 }
 
 .score-item img {
-    width: 32px;   /* ajusta para o mesmo tamanho dos emojis */
+    width: 32px;
+    /* ajusta para o mesmo tamanho dos emojis */
     height: 32px;
     object-fit: contain;
     vertical-align: middle;
@@ -678,10 +782,11 @@ body {
     border-radius: 50px;
     transform: translateX(400px);
     transition: transform 0.3s ease;
-    z-index: 1001;
+    z-index: 1;
 }
 
 .notification.show {
+    z-index: 1;
     transform: translateX(0);
 }
 
@@ -794,6 +899,6 @@ body {
     margin-bottom: 10px;
 }
 
-.score-item :last-child{
+.score-item :last-child {
     margin-bottom: 0;
 }

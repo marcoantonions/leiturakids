@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 
 <head>
-    <link rel = "icon" type = "image/png" href = "img/ancora.png">
+    <link rel="icon" type="image/png" href="img/ancora.png">
     <link rel="stylesheet" type="text/css" href="style_aulas.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
@@ -21,21 +21,20 @@
     <!-- Header -->
     <header class="header">
         <div class="nav-container">
-            <a href="aulas.html" class="logo">LeituraKids</a>
+            <a href="home.html" class="logo">LeituraKids</a>
             <nav>
-                <div class="mobile-menu-wrapper">
-                    <ul class="nav-menu">
-                        <li><a href="index.html" onclick="showNotification('Página inicial')">Início</a></li>
-                        <li><a href="index.html#about" onclick="showNotification('Sobre nós')">Sobre</a></li>
-                        <li><a href="conteudo.html" onclick="showNotification('Conteúdo educativo')">Tutorial</a></li>
-                        <li><a href="conteudo.html" onclick="showNotification('Conteúdo educativo')">Serviços</a></li>
-                        <li><a href="index.html#contact" onclick="showNotification('Entre em contato')">Contato</a></li>
-                    </ul>
+
+                <div class="dropdown">
+                    <button onclick="toggleMenu()" class="btn btn-gray">
+                        <span class="material-symbols-outlined">menu</span>
+                    </button>
+                    <div id="menuDropdown" class="dropdown-content">
+                        <a href="index.html#contact">Ajuda</a>
+                        <a href="index.html">Sair</a>
+                    </div>
                 </div>
             </nav>
-            <button class="hamburger" aria-label="Abrir menu">
-                <span class="material-symbols-outlined">menu</span>
-            </button>
+        </div>
         </div>
     </header>
 
@@ -50,8 +49,8 @@
         <div class="side-nav-item" onclick="window.location.href='atividades.html'" title="Atividades">
             <img src="img/lapis.png" alt="Atividades">
         </div>
-        <div class="side-nav-item" onclick="window.location.href='#.html'" title="Listas">
-            <img src="img/mapa.png" alt="Listas">
+        <div class="side-nav-item" onclick="window.location.href='mapa.html'" title="Mapa">
+            <img src="img/mapa.png" alt="Mapa">
         </div>
         <div class="side-nav-item" onclick="window.location.href='jogos.html'" title="Jogos">
             <img src="img/controle.png" alt="Jogos">
@@ -60,6 +59,9 @@
 
     <!-- Conteúdo Principal -->
     <main class="main-content">
+        <a href="#" class="ancora">
+            <span class="material-symbols-outlined">anchor</span>
+        </a>
         <div class="lessons-container">
             <!-- Cabeçalho das Aulas -->
             <div class="lessons-header">
@@ -70,22 +72,24 @@
             <!-- Indicador de Progresso -->
             <div class="progress-indicator">
                 <div class="progress-step active" onclick="showLesson(0)" title="Letras">
-                    🔤
+                    <div class="icon"><img src="img/abc.png" alt="Letras" /></div>
                 </div>
                 <div class="progress-step" onclick="showLesson(1)" title="Sílabas">
-                    🔀
+                    <div class="icon"><img src="img/aleatorio.png" alt="Sílabas" /></div>
                 </div>
                 <div class="progress-step" onclick="showLesson(2)" title="Palavras">
-                    📝
+                    <div class="icon"><img src="img/prancheta.png" alt="Palavras" /></div>
                 </div>
                 <div class="progress-step" onclick="showLesson(3)" title="Frases">
-                    📖
+                    <div class="icon"><img src="img/livro-leitura.png" alt="Frases" /></div>
                 </div>
             </div>
 
             <!-- Lição 1: Letras -->
             <div class="lesson-section active" id="lesson-0">
-                <h2 class="section-title">🔤 Aprendendo as Letras</h2>
+                <h2 class="section-title">
+                    <div class="icon"><img src="img/abc.png" alt="Letras" /></div> Aprendendo as Letras
+                </h2>
                 <div class="lesson-instructions">
                     <h3>Como usar:</h3>
                     <p>Clique em cada letra para ouvir seu som. Repita junto com a criança e pratique o reconhecimento
@@ -98,7 +102,9 @@
 
             <!-- Lição 2: Sílabas -->
             <div class="lesson-section" id="lesson-1">
-                <h2 class="section-title">🔀 Formando Sílabas</h2>
+                <h2 class="section-title">
+                    <div class="icon"><img src="img/aleatorio.png" alt="Sílabas" /></div> Formando Sílabas
+                </h2>
                 <div class="lesson-instructions">
                     <h3>Como usar:</h3>
                     <p>Clique nas sílabas para ouvir como elas soam. Pratique a junção de consonantes e vogais para
@@ -111,7 +117,9 @@
 
             <!-- Lição 3: Palavras -->
             <div class="lesson-section" id="lesson-2">
-                <h2 class="section-title">📝 Primeiras Palavras</h2>
+                <h2 class="section-title">
+                    <div class="icon"><img src="img/prancheta.png" alt="Palavras" /></div> Primeiras Palavras
+                </h2>
                 <div class="lesson-instructions">
                     <h3>Como usar:</h3>
                     <p>Clique nas palavras para ouvir sua pronúncia. Comece com palavras simples e familiares para a
@@ -124,7 +132,9 @@
 
             <!-- Lição 4: Frases -->
             <div class="lesson-section" id="lesson-3">
-                <h2 class="section-title">📖 Construindo Frases</h2>
+                <h2 class="section-title">
+                    <div class="icon"><img src="img/livro-leitura.png" alt="Frases" /></div> Construindo Frases
+                </h2>
                 <div class="lesson-instructions">
                     <h3>Como usar:</h3>
                     <p>Clique nas frases para ouvir sua leitura completa. Pratique a leitura fluente e a compreensão de
@@ -138,10 +148,10 @@
             <!-- Botões de Navegação -->
             <div class="navigation-buttons">
                 <button class="nav-button" id="prev-btn" onclick="previousLesson()">
-                    ⬅️ Anterior
+                    <div class="icon"><img src="img/anterior.png" alt="Anterior" /></div> Anterior
                 </button>
                 <button class="nav-button" id="next-btn" onclick="nextLesson()">
-                    Próximo ➡️
+                    Próximo <div class="icon"><img src="img/proximo.png" alt="Próximo" /></div>
                 </button>
             </div>
         </div>
@@ -151,6 +161,9 @@
             🔊 Reproduzindo áudio...
         </div>
     </main>
+    <a href="#" class="ancora">
+        <span class="material-symbols-outlined">anchor</span>
+    </a>
 </body>
 
 </html>

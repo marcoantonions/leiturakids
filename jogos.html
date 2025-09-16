@@ -21,19 +21,20 @@
     <!-- Header -->
     <header class="header">
         <div class="nav-container">
-            <a href="jogos.html" class="logo">LeituraKids</a>
+            <a href="home.html" class="logo">LeituraKids</a>
             <nav>
-                <ul class="nav-menu">
-                    <li><a href="index.html">Início</a></li>
-                    <li><a href="index.html#about">Sobre</a></li>
-                    <li><a href="conteudo.html">Tutorial</a></li>
-                    <li><a href="conteudo.html">Serviços</a></li>
-                    <li><a href="index.html#contact">Contato</a></li>
-                </ul>
+
+                <div class="dropdown">
+                    <button onclick="toggleMenu()" class="btn btn-gray">
+                        <span class="material-symbols-outlined">menu</span>
+                    </button>
+                    <div id="menuDropdown" class="dropdown-content">
+                        <a href="index.html#contact">Ajuda</a>
+                        <a href="index.html">Sair</a>
+                    </div>
+                </div>
             </nav>
-            <button class="hamburger" aria-label="Abrir menu">
-                <span class="material-symbols-outlined">menu</span>
-            </button>
+        </div>
         </div>
     </header>
 
@@ -48,8 +49,8 @@
         <div class="side-nav-item" onclick="window.location.href='atividades.html'" title="Atividades">
             <img src="img/lapis.png" alt="Atividades">
         </div>
-        <div class="side-nav-item" onclick="window.location.href='#.html'" title="Listas">
-            <img src="img/mapa.png" alt="Listas">
+        <div class="side-nav-item" onclick="window.location.href='mapa.html'" title="Mapa">
+            <img src="img/mapa.png" alt="Mapa">
         </div>
         <div class="side-nav-item active" onclick="window.location.href='jogos.html'" title="Jogos">
             <img src="img/controle.png" alt="Jogos">
@@ -88,38 +89,43 @@
             <!-- Menu de Jogos -->
             <div class="games-menu" id="games-menu">
                 <div class="game-card" onclick="showGame('word-search')">
-                    <span class="game-icon">🔍</span>
+                    <div class="icon"><img src="img/lupa.png" alt="Caça Palavras"></div>
                     <h3 class="game-title">Caça Palavras</h3>
-                    <p class="game-description">Encontre as palavras escondidas na grade! Clique e arraste para encontrar cada palavra.</p>
+                    <p class="game-description">Encontre as palavras escondidas na grade! Clique e arraste para
+                        encontrar cada palavra.</p>
                 </div>
 
                 <div class="game-card" onclick="showGame('memory-game')">
-                    <span class="game-icon">🧠</span>
+                    <div class="icon"><img src="img/cerebro.png" alt="Jogo da Memória"></div>
                     <h3 class="game-title">Jogo da Memória</h3>
-                    <p class="game-description">Encontre os pares iguais! Vire duas cartas por vez e tente combinar todas.</p>
+                    <p class="game-description">Encontre os pares iguais! Vire duas cartas por vez e tente combinar
+                        todas.</p>
                 </div>
 
                 <div class="game-card" onclick="showGame('word-match')">
-                    <span class="game-icon">🔗</span>
+                    <div class="icon"><img src="img/link.png" alt="Associar Palavra e Emoji"></div>
                     <h3 class="game-title">Associar Palavra e Emoji</h3>
-                    <p class="game-description">Combine as palavras com seus emojis correspondentes. Teste sua associação!</p>
+                    <p class="game-description">Combine as palavras com seus emojis correspondentes. Teste sua
+                        associação!</p>
                 </div>
 
                 <div class="game-card" onclick="showGame('animal-quiz')">
-                    <span class="game-icon">🐾</span>
+                    <div class="icon"><img src="img/pegada.png" alt="Adivinhe o Animal"></div>
                     <h3 class="game-title">Adivinhe o Animal</h3>
-                    <p class="game-description">Veja a imagem e escolha o nome correto do animal. Teste seus conhecimentos!</p>
+                    <p class="game-description">Veja a imagem e escolha o nome correto do animal. Teste seus
+                        conhecimentos!</p>
                 </div>
 
                 <div class="game-card" onclick="showGame('syllable-game')">
-                    <span class="game-icon">🧩</span>
+                    <div class="icon"><img src="img/abc.png" alt="Monte as Sílabas"></div>
                     <h3 class="game-title">Monte as Sílabas</h3>
-                    <p class="game-description">Forme palavras juntando as sílabas na ordem correta. Diversão garantida!</p>
+                    <p class="game-description">Forme palavras juntando as sílabas na ordem correta. Diversão garantida!
+                    </p>
                 </div>
 
                 <div class="game-card coming-soon">
                     <div class="coming-soon-badge">Em Breve!</div>
-                    <span class="game-icon">🧩</span>
+                    <div class="icon"><img src="img/quebracabeca.png" alt="Quebra-Cabeça de Palavras"></div>
                     <h3 class="game-title">Quebra-Cabeça de Palavras</h3>
                     <p class="game-description">Monte as peças do quebra-cabeça para revelar palavras e imagens!</p>
                 </div>
@@ -128,7 +134,9 @@
             <!-- Jogo 1: Caça Palavras -->
             <div class="game-container" id="word-search">
                 <div class="game-header">
-                    <h2 class="game-title-header">🔍 Caça Palavras</h2>
+                    <h2 class="game-title-header">
+                        <div class="icon0"><img src="img/lupa.png" alt="Caça Palavras"></div> Caça Palavras
+                    </h2>
                     <button class="back-button" onclick="showMenu()">Voltar</button>
                 </div>
 
@@ -146,7 +154,9 @@
             <!-- Jogo 2: Jogo da Memória -->
             <div class="game-container" id="memory-game">
                 <div class="game-header">
-                    <h2 class="game-title-header">🧠 Jogo da Memória</h2>
+                    <h2 class="game-title-header">
+                        <div class="icon0"><img src="img/cerebro.png" alt="Jogo da Memória"></div> Jogo da Memória
+                    </h2>
                     <button class="back-button" onclick="showMenu()">Voltar</button>
                 </div>
 
@@ -163,7 +173,10 @@
             <!-- Jogo 3: Associar Palavra e Emoji -->
             <div class="game-container" id="word-match">
                 <div class="game-header">
-                    <h2 class="game-title-header">🔗 Associar Palavra e Emoji</h2>
+                    <h2 class="game-title-header">
+                        <div class="icon0"><img src="img/link.png" alt="Associar Palavra e Emoji"></div> Associar
+                        Palavra e Emoji
+                    </h2>
                     <button class="back-button" onclick="showMenu()">Voltar</button>
                 </div>
 
@@ -188,7 +201,9 @@
             <!-- Jogo 4: Adivinhe o Animal -->
             <div class="game-container" id="animal-quiz">
                 <div class="game-header">
-                    <h2 class="game-title-header">🐾 Adivinhe o Animal</h2>
+                    <h2 class="game-title-header">
+                        <div class="icon0"><img src="img/pegada.png" alt="Adivinhe o Animal"></div> Adivinhe o Animal
+                    </h2>
                     <button class="back-button" onclick="showMenu()">Voltar</button>
                 </div>
 
@@ -197,7 +212,7 @@
                 <div class="options-container" id="options-container"></div>
                 <div class="game-message" id="game1-message"></div>
                 <button class="reset-btn" onclick="resetAnimalQuestion()" style="display: none;" id="reset-btn-animal">
-                    🔄 Tentar Novamente
+                    <div class="icon0"><img src="img/replay.png" alt="Tentar Novamente"></div> Tentar Novamente
                 </button>
 
                 <div class="action-buttons">
@@ -208,7 +223,9 @@
             <!-- Jogo 5: Monte as Sílabas -->
             <div class="game-container" id="syllable-game">
                 <div class="game-header">
-                    <h2 class="game-title-header">🧩 Monte as Sílabas</h2>
+                    <h2 class="game-title-header">
+                        <div class="icon0"><img src="img/abc.png" alt="Monte as Sílabas"></div> Monte as Sílabas
+                    </h2>
                     <button class="back-button" onclick="showMenu()">Voltar</button>
                 </div>
 
@@ -219,8 +236,9 @@
                     Clique nas sílabas para formar a palavra
                 </div>
                 <div class="game-message" id="game2-message"></div>
-                <button class="reset-btn" onclick="resetSyllableQuestion()" style="display: none;" id="reset-btn-syllable">
-                    🔄 Tentar Novamente
+                <button class="reset-btn" onclick="resetSyllableQuestion()" style="display: none;"
+                    id="reset-btn-syllable">
+                    <div class="icon0"><img src="img/replay.png" alt="Tentar Novamente"></div> Tentar Novamente
                 </button>
 
                 <div class="action-buttons">
@@ -229,5 +247,9 @@
             </div>
         </div>
     </main>
+    <a href="#" class="ancora">
+        <span class="material-symbols-outlined">anchor</span>
+    </a>
 </body>
+
 </html>

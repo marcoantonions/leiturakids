@@ -4,6 +4,27 @@
     box-sizing: border-box;
 }
 
+.ancora {
+    position: fixed;
+    width: 55px;
+    align-items: center;
+    bottom: 20px;
+    right: 20px;
+    background-color: transparent;
+    color: white;
+    border: 3px solid #298ac1;
+    border-radius: 50%;
+    padding: 12px;
+    text-decoration: none;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    z-index: 9999;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.ancora:hover {
+    transform: scale(1.1);
+}
+
 body {
     font-family: 'Comic Sans MS';
     background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
@@ -19,6 +40,79 @@ body {
     top: 0;
     transition: background-color 0.5s ease;
     z-index: 1000;
+}
+
+/* Container do dropdown */
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+/* Conteúdo do menu */
+.dropdown-content {
+    display: none;
+    position: absolute;
+    right: 0;
+    margin-top: 0.5rem;
+    background-color: #1a2a32;
+    min-width: 160px;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+    overflow: hidden;
+    z-index: 1;
+}
+
+/* Itens do menu */
+.dropdown-content a {
+    color: white;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    font-weight: bold;
+}
+
+.dropdown-content a:hover {
+    transition: 0.3s ease-in-out;
+    transform: translateY(-2px);
+    background-color: #2c3e50;
+}
+
+/* Mostrar menu quando ativo */
+.show {
+    display: block;
+}
+
+/* Ícone alinhado */
+.material-symbols-outlined {
+    font-size: 20px;
+    vertical-align: middle;
+
+}
+
+.btn-gray {
+    background-color: rgb(67, 174, 184);
+    color: white;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.btn-gray:hover {
+    transition: 0.3s ease-in-out;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px #2c3e50;
+}
+
+.icon img {
+    width: 55px;
+    height: 55px;
+    object-fit: contain;
+    /* mantém proporção */
+    display: block;
+    margin: 0 auto 10px auto;
+    /* centraliza e dá espaçamento embaixo */
 }
 
 .nav-container {
@@ -164,6 +258,14 @@ nav a::after {
     background: rgb(111, 242, 254);
 }
 
+.side-nav-item img {
+    width: 30px;
+    height: 30px;
+    object-fit: contain;
+    pointer-events: none;
+    /* garante que o clique seja na div, não na img */
+}
+
 .btn {
     padding: 0.5rem 1rem;
     border: none;
@@ -199,16 +301,6 @@ nav a::after {
     transform: translateY(-2px);
     transition: 0.3s ease-in-out;
     box-shadow: 0 5px 15px rgb(41, 138, 193);
-}
-
-.btn-gray {
-    background-color: #bdc3c7;
-    color: black;
-    border: none;
-    padding: 0.6rem 1.2rem;
-    border-radius: 8px;
-    font-weight: bold;
-    cursor: pointer;
 }
 
 /* Estilos específicos para a página de perfil */
@@ -410,6 +502,7 @@ nav a::after {
 
 .notification.show {
     transform: translateX(0);
+    z-index: 1;
 }
 
 .main-content {
@@ -541,9 +634,19 @@ nav a::after {
 }
 
 @keyframes shine {
-    0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); opacity: 0; }
-    50% { opacity: 1; }
-    100% { transform: translateX(100%) translateY(100%) rotate(45deg); opacity: 0; }
+    0% {
+        transform: translateX(-100%) translateY(-100%) rotate(45deg);
+        opacity: 0;
+    }
+
+    50% {
+        opacity: 1;
+    }
+
+    100% {
+        transform: translateX(100%) translateY(100%) rotate(45deg);
+        opacity: 0;
+    }
 }
 
 .badge:hover {
@@ -600,9 +703,17 @@ nav a::after {
 }
 
 @keyframes pulse {
-    0% { box-shadow: 0 5px 15px rgba(255, 215, 0, 0.4); }
-    50% { box-shadow: 0 10px 25px rgba(255, 215, 0, 0.8); }
-    100% { box-shadow: 0 5px 15px rgba(255, 215, 0, 0.4); }
+    0% {
+        box-shadow: 0 5px 15px rgba(255, 215, 0, 0.4);
+    }
+
+    50% {
+        box-shadow: 0 10px 25px rgba(255, 215, 0, 0.8);
+    }
+
+    100% {
+        box-shadow: 0 5px 15px rgba(255, 215, 0, 0.4);
+    }
 }
 
 .progress-next {
@@ -736,6 +847,7 @@ nav a::after {
 }
 
 @media (max-width: 1000px) {
+
     /* Mover o menu para fora da tela quando estiver em mobile e não ativo */
     .hamburger {
         display: block;
@@ -762,7 +874,7 @@ nav a::after {
         display: none;
     }
 
-    .nav-menu a{
+    .nav-menu a {
         margin-left: 10%;
     }
 
@@ -775,25 +887,31 @@ nav a::after {
         width: 100%;
         height: 60px;
         padding: 0 10px;
-        gap: 20px; /* espaço maior entre os botões */
-        overflow-x: auto; /* habilita rolagem horizontal */
+        gap: 20px;
+        /* espaço maior entre os botões */
+        overflow-x: auto;
+        /* habilita rolagem horizontal */
         overflow-y: hidden;
-        white-space: nowrap; /* impede quebra de linha */
-        justify-content: flex-start; /* começa alinhado à esquerda */
-        box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
+        white-space: nowrap;
+        /* impede quebra de linha */
+        justify-content: flex-start;
+        /* começa alinhado à esquerda */
+        box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
     }
 
     /* Ocultar barra de rolagem no Chrome/Safari */
     .side-nav::-webkit-scrollbar {
         height: 6px;
     }
+
     .side-nav::-webkit-scrollbar-thumb {
-        background: rgba(0,0,0,0.2);
+        background: rgba(0, 0, 0, 0.2);
         border-radius: 3px;
     }
 
     .side-nav-item {
-        flex: 0 0 auto; /* não encolhe */
+        flex: 0 0 auto;
+        /* não encolhe */
         margin: 0;
         width: 50px;
         height: 50px;

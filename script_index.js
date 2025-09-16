@@ -26,6 +26,10 @@ window.addEventListener("scroll", () => {
   });
 });
 
+function toggleMenu() {
+    document.getElementById("menuDropdown").classList.toggle("show");
+}
+
 // =====================================================
 // CAROUSEL AUTOMÁTICO
 // =====================================================
