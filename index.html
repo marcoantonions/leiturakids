@@ -31,8 +31,8 @@
                 <span class="material-symbols-outlined">menu</span>
             </button>
             <div class="auth-buttons">
-                <button id="abrirLogin" class="btn-entrar abrirLogin">Entrar</button>
-                <button id="abrirCadastro" class="btn-cadastrar abrirCadastro">Cadastrar</button>
+                <button id="abrirLogin" class="btn-entrar abrirLogin" onclick="abrirModal('modal-login')">Entrar</button>
+                <button id="abrirCadastro" class="btn-cadastrar abrirCadastro" onclick="abrirModal('modal-cadastro')">Cadastrar</button>
             </div>
         </div>
     </header>
@@ -42,77 +42,119 @@
             <h1 class="hero-title">LeituraKids</h1>
             <p class="hero-subtitle">A Magia da Leitura Começa com um Clique!</p>
             <!-- Botão para abrir o modal -->
-            <button id="abrirLogin" class="cta-button abrirLogin">Vamos lá!</button>
+            <button class="cta-button abrirLogin">Vamos lá!</button>
 
-            <!-- Modal -->
-            <div id="modal" class="modal-overlay">
+            <!-- Modal de Login -->
+            <div id="modal-login" class="modal-overlay">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h2>Entrar</h2>
-                        <span class="close-btn" id="closeModal">&times;</span>
+                        <span class="close-btn" onclick="fecharModal('modal-login')">&times;</span>
                     </div>
-
                     <div class="modal-body">
-                        <label>
-                            Digite seu Usuário
-                            <input type="text" id="user" name="user" value="" placeholder="Usuário" required>
+                        <label>Usuário
+                            <input type="text" id="login-usuario" placeholder="Nome de usuário" required>
                         </label>
-
-                        <label>
-                            Digite sua Senha
-                            <input type="password" id="senha" name="senha" value="" placeholder="Senha" required>
+                        <label>Senha
+                            <input type="password" id="login-senha" placeholder="Senha" required>
                         </label>
                     </div>
-
                     <div class="modal-footer">
-                        <button class="btn btn-blue" onclick="login()">Entrar</button>
-                        <button class="btn btn-gray" onclick="reiniciar()">Não Possuo Conta</button>
+                        <button class="btn btn-blue" onclick="fazerLogin()">Entrar</button>
+                        <button class="btn btn-gray" onclick="abrirModal('modal-cadastro')">Não Possuo Conta</button>
                     </div>
                 </div>
             </div>
 
             <!-- Modal de Cadastro -->
-            <div id="modal-cadastro" class="modal-overlay" style="display: none;">
+            <div id="modal-cadastro" class="modal-overlay" style="display:none;">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h2>Cadastrar</h2>
-                        <span class="close-btn" id="closeCadastro">&times;</span>
+                        <span class="close-btn" onclick="fecharModal('modal-cadastro')">&times;</span>
                     </div>
-
                     <div class="modal-body">
-                        <label>
-                            Nome
-                            <input type="text" id="nome" name="nome" value="" placeholder="Seu nome" required>
+                        <label>Nome
+                            <input type="text" id="cad-nome" placeholder="Nome da criança" required>
                         </label>
-
-                        <label>
-                            E-mail
-                            <input type="email" id="email" name="email" value="" placeholder="Seu e-mail" required>
+                        <label>Idade
+                            <input type="number" id="cad-idade" placeholder="Idade" required>
                         </label>
-
-                        <label>
-                            Usuário
-                            <input type="text" id="usuario" name="usuario" value="" placeholder="Nome de usuário"
-                                required>
+                        <label>Responsável
+                            <input type="text" id="cad-responsavel" placeholder="Nome do responsável" required>
                         </label>
-
-                        <label>
-                            Senha
-                            <input type="password" id="password" name="password" value="" placeholder="Crie uma senha"
-                                required>
+                        <label>Email
+                            <input type="email" id="cad-email" placeholder="E-mail do responsável" required>
+                        </label>
+                        <label>Usuário
+                            <input type="text" id="cad-usuario" placeholder="Nome de usuário" required>
+                        </label>
+                        <label>Senha
+                            <input type="password" id="cad-senha" placeholder="Crie uma senha" required>
                         </label>
                     </div>
-
                     <div class="modal-footer">
-                        <button class="btn btn-blue" onclick="cadastro()">Cadastrar</button>
-                        <button class="btn btn-gray" id="cancelCadastro" class="cancelCadastro">Já Possuo Conta</button>
+                        <button type="submit" class="btn btn-blue" onclick="cadastrar()">Cadastrar</button>
+                        <button class="btn btn-gray" onclick="abrirModal('modal-login')">Já Possuo Conta</button>
                     </div>
                 </div>
             </div>
 
+            <!-- Supabase e JS -->
+            <script type="module">
+                import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
+                const SUPABASE_URL = 'https://dnphjoqmkvnjueiwjayu.supabase.co';
+                const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRucGhqb3Fta3ZuanVlaXdqYXl1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc5NjE3ODEsImV4cCI6MjA3MzUzNzc4MX0.r8-M9EZg73sIrwESfd61hyGITsEwv_TJFZOBYeXk3d8';
+                const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+                // Cadastro
+                window.cadastrar = async function() {
+                    const nome = document.getElementById('cad-nome').value;
+                    const idade = parseInt(document.getElementById('cad-idade').value);
+                    const responsavel = document.getElementById('cad-responsavel').value;
+                    const email = document.getElementById('cad-email').value;
+                    const usuario = document.getElementById('cad-usuario').value;
+                    const senha = document.getElementById('cad-senha').value;
 
+                    const { data, error } = await supabase
+                        .from('usuarios')
+                        .insert([{ nome, idade, nome_responsavel: responsavel, email_responsavel: email, usuario, senha }]);
+
+                    if (error) {
+                        alert("Erro ao cadastrar: " + error.message);
+                    } else {
+                        alert("Cadastro realizado com sucesso!");
+                        fecharModal('modal-cadastro');
+                        abrirModal('modal-login');
+                    }
+                }
+
+                // Login
+                window.fazerLogin = async function() {
+                    const usuario = document.getElementById('login-usuario').value;
+                    const senha = document.getElementById('login-senha').value;
+
+                    const { data, error } = await supabase
+                        .from('usuarios')
+                        .select('*')
+                        .eq('usuario', usuario)
+                        .eq('senha', senha)
+                        .single();
+
+                    if (error || !data) {
+                        alert("Usuário ou senha inválidos!");
+                    } else {
+                        alert("Login realizado com sucesso!");
+                        localStorage.setItem("usuarioId", data.id); // salva id p/ usar no home.html
+                        window.location.href = "home.html";
+                    }
+                }
+
+                // Funções para abrir/fechar modais
+                window.abrirModal = (id) => document.getElementById(id).style.display = "flex";
+                window.fecharModal = (id) => document.getElementById(id).style.display = "none";
+            </script>
         </div>
     </section>
 
@@ -134,8 +176,8 @@
                 <div class="about-image">
                     <img src="img/nadador.png" alt="Garoto Nadando" class="about-img">
                 </div>
-                </div>
             </div>
+        </div>
         </div>
     </section>
 
