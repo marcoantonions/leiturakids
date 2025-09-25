@@ -13,6 +13,35 @@
 </head>
 
 <body>
+    <script type="module">
+        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+
+        const SUPABASE_URL = 'https://dnphjoqmkvnjueiwjayu.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRucGhqb3Fta3ZuanVlaXdqYXl1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc5NjE3ODEsImV4cCI6MjA3MzUzNzc4MX0.r8-M9EZg73sIrwESfd61hyGITsEwv_TJFZOBYeXk3d8';
+        const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        async function carregarNomeUsuario() {
+            const usuarioId = localStorage.getItem('usuarioId');
+            if (!usuarioId) return;
+
+            const { data, error } = await supabase
+                .from('usuarios')
+                .select('nome')
+                .eq('id', usuarioId)
+                .single();
+
+            if (error) {
+                console.error('Erro ao buscar usuário:', error.message);
+            } else if (data) {
+                const nomeElemento = document.querySelector('.profile-name');
+                if (nomeElemento) {
+                    nomeElemento.textContent = data.nome;
+                }
+            }
+        }
+
+        carregarNomeUsuario();
+    </script>
 
     <!-- Notificação -->
     <div class="notification" id="notification">
@@ -72,8 +101,8 @@
             <div class="profile-stats">
                 <div class="stat-card">
                     <div class="stat-icon icon"><img src="img/livro.png" alt="Livros" /></div>
-                    <div class="stat-number">12</div>
-                    <div class="stat-label">Livros Lidos</div>
+                    <div class="stat-number">3</div>
+                    <div class="stat-label">Aulas Vistas</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-icon icon"><img src="img/estrela.png" alt="Pontos" /></div>
@@ -83,7 +112,7 @@
                 <div class="stat-card">
                     <div class="stat-icon icon"><img src="img/fogo.png" alt="Sequência" /></div>
                     <div class="stat-number">7</div>
-                    <div class="stat-label">Dias Seguidos</div>
+                    <div class="stat-label">Atividades Concluídas</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-icon icon"><img src="img/trofeu.png" alt="Conquistas" /></div>
