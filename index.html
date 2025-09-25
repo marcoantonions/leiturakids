@@ -31,8 +31,10 @@
                 <span class="material-symbols-outlined">menu</span>
             </button>
             <div class="auth-buttons">
-                <button id="abrirLogin" class="btn-entrar abrirLogin" onclick="abrirModal('modal-login')">Entrar</button>
-                <button id="abrirCadastro" class="btn-cadastrar abrirCadastro" onclick="abrirModal('modal-cadastro')">Cadastrar</button>
+                <button id="abrirLogin" class="btn-entrar abrirLogin"
+                    onclick="abrirModal('modal-login')">Entrar</button>
+                <button id="abrirCadastro" class="btn-cadastrar abrirCadastro"
+                    onclick="abrirModal('modal-cadastro')">Cadastrar</button>
             </div>
         </div>
     </header>
@@ -109,7 +111,7 @@
                 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
                 // Cadastro
-                window.cadastrar = async function() {
+                window.cadastrar = async function () {
                     const nome = document.getElementById('cad-nome').value;
                     const idade = parseInt(document.getElementById('cad-idade').value);
                     const responsavel = document.getElementById('cad-responsavel').value;
@@ -131,7 +133,7 @@
                 }
 
                 // Login
-                window.fazerLogin = async function() {
+                window.fazerLogin = async function () {
                     const usuario = document.getElementById('login-usuario').value;
                     const senha = document.getElementById('login-senha').value;
 
