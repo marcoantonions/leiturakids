@@ -9,10 +9,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="script_home.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <title>Leitura Kids</title>
 </head>
 
 <body>
+
     <script type="module">
         import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
@@ -20,6 +22,9 @@
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRucGhqb3Fta3ZuanVlaXdqYXl1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc5NjE3ODEsImV4cCI6MjA3MzUzNzc4MX0.r8-M9EZg73sIrwESfd61hyGITsEwv_TJFZOBYeXk3d8';
         const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+        // ===============================
+        // CARREGA NOME DO USUÁRIO
+        // ===============================
         async function carregarNomeUsuario() {
             const usuarioId = localStorage.getItem('usuarioId');
             if (!usuarioId) return;
@@ -33,19 +38,97 @@
             if (error) {
                 console.error('Erro ao buscar usuário:', error.message);
             } else if (data) {
-                const nomeElemento = document.querySelector('.profile-name');
-                if (nomeElemento) {
-                    nomeElemento.textContent = data.nome;
-                }
+                document.querySelector('.profile-name').textContent = data.nome;
             }
         }
 
+        // ===============================
+        // CRIA PROGRESSO INICIAL (se não existir)
+        // ===============================
+        async function inicializarProgresso() {
+            console.log("Função inicializarProgresso chamada!");
+            const usuarioId = localStorage.getItem('usuarioId');
+            console.log("Usuário ID:", usuarioId);
+            if (!usuarioId) return;
+
+            // Verifica se já existe um progresso
+            const { data: progressoExistente, error: selectError } = await supabase
+                .from('progresso')
+                .select('id')
+                .eq('user_id', usuarioId)
+                .maybeSingle();
+
+            if (selectError) {
+                console.error('Erro ao verificar progresso:', selectError.message);
+                return;
+            }
+
+            // Se não existir, cria o progresso inicial
+            if (!progressoExistente) {
+                const { data: insertData, error: insertError } = await supabase
+                    .from('progresso')
+                    .insert([
+                        {
+                            user_id: usuarioId,
+                            aulas_vistas: 0,
+                            pontos: 0,
+                            atividades_concluidas: 0,
+                            numero_conquistas: 0,
+                            nivel_usuario: 1
+                        }
+                    ])
+                    .select(); // <-- retorna os dados criados (importante para debug)
+
+                if (insertError) {
+                    console.error('Erro ao criar progresso:', insertError);
+                } else {
+                    console.log('Progresso inicial criado com sucesso:', insertData);
+                }
+            } else {
+                console.log('Progresso já existente.');
+            }
+
+            // Depois de criar/verificar, carrega os dados
+            carregarProgresso();
+        }
+
+        // ===============================
+        // MOSTRA OS DADOS NA TELA
+        // ===============================
+        async function carregarProgresso() {
+            const usuarioId = localStorage.getItem('usuarioId');
+            if (!usuarioId) return;
+
+            const { data, error } = await supabase
+                .from('progresso')
+                .select('*')
+                .eq('user_id', usuarioId)
+                .single();
+
+            if (error) {
+                console.error('Erro ao carregar progresso:', error.message);
+                return;
+            }
+
+            // Atualiza os elementos do HTML
+            document.getElementById('aulas_vistas').textContent = data.aulas_vistas;
+            document.getElementById('pontos').textContent = data.pontos;
+            document.getElementById('atividades_concluidas').textContent = data.atividades_concluidas;
+            document.getElementById('numero_conquistas').textContent = data.numero_conquistas;
+            document.getElementById('nivel_usuario').textContent = `Nível ${data.nivel_usuario} - Leitor Iniciante`;
+        }
+
+        // ===============================
+        // EXECUTA AO CARREGAR A PÁGINA
+        // ===============================
         carregarNomeUsuario();
+        inicializarProgresso();
     </script>
+
 
     <!-- Notificação -->
     <div class="notification" id="notification">
-        Bem-vindo ao Leitura Kids! 🎉
+        Bem-vindo ao Leitura Kids! 
     </div>
 
     <!-- Header -->
@@ -94,29 +177,29 @@
             <div class="profile-header">
                 <div class="profile-avatar">🧒</div>
                 <h1 class="profile-name">Nome</h1>
-                <div class="profile-level">Nível 3 - Leitor Iniciante</div>
+                <div class="profile-level" id="nivel_usuario">Nível 1 - Leitor Iniciante</div>
             </div>
 
             <!-- Estatísticas -->
             <div class="profile-stats">
                 <div class="stat-card">
                     <div class="stat-icon icon"><img src="img/livro.png" alt="Livros" /></div>
-                    <div class="stat-number">3</div>
+                    <div class="stat-number" id="aulas_vistas">3</div>
                     <div class="stat-label">Aulas Vistas</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-icon icon"><img src="img/estrela.png" alt="Pontos" /></div>
-                    <div class="stat-number">340</div>
+                    <div class="stat-number" id="pontos">340</div>
                     <div class="stat-label">Pontos</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-icon icon"><img src="img/fogo.png" alt="Sequência" /></div>
-                    <div class="stat-number">7</div>
+                    <div class="stat-number" id="atividades_concluidas">7</div>
                     <div class="stat-label">Atividades Concluídas</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-icon icon"><img src="img/trofeu.png" alt="Conquistas" /></div>
-                    <div class="stat-number">5</div>
+                    <div class="stat-number" id="numero_conquistas">5</div>
                     <div class="stat-label">Conquistas</div>
                 </div>
             </div>

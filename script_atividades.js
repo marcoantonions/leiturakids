@@ -218,25 +218,69 @@ function placeLetter(letter, button) {
     wordData.selectedSlot = null;
 }
 
+// botão único (Verificar / Próxima Palavra)
+function ensureWordButton() {
+    const actionContainer = document.querySelector('#complete-word .action-buttons');
+    if (!actionContainer) return null;
+
+    let actionBtn = document.getElementById('word-action-btn');
+
+    // cria se não existir
+    if (!actionBtn) {
+        actionBtn = document.createElement('button');
+        actionBtn.id = 'word-action-btn';
+        actionBtn.className = 'action-button';
+        actionContainer.innerHTML = '';
+        actionContainer.appendChild(actionBtn);
+    }
+
+    // configuração padrão
+    actionBtn.textContent = 'Verificar';
+    actionBtn.onclick = checkWord;
+
+    return actionBtn;
+}
+
+// cria o botão assim que a página carrega
+document.addEventListener('DOMContentLoaded', () => {
+    ensureWordButton();
+});
+
+// funções do botão
+
 function checkWord() {
     const current = wordData.words[wordData.currentIndex];
     const slots = document.querySelectorAll('.letter-slot');
     const userWord = Array.from(slots).map(s => s.textContent || '_').join('');
+    const actionBtn = document.getElementById('word-action-btn');
 
     if (userWord === current.word) {
-        showFeedback('word-feedback', '🎉 Parabéns! Palavra completada!', true);
+        showFeedback('word-feedback', 'Parabéns! Palavra completada!', true);
         addPoints(10, true);
         playSound('Parabéns! Palavra correta!');
     } else {
-        showFeedback('word-feedback', '❌ Tente novamente!', false);
+        showFeedback('word-feedback', 'Tente novamente!', false);
         addPoints(0, false);
         playSound('Tente novamente');
+    }
+
+    if (actionBtn) {
+        actionBtn.textContent = 'Próxima Palavra';
+        actionBtn.onclick = nextWord;
     }
 }
 
 function nextWord() {
     wordData.currentIndex = (wordData.currentIndex + 1) % wordData.words.length;
     initWordGame();
+
+    // restaura o botão para "Verificar"
+    const actionBtn = ensureWordButton();
+    if (actionBtn) {
+        actionBtn.textContent = 'Verificar';
+        actionBtn.onclick = checkWord;
+    }
+
     document.getElementById('word-feedback').classList.remove('show');
 }
 

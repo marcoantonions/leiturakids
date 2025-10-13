@@ -476,10 +476,7 @@ body {
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
 }
 
-.letter-option.used {
-    opacity: 0.3;
-    pointer-events: none;
-}
+
 
 /* Jogo 2: Formar Frases */
 .sentence-target {

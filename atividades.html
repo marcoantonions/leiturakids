@@ -9,10 +9,51 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="script_atividades.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <title>Atividades - Leitura Kids</title>
 </head>
 
 <body>
+
+    <script type="module">
+        // =====================================================
+        // CONEXÃO SUPABASE
+        // =====================================================
+        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+
+        const SUPABASE_URL = 'https://dnphjoqmkvnjueiwjayu.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRucGhqb3Fta3ZuanVlaXdqYXl1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc5NjE3ODEsImV4cCI6MjA3MzUzNzc4MX0.r8-M9EZg73sIrwESfd61hyGITsEwv_TJFZOBYeXk3d8';
+        const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        async function carregarPontuacaoGlobal() {
+            console.log("Carregando pontuação global...");
+
+            const usuarioId = localStorage.getItem('usuarioId');
+            console.log("ID do usuário:", usuarioId);
+
+            if (!usuarioId) return;
+
+            const { data, error } = await supabase
+                .from('progresso')
+                .select('pontos, atividades_concluidas, numero_conquistas, nivel_usuario')
+                .eq('user_id', usuarioId)
+                .maybeSingle();
+
+            if (error) {
+                console.error("Erro ao buscar pontuação global:", error);
+                return;
+            }
+
+            console.log("Dados recebidos:", data);
+
+            document.getElementById('total-score').textContent = data?.pontos ?? 0;
+            document.getElementById('total-correct').textContent = data?.numero_conquistas ?? 0;
+            document.getElementById('games-played').textContent = data?.atividades_concluidas ?? 0;
+        }
+
+        window.addEventListener('DOMContentLoaded', carregarPontuacaoGlobal);
+    </script>
+
     <!-- Header -->
     <header class="header">
         <div class="nav-container">
@@ -81,6 +122,7 @@
                 </div>
             </div>
 
+
             <!-- Menu de Atividades -->
             <div class="activities-menu" id="activities-menu">
                 <div class="activity-card" onclick="showGame('complete-word')">
@@ -118,7 +160,9 @@
                 </div>
 
                 <div class="activity-card" onclick="showGame('syllable-order')">
-                    <div class="icon"><img src="img/aleatorio.png" alt="Ordene as Sílabas"></div>
+                    <span class="activity-icon">
+                        <img src="img/criancas.png" alt="Ordene as sílabas">
+                    </span>
                     <h3 class="activity-title">Ordene as Sílabas</h3>
                     <p class="activity-description">Clique nas sílabas na sequência correta para formar palavras.
                         Pratique divisão silábica de forma divertida!</p>
