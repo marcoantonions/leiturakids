@@ -5,16 +5,17 @@ window.history.scrollRestoration = 'manual';
 window.scrollTo(0, 0);
 
 // ============================
-//  VARIÁVEIS GLOBAIS
+//  VARIÁVEIS GLOBAIS E DADOS
 // ============================
-let totalScore = 0;
-let totalCorrect = 0;
-let gamesPlayed = 0;
-let currentStreak = 0;
-let selectedMatchingItem = null;
 
-// Dados dos jogos de animais
+// Recupera progresso salvo
+let savedStats = JSON.parse(localStorage.getItem('gameStats')) || {};
+
 let gameStats = {
+    totalScore: savedStats.totalScore || 0,
+    totalCorrect: savedStats.totalCorrect || 0,
+    gamesPlayed: savedStats.gamesPlayed || 0,
+    streak: savedStats.streak || 0,
     currentAnimalIndex: 0,
     currentSyllableIndex: 0,
     correctAnswers: 0,
@@ -22,26 +23,137 @@ let gameStats = {
     currentWordFormed: ""
 };
 
-function toggleMenu() {
-    document.getElementById("menuDropdown").classList.toggle("show");
+let selectedMatchingItem = null;
+
+// ============================
+//  FUNÇÕES DE SINCRONIZAÇÃO COM BANCO DE DADOS
+// ============================
+
+// Atualiza a interface
+function updateGlobalStats() {
+    document.getElementById('total-score').textContent = gameStats.totalScore;
+    document.getElementById('total-correct').textContent = gameStats.totalCorrect;
+    document.getElementById('games-played').textContent = gameStats.gamesPlayed;
+    document.getElementById('streak').textContent = gameStats.streak;
+    
+    // Salva localmente
+    localStorage.setItem('gameStats', JSON.stringify(gameStats));
 }
+
+// Sincroniza com o Supabase
+async function saveStatsToDatabase() {
+    // Aguarda o supabase estar disponível
+    if (!window.supabaseClient) {
+        console.warn("⚠️ Supabase ainda não está disponível");
+        return;
+    }
+
+    const usuarioId = localStorage.getItem('usuarioId');
+    if (!usuarioId) {
+        console.warn("⚠️ Nenhum usuário logado");
+        return;
+    }
+
+    try {
+        console.log("💾 Salvando progresso no Supabase...", gameStats);
+
+        const { data, error } = await window.supabaseClient
+            .from('progresso')
+            .upsert({
+                user_id: usuarioId,
+                pontos: gameStats.totalScore,
+                jogos_concluidos: gameStats.gamesPlayed,
+                acertos: gameStats.totalCorrect,
+            }, { 
+                onConflict: 'user_id',
+                returning: 'minimal'
+            });
+
+        if (error) {
+            console.error("❌ Erro ao salvar progresso:", error);
+        } else {
+            console.log("✅ Progresso salvo com sucesso no Supabase!");
+        }
+    } catch (err) {
+        console.error("❌ Erro inesperado ao salvar:", err);
+    }
+}
+
+// Carrega progresso do Supabase
+async function loadStatsFromDatabase() {
+    if (!window.supabaseClient) {
+        console.warn("⚠️ Supabase não disponível, usando dados locais");
+        return;
+    }
+
+    const usuarioId = localStorage.getItem('usuarioId');
+    if (!usuarioId) return;
+
+    try {
+        const { data, error } = await window.supabaseClient
+            .from('progresso')
+            .select('pontos, jogos_concluidos, acertos')
+            .eq('user_id', usuarioId)
+            .maybeSingle();
+
+        if (error) {
+            console.error("❌ Erro ao carregar progresso:", error);
+            return;
+        }
+
+        if (data) {
+            console.log("✅ Progresso carregado do banco:", data);
+            gameStats.totalScore = data.pontos ?? 0;
+            gameStats.gamesPlayed = data.jogos_concluidos ?? 0;
+            gameStats.totalCorrect = data.acertos ?? 0;
+            updateGlobalStats();
+        }
+    } catch (err) {
+        console.error("❌ Erro ao carregar progresso:", err);
+    }
+}
+
+// Adiciona pontos e sincroniza
+function addPoints(points, correct = true) {
+    gameStats.totalScore += points;
+    if (correct) {
+        gameStats.totalCorrect++;
+        gameStats.streak++;
+    } else {
+        gameStats.streak = 0;
+    }
+
+    updateGlobalStats();
+    saveStatsToDatabase();
+}
+
+// Incrementa jogos jogados
+function incrementGamesPlayed() {
+    gameStats.gamesPlayed++;
+    updateGlobalStats();
+    saveStatsToDatabase();
+}
+
+// ============================
+//  DADOS DOS JOGOS
+// ============================
 
 // Dados do Jogo: Adivinhe o Animal
 const animalData = [
-    { imagem: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=300&h=300&fit=crop", correta: "gato", opcoes: ["gato", "cachorro", "pato"] },
-    { imagem: "https://images.unsplash.com/photo-1583337130417-3346a1be7dee?w=300&h=300&fit=crop", correta: "cachorro", opcoes: ["gato", "cachorro", "coelho"] },
-    { imagem: "https://images.unsplash.com/photo-1557804506-669a67965ba0?w=300&h=300&fit=crop", correta: "papagaio", opcoes: ["papagaio", "leão", "peixe"] },
-    { imagem: "https://images.unsplash.com/photo-1546026423-cc4642628d2b?w=300&h=300&fit=crop", correta: "pato", opcoes: ["pato", "urso", "gato"] },
-    { imagem: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=300&h=300&fit=crop", correta: "coelho", opcoes: ["coelho", "rato", "porco"] }
+    { imagem: "img/gato.png", correta: "gato", opcoes: ["gato", "cachorro", "pato"] },
+    { imagem: "img/cachorro.png", correta: "cachorro", opcoes: ["gato", "cachorro", "coelho"] },
+    { imagem: "img/papagaio2.png", correta: "papagaio", opcoes: ["papagaio", "leão", "peixe"] },
+    { imagem: "img/pato.png", correta: "pato", opcoes: ["pato", "urso", "gato"] },
+    { imagem: "img/coelho.png", correta: "coelho", opcoes: ["coelho", "rato", "porco"] }
 ];
 
 // Dados do Jogo: Monte as Sílabas
 const syllableData = [
-    { imagem: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=300&h=300&fit=crop", silabas: ["ga", "to"], correta: "gato" },
-    { imagem: "https://images.unsplash.com/photo-1583337130417-3346a1be7dee?w=300&h=300&fit=crop", silabas: ["ca", "chor", "ro"], correta: "cachorro" },
-    { imagem: "https://images.unsplash.com/photo-1546026423-cc4642628d2b?w=300&h=300&fit=crop", silabas: ["pa", "to"], correta: "pato" },
-    { imagem: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=300&h=300&fit=crop", silabas: ["coe", "lho"], correta: "coelho" },
-    { imagem: "https://images.unsplash.com/photo-1557804506-669a67965ba0?w=300&h=300&fit=crop", silabas: ["pa", "pa", "gai", "o"], correta: "papagaio" }
+    { imagem: "img/gato.png", silabas: ["ga", "to"], correta: "gato" },
+    { imagem: "img/cachorro.png", silabas: ["ca", "chor", "ro"], correta: "cachorro" },
+    { imagem: "img/pato.png", silabas: ["pa", "to"], correta: "pato" },
+    { imagem: "img/coelho.png", silabas: ["coe", "lho"], correta: "coelho" },
+    { imagem: "img/papagaio2.png", silabas: ["pa", "pa", "gai", "o"], correta: "papagaio" }
 ];
 
 // Dados do jogo 1: Caça Palavras
@@ -71,6 +183,11 @@ let selectedCells = [];
 // ============================
 //  FUNÇÕES DE INTERFACE
 // ============================
+
+function toggleMenu() {
+    document.getElementById("menuDropdown").classList.toggle("show");
+}
+
 function showNotification(message) {
     const notification = document.getElementById('notification');
     notification.textContent = message;
@@ -81,17 +198,7 @@ function showNotification(message) {
 }
 
 function updateGlobalScore(points) {
-    totalScore += points;
-    if (points > 0) {
-        totalCorrect++;
-        currentStreak++;
-    } else {
-        currentStreak = 0;
-    }
-
-    document.getElementById('total-score').textContent = totalScore;
-    document.getElementById('total-correct').textContent = totalCorrect;
-    document.getElementById('streak').textContent = currentStreak;
+    addPoints(points, points > 0);
 }
 
 function shuffle(array) {
@@ -111,8 +218,8 @@ function showGame(gameId) {
         container.classList.remove('active');
     });
     document.getElementById(gameId).classList.add('active');
-    gamesPlayed++;
-    document.getElementById('games-played').textContent = gamesPlayed;
+    
+    incrementGamesPlayed();
 
     // Inicializar jogos específicos
     if (gameId === 'animal-quiz') loadAnimalQuestion();
@@ -127,7 +234,7 @@ function showMenu() {
 }
 
 // ============================
-//  JOGO: ADIVINHE O ANIMAL
+//  JOGO 1: ADIVINHE O ANIMAL
 // ============================
 function loadAnimalQuestion() {
     const question = animalData[gameStats.currentAnimalIndex];
@@ -154,11 +261,12 @@ function checkAnimalAnswer(selected, correct) {
 
     if (selected === correct) {
         gameStats.correctAnswers++;
-        updateGlobalScore(10);
+        addPoints(10, true);
         messageEl.textContent = '🎉 Parabéns! Você acertou!';
         messageEl.className = 'game-message success-message';
         buttons.forEach(btn => btn.disabled = true);
     } else {
+        addPoints(0, false);
         messageEl.textContent = '❌ Ops! Tente novamente!';
         messageEl.className = 'game-message error-message';
         buttons.forEach(btn => btn.disabled = true);
@@ -177,7 +285,7 @@ function nextAnimalQuestion() {
 }
 
 // ============================
-//  JOGO: MONTE AS SÍLABAS
+//  JOGO 2: MONTE AS SÍLABAS
 // ============================
 function loadSyllableQuestion() {
     const question = syllableData[gameStats.currentSyllableIndex];
@@ -212,11 +320,12 @@ function addSyllable(syllable, button) {
 
         if (gameStats.currentWordFormed === question.correta) {
             gameStats.correctAnswers++;
-            updateGlobalScore(10);
+            addPoints(10, true);
             messageEl.textContent = '🎉 Muito bem! Palavra formada!';
             messageEl.className = 'game-message success-message';
             document.querySelectorAll('#syllables-container .syllable-btn').forEach(btn => btn.disabled = true);
         } else {
+            addPoints(0, false);
             messageEl.textContent = '❌ Palavra incorreta! Tente novamente!';
             messageEl.className = 'game-message error-message';
             document.querySelectorAll('#syllables-container .syllable-btn').forEach(btn => btn.disabled = true);
@@ -238,7 +347,7 @@ function nextSyllableQuestion() {
 }
 
 // ============================
-//  JOGO 1: CAÇA PALAVRAS
+//  JOGO 3: CAÇA PALAVRAS
 // ============================
 function generateWordSearchGrid() {
     const grid = Array(8).fill().map(() => Array(8).fill(''));
@@ -332,6 +441,33 @@ function renderWordSearchGrid() {
     });
 }
 
+function isValidSelection(cells) {
+    if (cells.length < 2) return true;
+
+    const first = cells[0];
+    const second = cells[1];
+    const rowDiff = second.row - first.row;
+    const colDiff = second.col - first.col;
+
+    if (rowDiff !== 0 && colDiff !== 0) {
+        return false;
+    }
+
+    const rowStep = rowDiff === 0 ? 0 : rowDiff / Math.abs(rowDiff);
+    const colStep = colDiff === 0 ? 0 : colDiff / Math.abs(colDiff);
+
+    for (let i = 1; i < cells.length; i++) {
+        const expectedRow = first.row + (rowStep * i);
+        const expectedCol = first.col + (colStep * i);
+
+        if (cells[i].row !== expectedRow || cells[i].col !== expectedCol) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
 function selectGridCell(row, col) {
     const cell = document.querySelector(`[data-row="${row}"][data-col="${col}"]`);
 
@@ -339,7 +475,19 @@ function selectGridCell(row, col) {
         selectedCells = selectedCells.filter(c => !(c.row === row && c.col === col));
         cell.classList.remove('selected');
     } else {
-        selectedCells.push({ row, col, letter: wordSearchData.grid[row][col] });
+        const newSelectedCells = [...selectedCells, { row, col, letter: wordSearchData.grid[row][col] }];
+
+        if (!isValidSelection(newSelectedCells)) {
+            selectedCells.forEach(c => {
+                const cellElement = document.querySelector(`[data-row="${c.row}"][data-col="${c.col}"]`);
+                cellElement.classList.remove('selected');
+            });
+            selectedCells = [];
+            showFeedback('search-feedback', '⚠️ Selecione as letras em linha reta!', 'error');
+            return;
+        }
+
+        selectedCells = newSelectedCells;
         cell.classList.add('selected');
         checkForWord();
     }
@@ -360,7 +508,7 @@ function checkForWord() {
             });
 
             document.getElementById(`word-${word}`).classList.add('found');
-            updateGlobalScore(10);
+            addPoints(10, true);
             showFeedback('search-feedback', `🎉 Você encontrou: ${word}!`, 'success');
 
             selectedCells = [];
@@ -368,7 +516,7 @@ function checkForWord() {
             if (wordSearchData.foundWords.length === wordSearchData.words.length) {
                 setTimeout(() => {
                     showFeedback('search-feedback', '🏆 Parabéns! Encontrou todas as palavras!', 'success');
-                    updateGlobalScore(20);
+                    addPoints(20, true);
                 }, 1000);
             }
         }
@@ -384,16 +532,8 @@ function generateNewWordSearch() {
     generateWordSearchGrid();
 }
 
-function giveHint() {
-    const unFoundWords = wordSearchData.words.filter(w => !wordSearchData.foundWords.includes(w));
-    if (unFoundWords.length > 0) {
-        const hintWord = unFoundWords[0];
-        showFeedback('search-feedback', `💡 Procure pela palavra: ${hintWord}`, 'success');
-    }
-}
-
 // ============================
-//  JOGO 2: JOGO DA MEMÓRIA
+//  JOGO 4: JOGO DA MEMÓRIA
 // ============================
 function initMemoryGame() {
     const letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
@@ -412,9 +552,9 @@ function initMemoryGame() {
         card.onclick = () => flipCard(index);
 
         card.innerHTML = `
-                    <div class="card-back">❓</div>
-                    <div class="card-front">${letter}</div>
-                `;
+            <div class="card-back">❓</div>
+            <div class="card-front">${letter}</div>
+        `;
 
         grid.appendChild(card);
     });
@@ -442,11 +582,11 @@ function checkMemoryMatch() {
         card1.element.classList.add('matched');
         card2.element.classList.add('matched');
         matchedPairs++;
-        updateGlobalScore(10);
+        addPoints(10, true);
 
         if (matchedPairs === 8) {
             showFeedback('memory-feedback', '🏆 Parabéns! Você encontrou todos os pares!', 'success');
-            updateGlobalScore(30);
+            addPoints(30, true);
         }
     } else {
         card1.element.classList.remove('flipped');
@@ -476,7 +616,7 @@ function showAllCards() {
 }
 
 // ============================
-//  JOGO 3: ASSOCIAR PALAVRA E EMOJI
+//  JOGO 5: ASSOCIAR PALAVRA E EMOJI
 // ============================
 function initMatchingGame() {
     const wordsCol = document.getElementById('words-column');
@@ -518,14 +658,14 @@ function selectMatchingItem(element, type) {
             selectedMatchingItem.element.classList.add('matched');
             element.classList.add('matched');
 
-            updateGlobalScore(5);
+            addPoints(5, true);
             showFeedback('matching-feedback', '🎉 Combinação perfeita!', 'success');
 
             const allMatched = document.querySelectorAll('.matching-item:not(.matched)').length === 0;
             if (allMatched) {
                 setTimeout(() => {
                     showFeedback('matching-feedback', '🏆 Parabéns! Você completou todas as associações!', 'success');
-                    updateGlobalScore(20);
+                    addPoints(20, true);
                 }, 1000);
             }
         } else {
@@ -546,6 +686,13 @@ function resetMatchingGame() {
 //  MENU RESPONSIVO
 // ============================
 document.addEventListener("DOMContentLoaded", function () {
+    console.log("🚀 Página de Jogos carregada!");
+    
+    // Carrega progresso do banco de dados
+    setTimeout(() => {
+        loadStatsFromDatabase();
+    }, 500);
+
     const hamburger = document.querySelector(".hamburger");
     const navMenu = document.querySelector(".nav-menu");
 

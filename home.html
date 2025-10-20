@@ -70,14 +70,14 @@
                     .insert([
                         {
                             user_id: usuarioId,
-                            aulas_vistas: 0,
+                            jogos_concluidos: 0,
                             pontos: 0,
                             atividades_concluidas: 0,
                             numero_conquistas: 0,
                             nivel_usuario: 1
                         }
                     ])
-                    .select(); // <-- retorna os dados criados (importante para debug)
+                    .select(); 
 
                 if (insertError) {
                     console.error('Erro ao criar progresso:', insertError);
@@ -88,8 +88,53 @@
                 console.log('Progresso já existente.');
             }
 
-            // Depois de criar/verificar, carrega os dados
             carregarProgresso();
+        }
+
+        // ===============================
+        // ATUALIZA BARRAS DE PROGRESSO
+        // ===============================
+        function atualizarBarrasProgresso(data) {
+            // Constantes de progresso máximo
+            const MAX_PONTOS = 2000;
+            const MAX_ATIVIDADES = 120;
+            const MAX_JOGOS = 100;
+            const MAX_CONQUISTAS = 15;
+
+            // Calcula percentuais
+            const progressoAprendizado = Math.min((data.pontos / MAX_PONTOS) * 100, 100);
+            const progressoAtividades = Math.min((data.atividades_concluidas / MAX_ATIVIDADES) * 100, 100);
+            const progressoJogos = Math.min((data.jogos_concluidos / MAX_JOGOS) * 100, 100);
+            const progressoConquistas = Math.min((data.numero_conquistas / MAX_CONQUISTAS) * 100, 100);
+
+            // Atualiza as barras e labels
+            atualizarBarra(0, progressoAprendizado);
+            atualizarBarra(1, progressoAtividades);
+            atualizarBarra(2, progressoJogos);
+            atualizarBarra(3, progressoConquistas);
+        }
+
+        function atualizarBarra(index, percentual) {
+            const barras = document.querySelectorAll('.progress-item');
+            
+            if (barras[index]) {
+                const barraItem = barras[index];
+                const fill = barraItem.querySelector('.progress-fill');
+                const label = barraItem.querySelector('.progress-label span:last-child');
+
+                // Arredonda o percentual
+                const percentualArredondado = Math.round(percentual);
+
+                // Atualiza a barra e o texto
+                if (fill) {
+                    fill.style.width = percentualArredondado + '%';
+                    fill.setAttribute('data-progress', percentualArredondado);
+                }
+                
+                if (label) {
+                    label.textContent = percentualArredondado + '%';
+                }
+            }
         }
 
         // ===============================
@@ -111,11 +156,14 @@
             }
 
             // Atualiza os elementos do HTML
-            document.getElementById('aulas_vistas').textContent = data.aulas_vistas;
+            document.getElementById('jogos_concluidos').textContent = data.jogos_concluidos;
             document.getElementById('pontos').textContent = data.pontos;
             document.getElementById('atividades_concluidas').textContent = data.atividades_concluidas;
             document.getElementById('numero_conquistas').textContent = data.numero_conquistas;
             document.getElementById('nivel_usuario').textContent = `Nível ${data.nivel_usuario} - Leitor Iniciante`;
+            
+            // Atualiza as barras de progresso
+            atualizarBarrasProgresso(data);
         }
 
         // ===============================
@@ -183,23 +231,23 @@
             <!-- Estatísticas -->
             <div class="profile-stats">
                 <div class="stat-card">
-                    <div class="stat-icon icon"><img src="img/livro.png" alt="Livros" /></div>
-                    <div class="stat-number" id="aulas_vistas">3</div>
-                    <div class="stat-label">Aulas Vistas</div>
-                </div>
-                <div class="stat-card">
                     <div class="stat-icon icon"><img src="img/estrela.png" alt="Pontos" /></div>
-                    <div class="stat-number" id="pontos">340</div>
+                    <div class="stat-number" id="pontos">0</div>
                     <div class="stat-label">Pontos</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-icon icon"><img src="img/fogo.png" alt="Sequência" /></div>
-                    <div class="stat-number" id="atividades_concluidas">7</div>
+                    <div class="stat-icon icon"><img src="img/lapis.png" alt="Sequência" /></div>
+                    <div class="stat-number" id="atividades_concluidas">0</div>
                     <div class="stat-label">Atividades Concluídas</div>
                 </div>
                 <div class="stat-card">
+                    <div class="stat-icon icon"><img src="img/controle.png" alt="Livros" /></div>
+                    <div class="stat-number" id="jogos_concluidos">0</div>
+                    <div class="stat-label">Jogos Concluídos</div>
+                </div>
+                <div class="stat-card">
                     <div class="stat-icon icon"><img src="img/trofeu.png" alt="Conquistas" /></div>
-                    <div class="stat-number" id="numero_conquistas">5</div>
+                    <div class="stat-number" id="numero_conquistas">0</div>
                     <div class="stat-label">Conquistas</div>
                 </div>
             </div>
@@ -210,82 +258,45 @@
 
                 <div class="progress-item">
                     <div class="progress-label">
-                        <span>Alfabeto</span>
-                        <span>85%</span>
+                        <span>Aprendizado</span>
+                        <span>0%</span>
                     </div>
                     <div class="progress-bar">
-                        <div class="progress-fill" data-progress="85"></div>
+                        <div class="progress-fill" data-progress="0" style="width: 0%;"></div>
                     </div>
                 </div>
 
                 <div class="progress-item">
                     <div class="progress-label">
-                        <span>Formação de Palavras</span>
-                        <span>70%</span>
+                        <span>Atividades</span>
+                        <span>0%</span>
                     </div>
                     <div class="progress-bar">
-                        <div class="progress-fill" data-progress="70"></div>
+                        <div class="progress-fill" data-progress="0" style="width: 0%;"></div>
                     </div>
                 </div>
 
                 <div class="progress-item">
                     <div class="progress-label">
-                        <span>Leitura</span>
-                        <span>60%</span>
+                        <span>Jogos</span>
+                        <span>0%</span>
                     </div>
                     <div class="progress-bar">
-                        <div class="progress-fill" data-progress="60"></div>
+                        <div class="progress-fill" data-progress="0" style="width: 0%;"></div>
                     </div>
                 </div>
 
                 <div class="progress-item">
                     <div class="progress-label">
-                        <span>Escrita</span>
-                        <span>45%</span>
+                        <span>Troféis Conquistados</span>
+                        <span>0%</span>
                     </div>
                     <div class="progress-bar">
-                        <div class="progress-fill" data-progress="45"></div>
+                        <div class="progress-fill" data-progress="0" style="width: 0%;"></div>
                     </div>
                 </div>
             </div>
 
-            <!-- Atividades Recentes -->
-            <div class="recent-activity">
-                <h2 class="activity-title">Atividades Recentes</h2>
-
-                <div class="activity-item">
-                    <div class="activity-icon icon"><img src="img/livro-leitura.png" alt="Leitura" /></div>
-                    <div class="activity-text">
-                        <div>Leu a história "Os Três Porquinhos"</div>
-                        <div class="activity-date">Hoje, 14:30</div>
-                    </div>
-                </div>
-
-                <div class="activity-item">
-                    <div class="activity-icon icon"><img src="img/quebracabeca.png" alt="Quebra-Cabeça" /></div>
-                    <div class="activity-text">
-                        <div>Completou o Jogo da Memória - Nível 2</div>
-                        <div class="activity-date">Hoje, 13:15</div>
-                    </div>
-                </div>
-
-                <div class="activity-item">
-                    <div class="activity-icon icon"><img src="img/lapismao.png" alt="Escrita" /></div>
-                    <div class="activity-text">
-                        <div>Praticou escrita das letras M, N, O</div>
-                        <div class="activity-date">Ontem, 16:20</div>
-                    </div>
-                </div>
-
-                <div class="activity-item">
-                    <div class="activity-icon icon"><img src="img/abc.png" alt="Alfabeto" /></div>
-                    <div class="activity-text">
-                        <div>Aprendeu 5 novas letras do alfabeto</div>
-                        <div class="activity-date">Ontem, 15:45</div>
-                    </div>
-                </div>
-            </div>
-        </div>
         <!-- Conteúdo Conquistas -->
         <main class="main-content">
             <!-- Cabeçalho das Conquistas -->
@@ -298,7 +309,7 @@
             <div class="conquistas-stats">
                 <div class="stat-card">
                     <div class="stat-icon icon"><img src="img/medalha.png" alt="Conquistas" /></div>
-                    <div class="stat-number">8</div>
+                    <div class="stat-number">0</div>
                     <div class="stat-label">Conquistadas</div>
                 </div>
                 <div class="stat-card">
@@ -308,7 +319,7 @@
                 </div>
                 <div class="stat-card">
                     <div class="stat-icon icon"><img src="img/estrela.png" alt="Estrela" /></div>
-                    <div class="stat-number">34.8%</div>
+                    <div class="stat-number">0%</div>
                     <div class="stat-label">Completado</div>
                 </div>
                 <div class="stat-card">

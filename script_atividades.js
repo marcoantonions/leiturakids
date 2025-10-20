@@ -2,13 +2,114 @@
 // VARIÁVEIS GLOBAIS E DADOS
 // =====================================================
 
+// Recupera progresso salvo
+let savedStats = JSON.parse(localStorage.getItem('gameStats')) || {};
+
 let gameStats = {
-    totalScore: 0,
-    totalCorrect: 0,
-    gamesPlayed: 0,
-    streak: 0,
+    totalScore: savedStats.totalScore || 0,
+    totalCorrect: savedStats.totalCorrect || 0,
+    gamesPlayed: savedStats.gamesPlayed || 0,
+    streak: savedStats.streak || 0,
     currentGame: null
 };
+
+// Atualiza a interface
+function updateGlobalStats() {
+    document.getElementById('total-score').textContent = gameStats.totalScore;
+    document.getElementById('total-correct').textContent = gameStats.totalCorrect;
+    document.getElementById('games-played').textContent = gameStats.gamesPlayed;
+    document.getElementById('streak').textContent = gameStats.streak;
+    
+    // Salva localmente
+    localStorage.setItem('gameStats', JSON.stringify(gameStats));
+}
+
+// Sincroniza com o Supabase
+async function saveStatsToDatabase() {
+    // Aguarda o supabase estar disponível
+    if (!window.supabaseClient) {
+        console.warn(" Supabase ainda não está disponível");
+        return;
+    }
+
+    const usuarioId = localStorage.getItem('usuarioId');
+    if (!usuarioId) {
+        console.warn(" Nenhum usuário logado");
+        return;
+    }
+
+    try {
+        console.log(" Salvando progresso no Supabase...", gameStats);
+
+        const { data, error } = await window.supabaseClient
+            .from('progresso')
+            .upsert({
+                user_id: usuarioId,
+                pontos: gameStats.totalScore,
+                atividades_concluidas: gameStats.gamesPlayed,
+                acertos: gameStats.totalCorrect,
+            }, { 
+                onConflict: 'user_id',
+                returning: 'minimal'
+            });
+
+        if (error) {
+            console.error(" Erro ao salvar progresso:", error);
+        } else {
+            console.log(" Progresso salvo com sucesso no Supabase!");
+        }
+    } catch (err) {
+        console.error(" Erro inesperado ao salvar:", err);
+    }
+}
+
+// Carrega progresso do Supabase
+async function loadStatsFromDatabase() {
+    if (!window.supabaseClient) {
+        console.warn(" Supabase não disponível, usando dados locais");
+        return;
+    }
+
+    const usuarioId = localStorage.getItem('usuarioId');
+    if (!usuarioId) return;
+
+    try {
+        const { data, error } = await window.supabaseClient
+            .from('progresso')
+            .select('pontos, atividades_concluidas, acertos')
+            .eq('user_id', usuarioId)
+            .maybeSingle();
+
+        if (error) {
+            console.error(" Erro ao carregar progresso:", error);
+            return;
+        }
+
+        if (data) {
+            console.log(" Progresso carregado do banco:", data);
+            gameStats.totalScore = data.pontos ?? 0;
+            gameStats.gamesPlayed = data.atividades_concluidas ?? 0;
+            gameStats.totalCorrect = data.acertos ?? 0;
+            updateGlobalStats();
+        }
+    } catch (err) {
+        console.error(" Erro ao carregar progresso:", err);
+    }
+}
+
+function addPoints(points, correct = true) {
+    gameStats.totalScore += points;
+    if (correct) {
+        gameStats.totalCorrect++;
+        gameStats.streak++;
+        gameStats.gamesPlayed++;
+    } else {
+        gameStats.streak = 0;
+    }
+
+    updateGlobalStats();
+    saveStatsToDatabase();
+}
 
 // Dados para Complete a Palavra
 let wordData = {
@@ -20,10 +121,40 @@ let wordData = {
         { word: 'FLOR', hint: '🌸', missing: [0, 2] },
         { word: 'BOLA', hint: '⚽', missing: [1, 3] },
         { word: 'SOL', hint: '☀️', missing: [0, 2] },
-        { word: 'PEIXE', hint: '🐟', missing: [0, 2, 4] }
-    ]
+        { word: 'PEIXE', hint: '🐟', missing: [0, 2, 4] },
+        { word: 'CARRO', hint: '🚗', missing: [1, 3] },
+        { word: 'BANANA', hint: '🍌', missing: [0, 3, 5] },
+        { word: 'PATO', hint: '🦆', missing: [1, 2] },
+        { word: 'COELHO', hint: '🐇', missing: [0, 3, 5] },
+        { word: 'LEÃO', hint: '🦁', missing: [0, 2] },
+        { word: 'MACACO', hint: '🐒', missing: [1, 4] },
+        { word: 'RATO', hint: '🐭', missing: [0, 2] },
+        { word: 'VACA', hint: '🐄', missing: [0, 2] },
+        { word: 'CAVALO', hint: '🐴', missing: [1, 4] },
+        { word: 'PANDA', hint: '🐼', missing: [0, 3] },
+        { word: 'TIGRE', hint: '🐯', missing: [1, 3] },
+        { word: 'ABELHA', hint: '🐝', missing: [0, 3, 5] },
+        { word: 'SAPO', hint: '🐸', missing: [0, 2] },
+        { word: 'FOGO', hint: '🔥', missing: [1, 2] },
+        { word: 'LUA', hint: '🌙', missing: [0, 1] },
+        { word: 'NAVE', hint: '🚀', missing: [1, 3] },
+        { word: 'ESTRELA', hint: '⭐', missing: [0, 3, 5] },
+        { word: 'CORAÇÃO', hint: '❤️', missing: [0, 3, 6] },
+        { word: 'CHUVA', hint: '🌧️', missing: [1, 4] },
+        { word: 'ARCO', hint: '🌈', missing: [0, 2] },
+        { word: 'LIVRO', hint: '📖', missing: [1, 3] },
+        { word: 'ESCOLA', hint: '🏫', missing: [0, 3] },
+        { word: 'BEBÊ', hint: '🍼', missing: [1, 2] },
+        { word: 'CAMA', hint: '🛏️', missing: [0, 2] },
+        { word: 'FOGÃO', hint: '🍳', missing: [1, 3] },
+        { word: 'MAÇÃ', hint: '🍎', missing: [0, 2] },
+        { word: 'DENTE', hint: '🦷', missing: [0, 3] },
+        { word: 'SAPATO', hint: '👟', missing: [1, 4] },
+        { word: 'ROUPA', hint: '👕', missing: [0, 2] },
+        { word: 'FADA', hint: '🧚‍♀️', missing: [1, 2] },
+        { word: 'TERRA', hint: '🌍', missing: [1, 3] }
+    ].sort(() => Math.random() - 0.5) 
 };
-
 // Dados para Formar Frases
 let sentenceData = {
     currentIndex: 0,
@@ -32,8 +163,24 @@ let sentenceData = {
         { target: 'O gato subiu na árvore', words: ['O', 'gato', 'subiu', 'na', 'árvore', 'casa', 'bola'] },
         { target: 'A bola é vermelha', words: ['A', 'bola', 'é', 'vermelha', 'gato', 'casa', 'grande'] },
         { target: 'Eu amo minha família', words: ['Eu', 'amo', 'minha', 'família', 'escola', 'brincar', 'feliz'] },
-        { target: 'O sol brilha no céu', words: ['O', 'sol', 'brilha', 'no', 'céu', 'água', 'flores'] }
-    ]
+        { target: 'O sol brilha no céu', words: ['O', 'sol', 'brilha', 'no', 'céu', 'água', 'flores'] },
+        { target: 'O cachorro corre no parque', words: ['O', 'cachorro', 'corre', 'no', 'parque', 'bola', 'menino'] },
+        { target: 'A menina come uma maçã', words: ['A', 'menina', 'come', 'uma', 'maçã', 'livro', 'carro'] },
+        { target: 'O peixe nada no rio', words: ['O', 'peixe', 'nada', 'no', 'rio', 'gato', 'flor'] },
+        { target: 'A escola é muito grande', words: ['A', 'escola', 'é', 'muito', 'grande', 'pequena', 'verde'] },
+        { target: 'O passarinho canta bonito', words: ['O', 'passarinho', 'canta', 'bonito', 'árvore', 'janela', 'menina'] },
+        { target: 'Eu gosto de brincar', words: ['Eu', 'gosto', 'de', 'brincar', 'livro', 'azul', 'feliz'] },
+        { target: 'O carro está na garagem', words: ['O', 'carro', 'está', 'na', 'garagem', 'porta', 'chão'] },
+        { target: 'A flor tem um perfume doce', words: ['A', 'flor', 'tem', 'um', 'perfume', 'doce', 'chuva'] },
+        { target: 'O menino lê um livro', words: ['O', 'menino', 'lê', 'um', 'livro', 'sapato', 'amigo'] },
+        { target: 'A casa é azul e bonita', words: ['A', 'casa', 'é', 'azul', 'e', 'bonita', 'nuvem'] },
+        { target: 'O gato dorme no sofá', words: ['O', 'gato', 'dorme', 'no', 'sofá', 'bola', 'carne'] },
+        { target: 'Eu bebo água gelada', words: ['Eu', 'bebo', 'água', 'gelada', 'quente', 'chuva', 'vento'] },
+        { target: 'A vaca come capim verde', words: ['A', 'vaca', 'come', 'capim', 'verde', 'branco', 'sol'] },
+        { target: 'O menino joga bola', words: ['O', 'menino', 'joga', 'bola', 'livro', 'peixe', 'roupa'] },
+        { target: 'A lua brilha à noite', words: ['A', 'lua', 'brilha', 'à', 'noite', 'sol', 'nuvem'] },
+        { target: 'O bebê sorri feliz', words: ['O', 'bebê', 'sorri', 'feliz', 'gato', 'livro', 'copo'] }
+    ].sort(() => Math.random() - 0.5) 
 };
 
 // Dados para Quiz de Sons
@@ -56,7 +203,22 @@ let rhymeData = {
         { word: 'CASA', options: ['BONECA', 'GATO', 'SOL', 'ASA'], correct: 'ASA' },
         { word: 'FLOR', options: ['AMOR', 'GATO', 'BOLA', 'CASA'], correct: 'AMOR' },
         { word: 'BOLA', options: ['COLA', 'GATO', 'FLOR', 'MESA'], correct: 'COLA' },
-        { word: 'CORAÇÃO', options: ['LIMÃO', 'GATO', 'CASA', 'BOLA'], correct: 'LIMÃO' }
+        { word: 'CORAÇÃO', options: ['LIMÃO', 'GATO', 'CASA', 'BOLA'], correct: 'LIMÃO' },
+        { word: 'SAPO', options: ['PAPO', 'CASA', 'FADA', 'LUA'], correct: 'PAPO' },
+        { word: 'MÃO', options: ['PÃO', 'CASA', 'BOLA', 'PEIXE'], correct: 'PÃO' },
+        { word: 'PEIXE', options: ['DEIXE', 'CASA', 'FLOR', 'BOLA'], correct: 'DEIXE' },
+        { word: 'SOL', options: ['GOL', 'CASA', 'FADA', 'LUA'], correct: 'GOL' },
+        { word: 'LUA', options: ['RUA', 'CASA', 'PEIXE', 'FLOR'], correct: 'RUA' },
+        { word: 'PÉ', options: ['CAFÉ', 'CASA', 'LUA', 'MAR'], correct: 'CAFÉ' },
+        { word: 'DENTE', options: ['GENTE', 'CASA', 'FADA', 'SOL'], correct: 'GENTE' },
+        { word: 'FADA', options: ['NADA', 'CASA', 'LUA', 'BOLA'], correct: 'NADA' },
+        { word: 'COPO', options: ['TOPO', 'CASA', 'FADA', 'PEIXE'], correct: 'TOPO' },
+        { word: 'TREM', options: ['BEM', 'CASA', 'PATO', 'FLOR'], correct: 'BEM' },
+        { word: 'LEITE', options: ['JEITE', 'CASA', 'BOLA', 'PÉ'], correct: 'JEITE' },
+        { word: 'NOITE', options: ['FOICE', 'CASA', 'MAR', 'FLOR'], correct: 'FOICE' },
+        { word: 'MAR', options: ['LAR', 'CASA', 'LUA', 'SOL'], correct: 'LAR' },
+        { word: 'CHUVA', options: ['LUVA', 'CASA', 'BOLA', 'FADA'], correct: 'LUVA' },
+        { word: 'FELIZ', options: ['RAIZ', 'CASA', 'SOL', 'FLOR'], correct: 'RAIZ' }
     ]
 };
 
@@ -65,13 +227,25 @@ let syllableData = {
     currentIndex: 0,
     sequence: [],
     words: [
+        { word: 'SAPO', syllables: ['SA', 'PO'] },
+        { word: 'MESA', syllables: ['ME', 'SA'] },
+        { word: 'MACACO', syllables: ['MA', 'CA', 'CO'] },
+        { word: 'CAVALO', syllables: ['CA', 'VA', 'LO'] },
+        { word: 'BEBÊ', syllables: ['BE', 'BÊ'] },
+        { word: 'ESCOLA', syllables: ['ES', 'CO', 'LA'] },
+        { word: 'CAMISA', syllables: ['CA', 'MI', 'SA'] },
+        { word: 'CACHORRO', syllables: ['CA', 'CHOR', 'RO'] },
+        { word: 'LEITE', syllables: ['LEI', 'TE'] },
+        { word: 'TOMATE', syllables: ['TO', 'MA', 'TE'] },
+        { word: 'ABACAXI', syllables: ['A', 'BA', 'CA', 'XI'] },
+        { word: 'JANELA', syllables: ['JA', 'NE', 'LA'] },
+        { word: 'PEIXE', syllables: ['PEI', 'XE'] },
         { word: 'CASA', syllables: ['CA', 'SA'] },
         { word: 'GATO', syllables: ['GA', 'TO'] },
         { word: 'BOLA', syllables: ['BO', 'LA'] },
-        { word: 'FLOR', syllables: ['FLOR'] },
         { word: 'PATO', syllables: ['PA', 'TO'] },
         { word: 'BANANA', syllables: ['BA', 'NA', 'NA'] }
-    ]
+    ].sort(() => Math.random() - 0.5) 
 };
 
 // Dados para Caça Letras
@@ -93,7 +267,6 @@ function showMenu() {
     });
     document.getElementById('activities-menu').style.display = 'grid';
     gameStats.currentGame = null;
-    updateGlobalStats();
 }
 
 function showGame(gameId) {
@@ -115,27 +288,6 @@ function showGame(gameId) {
     }
 }
 
-function updateGlobalStats() {
-    document.getElementById('total-score').textContent = gameStats.totalScore;
-    document.getElementById('total-correct').textContent = gameStats.totalCorrect;
-    document.getElementById('games-played').textContent = gameStats.gamesPlayed;
-    document.getElementById('streak').textContent = gameStats.streak;
-
-    // Aqui seria o ponto de integração com banco de dados
-    // saveStatsToDatabase(gameStats);
-}
-
-function addPoints(points, correct = true) {
-    gameStats.totalScore += points;
-    if (correct) {
-        gameStats.totalCorrect++;
-        gameStats.streak++;
-    } else {
-        gameStats.streak = 0;
-    }
-    updateGlobalStats();
-}
-
 function playSound(text) {
     if ('speechSynthesis' in window) {
         const utterance = new SpeechSynthesisUtterance(text);
@@ -153,6 +305,10 @@ function showFeedback(elementId, message, isCorrect) {
     setTimeout(() => feedback.classList.remove('show'), 3000);
 }
 
+function toggleMenu() {
+    document.getElementById("menuDropdown").classList.toggle("show");
+}
+
 // =====================================================
 // JOGO 1: COMPLETE A PALAVRA
 // =====================================================
@@ -167,7 +323,6 @@ function initWordGame() {
     options.innerHTML = '';
     wordData.selectedSlot = null;
 
-    // Criar slots para cada letra
     for (let i = 0; i < current.word.length; i++) {
         const slot = document.createElement('div');
         slot.className = 'letter-slot';
@@ -182,7 +337,6 @@ function initWordGame() {
         puzzle.appendChild(slot);
     }
 
-    // Criar opções de letras
     const correctLetters = current.missing.map(i => current.word[i]);
     const wrongLetters = ['B', 'D', 'F', 'J', 'K', 'Q', 'V', 'W', 'X', 'Y', 'Z'].slice(0, 3);
     const allLetters = [...correctLetters, ...wrongLetters].sort(() => Math.random() - 0.5);
@@ -194,6 +348,13 @@ function initWordGame() {
         btn.onclick = () => placeLetter(letter, btn);
         options.appendChild(btn);
     });
+
+    // Restaura o botão
+    const actionBtn = document.getElementById('word-action-btn');
+    if (actionBtn) {
+        actionBtn.textContent = 'Verificar';
+        actionBtn.onclick = checkWord;
+    }
 }
 
 function selectSlot(index) {
@@ -217,36 +378,6 @@ function placeLetter(letter, button) {
     button.classList.add('used');
     wordData.selectedSlot = null;
 }
-
-// botão único (Verificar / Próxima Palavra)
-function ensureWordButton() {
-    const actionContainer = document.querySelector('#complete-word .action-buttons');
-    if (!actionContainer) return null;
-
-    let actionBtn = document.getElementById('word-action-btn');
-
-    // cria se não existir
-    if (!actionBtn) {
-        actionBtn = document.createElement('button');
-        actionBtn.id = 'word-action-btn';
-        actionBtn.className = 'action-button';
-        actionContainer.innerHTML = '';
-        actionContainer.appendChild(actionBtn);
-    }
-
-    // configuração padrão
-    actionBtn.textContent = 'Verificar';
-    actionBtn.onclick = checkWord;
-
-    return actionBtn;
-}
-
-// cria o botão assim que a página carrega
-document.addEventListener('DOMContentLoaded', () => {
-    ensureWordButton();
-});
-
-// funções do botão
 
 function checkWord() {
     const current = wordData.words[wordData.currentIndex];
@@ -273,14 +404,6 @@ function checkWord() {
 function nextWord() {
     wordData.currentIndex = (wordData.currentIndex + 1) % wordData.words.length;
     initWordGame();
-
-    // restaura o botão para "Verificar"
-    const actionBtn = ensureWordButton();
-    if (actionBtn) {
-        actionBtn.textContent = 'Verificar';
-        actionBtn.onclick = checkWord;
-    }
-
     document.getElementById('word-feedback').classList.remove('show');
 }
 
@@ -558,22 +681,17 @@ function nextSyllableWord() {
 // =====================================================
 
 function initLetterHunt() {
-    // Escolher letra aleatória
     letterHuntData.currentLetter = letterHuntData.alphabet[Math.floor(Math.random() * letterHuntData.alphabet.length)];
     document.getElementById('target-letter-display').textContent = `Encontre a letra: ${letterHuntData.currentLetter}`;
 
-    // Criar grade com letras aleatórias
     const grid = document.getElementById('alphabet-grid');
     grid.innerHTML = '';
 
-    // Gerar 24 letras aleatórias + garantir que a letra alvo apareça pelo menos uma vez
     const gridLetters = [];
     for (let i = 0; i < 23; i++) {
         gridLetters.push(letterHuntData.alphabet[Math.floor(Math.random() * letterHuntData.alphabet.length)]);
     }
-    gridLetters.push(letterHuntData.currentLetter); // Garantir que a letra apareça
-
-    // Embaralhar
+    gridLetters.push(letterHuntData.currentLetter);
     gridLetters.sort(() => Math.random() - 0.5);
 
     gridLetters.forEach(letter => {
@@ -584,7 +702,6 @@ function initLetterHunt() {
         grid.appendChild(btn);
     });
 
-    // Iniciar timer
     letterHuntData.timeLeft = letterHuntData.timeLimit;
     startLetterHuntTimer();
 }
@@ -607,10 +724,6 @@ function startLetterHuntTimer() {
     }, 1000);
 }
 
-function toggleMenu() {
-    document.getElementById("menuDropdown").classList.toggle("show");
-}
-
 function checkLetterHunt(selectedLetter, button) {
     clearInterval(letterHuntData.timer);
 
@@ -627,7 +740,6 @@ function checkLetterHunt(selectedLetter, button) {
         playSound(`Essa não é a letra correta`);
     }
 
-    // Desabilitar todos os botões
     document.querySelectorAll('.alphabet-letter').forEach(btn => {
         btn.style.pointerEvents = 'none';
     });
@@ -644,10 +756,18 @@ function nextLetterHunt() {
 }
 
 // =====================================================
-// MENU RESPONSIVO E INICIALIZAÇÃO
+// INICIALIZAÇÃO
 // =====================================================
 
 document.addEventListener("DOMContentLoaded", function () {
+    console.log("🚀 Página carregada!");
+    
+    // Carrega progresso do banco de dados
+    setTimeout(() => {
+        loadStatsFromDatabase();
+    }, 500);
+
+    // Menu hambúrguer (se existir)
     const hamburger = document.querySelector(".hamburger");
     const navMenu = document.querySelector(".nav-menu");
 
@@ -666,21 +786,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
-// =====================================================
-// INICIALIZAÇÃO DOS JOGOS (executado quando a página carrega)
-// =====================================================
-
-window.onload = function () {
-    generateWordSearchGrid();   // Inicia caça-palavras
-    initMemoryGame();           // Inicia jogo da memória
-    initSentenceActivity();     // Inicia formar frases
-    initSoundQuiz();            // Inicia quiz de sons
-    initRhymeActivity();        // Inicia rimas
-    showNotification('Vamos praticar com 5 jogos diferentes! 🎮');   // Mensagem inicial
-};
-
-// ==========================
-// Ir para o topo ao recarregar
-// ==========================
+// Scroll para o topo ao recarregar
 window.history.scrollRestoration = 'manual';
 window.scrollTo(0, 0);

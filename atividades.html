@@ -16,14 +16,14 @@
 <body>
 
     <script type="module">
-        // =====================================================
-        // CONEXÃO SUPABASE
-        // =====================================================
         import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
         const SUPABASE_URL = 'https://dnphjoqmkvnjueiwjayu.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRucGhqb3Fta3ZuanVlaXdqYXl1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc5NjE3ODEsImV4cCI6MjA3MzUzNzc4MX0.r8-M9EZg73sIrwESfd61hyGITsEwv_TJFZOBYeXk3d8';
         const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // Exporta o supabase globalmente para uso no script_atividades.js
+        window.supabaseClient = supabase;
 
         async function carregarPontuacaoGlobal() {
             console.log("Carregando pontuação global...");
@@ -31,26 +31,48 @@
             const usuarioId = localStorage.getItem('usuarioId');
             console.log("ID do usuário:", usuarioId);
 
-            if (!usuarioId) return;
-
-            const { data, error } = await supabase
-                .from('progresso')
-                .select('pontos, atividades_concluidas, numero_conquistas, nivel_usuario')
-                .eq('user_id', usuarioId)
-                .maybeSingle();
-
-            if (error) {
-                console.error("Erro ao buscar pontuação global:", error);
+            if (!usuarioId) {
+                console.warn(" Nenhum usuário logado");
                 return;
             }
 
-            console.log("Dados recebidos:", data);
+            try {
+                const { data, error } = await supabase
+                    .from('progresso')
+                    .select('pontos, atividades_concluidas, acertos')
+                    .eq('user_id', usuarioId)
+                    .maybeSingle();
 
-            document.getElementById('total-score').textContent = data?.pontos ?? 0;
-            document.getElementById('total-correct').textContent = data?.numero_conquistas ?? 0;
-            document.getElementById('games-played').textContent = data?.atividades_concluidas ?? 0;
+                if (error) {
+                    console.error(" Erro ao buscar pontuação global:", error);
+                    return;
+                }
+
+                console.log(" Dados recebidos:", data);
+
+                if (data) {
+                    // Atualiza os elementos da interface
+                    document.getElementById('total-score').textContent = data.pontos ?? 0;
+                    document.getElementById('total-correct').textContent = data.acertos ?? 0;
+                    document.getElementById('games-played').textContent = data.atividades_concluidas ?? 0;
+
+                    // Salva no localStorage para sincronização com o JS
+                    const gameStats = {
+                        totalScore: data.pontos ?? 0,
+                        totalCorrect: data.acertos ?? 0,
+                        gamesPlayed: data.atividades_concluidas ?? 0,
+                    };
+                    localStorage.setItem('gameStats', JSON.stringify(gameStats));
+                    console.log(" Progresso sincronizado com localStorage");
+                } else {
+                    console.log("ℹ️ Nenhum progresso encontrado, usando valores padrão");
+                }
+            } catch (err) {
+                console.error(" Erro inesperado:", err);
+            }
         }
 
+        // Carrega quando a página estiver pronta
         window.addEventListener('DOMContentLoaded', carregarPontuacaoGlobal);
     </script>
 
@@ -117,8 +139,7 @@
                     <span id="games-played">0</span> atividades
                 </div>
                 <div class="score-item">
-                    <img src="img/fogo.png" alt="Fogo" class="icon">
-                    Sequência: <span id="streak">0</span>
+                    <img src="img/fogo.png" alt="Fogo" class="icon">Sequência: <span id="streak">0</span>
                 </div>
             </div>
 
