@@ -678,20 +678,25 @@ body {
     display: flex;
 }
 
-/* Associação */
 .matching-container {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 2rem;
-    margin: 2rem 0;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 3rem;
+    margin: 2rem auto;
+    max-width: 600px;
 }
 
+/* Cada lado (palavras e emojis) vira uma coluna vertical */
 .matching-column {
     display: flex;
     flex-direction: column;
     gap: 1rem;
+    flex: 1;
+    align-items: stretch;
 }
 
+/* Garante que os botões fiquem proporcionais e ocupem toda a largura da coluna */
 .matching-item {
     background: linear-gradient(135deg, #FFE66D 0%, #FF6B6B 100%);
     border: none;
@@ -703,6 +708,7 @@ body {
     cursor: pointer;
     transition: all 0.3s ease;
     text-align: center;
+    width: 100%;
 }
 
 .matching-item:hover {
@@ -717,6 +723,24 @@ body {
 .matching-item.matched {
     background: #2ecc71;
     pointer-events: none;
+}
+
+/* Responsivo: em telas pequenas, empilha as colunas */
+@media (max-width: 768px) {
+    .matching-container {
+        flex-direction: column;
+        gap: 1.5rem;
+        align-items: center;
+    }
+
+    .matching-column {
+        width: 100%;
+        align-items: center;
+    }
+
+    .matching-item {
+        width: 80%;
+    }
 }
 
 /* Botões de Ação */

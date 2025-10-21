@@ -139,22 +139,54 @@ function incrementGamesPlayed() {
 // ============================
 
 // Dados do Jogo: Adivinhe o Animal
-const animalData = [
+const animalData = shuffle([
     { imagem: "img/gato.png", correta: "gato", opcoes: ["gato", "cachorro", "pato"] },
-    { imagem: "img/cachorro.png", correta: "cachorro", opcoes: ["gato", "cachorro", "coelho"] },
+    { imagem: "img/cachorro.png", correta: "cachorro", opcoes: ["gato", "cachorro", "porco"] },
     { imagem: "img/papagaio2.png", correta: "papagaio", opcoes: ["papagaio", "leão", "peixe"] },
     { imagem: "img/pato.png", correta: "pato", opcoes: ["pato", "urso", "gato"] },
-    { imagem: "img/coelho.png", correta: "coelho", opcoes: ["coelho", "rato", "porco"] }
-];
+    { imagem: "img/coelho.png", correta: "coelho", opcoes: ["coelho", "rato", "porco"] },
+    { imagem: "img/leao.png", correta: "leão", opcoes: ["tigre", "gato", "leão"] },
+    { imagem: "img/tigre.png", correta: "tigre", opcoes: ["urso", "tigre", "zebra"] },
+    { imagem: "img/elefante.png", correta: "elefante", opcoes: ["hipopótamo", "rinoceronte", "elefante"] },
+    { imagem: "img/girafa.png", correta: "girafa", opcoes: ["zebra", "girafa", "leopardo"] },
+    { imagem: "img/zebra.png", correta: "zebra", opcoes: ["zebra", "cavalo", "vaca"] },
+    { imagem: "img/urso.png", correta: "urso", opcoes: ["tigre", "urso", "lobo"] },
+    { imagem: "img/macaco.png", correta: "macaco", opcoes: ["macaco", "coelho", "cavalo"] },
+    { imagem: "img/cavalo.png", correta: "cavalo", opcoes: ["vaca", "cavalo", "porco"] },
+    { imagem: "img/vaca.png", correta: "vaca", opcoes: ["vaca", "cabra", "ovelha"] },
+    { imagem: "img/ovelha.png", correta: "ovelha", opcoes: ["vaca", "cabra", "ovelha"] },
+    { imagem: "img/porco.png", correta: "porco", opcoes: ["porco", "vaca", "gato"] },
+    { imagem: "img/peixe.png", correta: "peixe", opcoes: ["golfinho", "peixe", "sapo"] },
+    { imagem: "img/onca.png", correta: "onça", opcoes: ["cobra", "onça", "tartaruga"] },
+    { imagem: "img/arara.png", correta: "arara", opcoes: ["arara", "lagarto", "leopardo"] },
+    { imagem: "img/tartaruga2.png", correta: "tartaruga", opcoes: ["sapo", "tartaruga", "peixe"] }
+]);
+
 
 // Dados do Jogo: Monte as Sílabas
-const syllableData = [
+const syllableData = shuffle([
     { imagem: "img/gato.png", silabas: ["ga", "to"], correta: "gato" },
     { imagem: "img/cachorro.png", silabas: ["ca", "chor", "ro"], correta: "cachorro" },
+    { imagem: "img/papagaio2.png", silabas: ["pa", "pa", "gai", "o"], correta: "papagaio" },
     { imagem: "img/pato.png", silabas: ["pa", "to"], correta: "pato" },
-    { imagem: "img/coelho.png", silabas: ["coe", "lho"], correta: "coelho" },
-    { imagem: "img/papagaio2.png", silabas: ["pa", "pa", "gai", "o"], correta: "papagaio" }
-];
+    { imagem: "img/coelho.png", silabas: ["co", "e", "lho"], correta: "coelho" },
+    { imagem: "img/leao.png", silabas: ["le", "ão"], correta: "leão" },
+    { imagem: "img/tigre.png", silabas: ["ti", "gre"], correta: "tigre" },
+    { imagem: "img/elefante.png", silabas: ["e", "le", "fan", "te"], correta: "elefante" },
+    { imagem: "img/girafa.png", silabas: ["gi", "ra", "fa"], correta: "girafa" },
+    { imagem: "img/zebra.png", silabas: ["ze", "bra"], correta: "zebra" },
+    { imagem: "img/urso.png", silabas: ["ur", "so"], correta: "urso" },
+    { imagem: "img/macaco.png", silabas: ["ma", "ca", "co"], correta: "macaco" },
+    { imagem: "img/cavalo.png", silabas: ["ca", "va", "lo"], correta: "cavalo" },
+    { imagem: "img/vaca.png", silabas: ["va", "ca"], correta: "vaca" },
+    { imagem: "img/ovelha.png", silabas: ["o", "ve", "lha"], correta: "ovelha" },
+    { imagem: "img/porco.png", silabas: ["por", "co"], correta: "porco" },
+    { imagem: "img/peixe.png", silabas: ["pei", "xe"], correta: "peixe" },
+    { imagem: "img/onca.png", silabas: ["on", "ça"], correta: "onça" },
+    { imagem: "img/arara.png", silabas: ["a", "ra", "ra"], correta: "arara" },
+    { imagem: "img/tartaruga2.png", silabas: ["tar", "ta", "ru", "ga"], correta: "tartaruga" }
+]);
+
 
 // Dados do jogo 1: Caça Palavras
 let wordSearchData = {
