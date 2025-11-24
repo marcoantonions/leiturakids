@@ -697,6 +697,10 @@ nav a::after {
         font-size: 0.9rem;
         padding: 0.8rem 1.5rem;
     }
+
+    .ancora {
+        display: none !important;
+    }
 }
 
 /* Botão de notificação */

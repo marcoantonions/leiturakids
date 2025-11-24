@@ -54,7 +54,7 @@
                     // Atualiza os elementos da interface
                     document.getElementById('total-score').textContent = data.pontos ?? 0;
                     document.getElementById('total-correct').textContent = data.acertos ?? 0;
-                    document.getElementById('games-played').textContent = data.atividades_concluidas ?? 0;
+                    document.getElementById('act-completed').textContent = data.atividades_concluidas ?? 0;
 
                     // Salva no localStorage para sincronização com o JS
                     const gameStats = {
@@ -136,7 +136,7 @@
                 </div>
                 <div class="score-item">
                     <img src="img/lapis.png" alt="Lápis" class="icon">
-                    <span id="games-played">0</span> atividades
+                    <span id="act-completed">0</span> atividades
                 </div>
                 <div class="score-item">
                     <img src="img/fogo.png" alt="Fogo" class="icon">Sequência: <span id="streak">0</span>

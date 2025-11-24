@@ -9,14 +9,265 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="script_conquistas.js"></script>
-    <title>Leitura Kids</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <title>Leitura Kids - Conquistas</title>
 </head>
 
 <body>
-    <script>
-        // Ir para o topo ao reiniciar a página
-        window.history.scrollRestoration = 'manual';
-        window.scrollTo(0, 0);
+    <script type="module">
+        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+
+        const SUPABASE_URL = 'https://dnphjoqmkvnjueiwjayu.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRucGhqb3Fta3ZuanVlaXdqYXl1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc5NjE3ODEsImV4cCI6MjA3MzUzNzc4MX0.r8-M9EZg73sIrwESfd61hyGITsEwv_TJFZOBYeXk3d8';
+        const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // ===============================
+        // SISTEMA DE CONQUISTAS
+        // ===============================
+        const CONQUISTAS = {
+            pontos: [
+                {
+                    id: 'leitor_iniciante_pontos',
+                    nome: 'Leitor Iniciante',
+                    descricao: 'Crie sua conta',
+                    icone: 'livro-leitura.png',
+                    requisito: 0,
+                    tipo: 'pontos'
+                },
+                {
+                    id: 'explorador_historias',
+                    nome: 'Explorador de Histórias',
+                    descricao: 'Consiga 500 pontos',
+                    icone: 'mapa.png',
+                    requisito: 500,
+                    tipo: 'pontos'
+                },
+                {
+                    id: 'mestre_livros',
+                    nome: 'Mestre dos Livros',
+                    descricao: 'Faça 1000 pontos',
+                    icone: 'livro-biblioteca.png',
+                    requisito: 1000,
+                    tipo: 'pontos'
+                },
+                {
+                    id: 'sabio_leitura',
+                    nome: 'Sábio da Leitura',
+                    descricao: 'Alcance 2000 pontos',
+                    icone: 'raio.png',
+                    requisito: 2000,
+                    tipo: 'pontos'
+                }
+            ],
+            atividades: [
+                {
+                    id: 'leitor_iniciante_ativ',
+                    nome: 'Leitor Iniciante',
+                    descricao: 'Conclua 30 atividades',
+                    icone: 'livro-leitura.png',
+                    requisito: 30,
+                    tipo: 'atividades'
+                },
+                {
+                    id: 'explorador_ativ',
+                    nome: 'Explorador',
+                    descricao: 'Conclua 60 atividades',
+                    icone: 'mapa.png',
+                    requisito: 60,
+                    tipo: 'atividades'
+                },
+                {
+                    id: 'bibliotecario',
+                    nome: 'Bibliotecário',
+                    descricao: 'Conclua 90 atividades',
+                    icone: 'livro-biblioteca.png',
+                    requisito: 90,
+                    tipo: 'atividades'
+                },
+                {
+                    id: 'monge_leitura',
+                    nome: 'Monge da leitura',
+                    descricao: 'Conclua 120 atividades',
+                    icone: 'raio.png',
+                    requisito: 120,
+                    tipo: 'atividades'
+                }
+            ],
+            jogos: [
+                {
+                    id: 'pequeno_amador',
+                    nome: 'Pequeno Amador',
+                    descricao: 'Jogue 30 jogos',
+                    icone: 'cerebro.png',
+                    requisito: 30,
+                    tipo: 'jogos'
+                },
+                {
+                    id: 'mago_jogos',
+                    nome: 'Mago dos Jogos',
+                    descricao: 'Jogue 60 jogos',
+                    icone: 'quebracabeca.png',
+                    requisito: 60,
+                    tipo: 'jogos'
+                },
+                {
+                    id: 'gigante_games',
+                    nome: 'Gigante dos Games',
+                    descricao: 'Jogue 80 jogos',
+                    icone: 'corredor.png',
+                    requisito: 80,
+                    tipo: 'jogos'
+                },
+                {
+                    id: 'rei_diversao',
+                    nome: 'Rei da Diversão',
+                    descricao: 'Jogue 100 jogos',
+                    icone: 'alvo.png',
+                    requisito: 100,
+                    tipo: 'jogos'
+                }
+            ]
+        };
+
+        function atualizarConquistas(progresso) {
+            console.log('🏆 Atualizando todas as conquistas:', progresso);
+            
+            let totalConquistasDesbloqueadas = 0;
+            let totalConquistas = 0;
+
+            // Atualiza conquistas de pontos
+            const gridPontos = document.querySelector('.category-section:nth-child(1) .badges-grid');
+            if (gridPontos) {
+                gridPontos.innerHTML = '';
+                CONQUISTAS.pontos.forEach(conquista => {
+                    totalConquistas++;
+                    const desbloqueada = progresso.pontos >= conquista.requisito;
+                    if (desbloqueada) totalConquistasDesbloqueadas++;
+                    gridPontos.appendChild(criarBadge(conquista, desbloqueada));
+                });
+            }
+
+            // Atualiza conquistas de atividades
+            const gridAtividades = document.querySelector('.category-section:nth-child(2) .badges-grid');
+            if (gridAtividades) {
+                gridAtividades.innerHTML = '';
+                CONQUISTAS.atividades.forEach(conquista => {
+                    totalConquistas++;
+                    const desbloqueada = progresso.atividades_concluidas >= conquista.requisito;
+                    if (desbloqueada) totalConquistasDesbloqueadas++;
+                    gridAtividades.appendChild(criarBadge(conquista, desbloqueada));
+                });
+            }
+
+            // Atualiza conquistas de jogos
+            const gridJogos = document.querySelector('.category-section:nth-child(3) .badges-grid');
+            if (gridJogos) {
+                gridJogos.innerHTML = '';
+                CONQUISTAS.jogos.forEach(conquista => {
+                    totalConquistas++;
+                    const desbloqueada = progresso.jogos_concluidos >= conquista.requisito;
+                    if (desbloqueada) totalConquistasDesbloqueadas++;
+                    gridJogos.appendChild(criarBadge(conquista, desbloqueada));
+                });
+            }
+
+            // Atualiza estatísticas
+            atualizarEstatisticas(totalConquistasDesbloqueadas, totalConquistas, progresso);
+            
+            console.log('✅ Conquistas atualizadas:', totalConquistasDesbloqueadas, 'de', totalConquistas);
+        }
+
+        function criarBadge(conquista, desbloqueada) {
+            const badgeDiv = document.createElement('div');
+            badgeDiv.className = desbloqueada ? 'badge unlocked' : 'badge locked';
+            
+            badgeDiv.innerHTML = `
+                <div class="stat-icon icon">
+                    <img src="img/${conquista.icone}" alt="${conquista.nome}"/>
+                </div>
+                <div class="badge-name">${conquista.nome}</div>
+                <div class="badge-description">${conquista.descricao}</div>
+            `;
+
+            return badgeDiv;
+        }
+
+        function atualizarEstatisticas(desbloqueadas, total, progresso) {
+            const bloqueadas = total - desbloqueadas;
+            const percentualCompleto = ((desbloqueadas / total) * 100).toFixed(1);
+            
+            // Calcula próximas conquistas (conquistas que faltam pouco para desbloquear)
+            let proximas = 0;
+            
+            // Verifica conquistas de pontos
+            CONQUISTAS.pontos.forEach(c => {
+                if (progresso.pontos < c.requisito && progresso.pontos >= c.requisito * 0.7) {
+                    proximas++;
+                }
+            });
+            
+            // Verifica conquistas de atividades
+            CONQUISTAS.atividades.forEach(c => {
+                if (progresso.atividades_concluidas < c.requisito && 
+                    progresso.atividades_concluidas >= c.requisito * 0.7) {
+                    proximas++;
+                }
+            });
+            
+            // Verifica conquistas de jogos
+            CONQUISTAS.jogos.forEach(c => {
+                if (progresso.jogos_concluidos < c.requisito && 
+                    progresso.jogos_concluidos >= c.requisito * 0.7) {
+                    proximas++;
+                }
+            });
+
+            // Atualiza os cards de estatísticas
+            const statsCards = document.querySelectorAll('.conquistas-stats .stat-card');
+            if (statsCards.length >= 4) {
+                statsCards[0].querySelector('.stat-number').textContent = desbloqueadas;
+                statsCards[1].querySelector('.stat-number').textContent = bloqueadas;
+                statsCards[2].querySelector('.stat-number').textContent = percentualCompleto + '%';
+                statsCards[3].querySelector('.stat-number').textContent = proximas;
+            }
+        }
+
+        // ===============================
+        // CARREGA PROGRESSO DO USUÁRIO
+        // ===============================
+        async function carregarProgresso() {
+            const usuarioId = localStorage.getItem('usuarioId');
+            if (!usuarioId) {
+                console.error('❌ Usuário não logado');
+                return;
+            }
+
+            const idConvertido = Number(usuarioId);
+            
+            const { data, error } = await supabase
+                .from('progresso')
+                .select('*')
+                .eq('user_id', idConvertido)
+                .single();
+
+            if (error) {
+                console.error('❌ Erro ao carregar progresso:', error.message);
+                return;
+            }
+
+            console.log('📊 Progresso carregado:', data);
+            atualizarConquistas(data);
+        }
+
+        // ===============================
+        // EXECUTA AO CARREGAR A PÁGINA
+        // ===============================
+        window.addEventListener('DOMContentLoaded', () => {
+            console.log('🚀 Página de conquistas carregada');
+            window.history.scrollRestoration = 'manual';
+            window.scrollTo(0, 0);
+            carregarProgresso();
+        });
     </script>
 
     <!-- Notificação -->
@@ -29,7 +280,6 @@
         <div class="nav-container">
             <a href="home.html" class="logo">LeituraKids</a>
             <nav>
-
                 <div class="dropdown">
                     <button onclick="toggleMenu()" class="btn btn-gray">
                         <span class="material-symbols-outlined">menu</span>
@@ -41,12 +291,11 @@
                 </div>
             </nav>
         </div>
-        </div>
     </header>
 
     <!-- Menu Vertical -->
     <nav class="side-nav">
-        <div class="side-nav-item" onclick="window.location.href='home.html'" title="Perfil">
+        <div class="side-nav-item active" onclick="window.location.href='home.html'" title="Perfil">
             <img src="img/casa.png" alt="Perfil">
         </div>
         <div class="side-nav-item" onclick="window.location.href='aulas.html'" title="Aulas">
@@ -66,6 +315,7 @@
     <!-- Conteúdo Conquistas -->
     <main class="main-content">
         <a href="home.html"><button class="back-button">Voltar</button></a>
+        
         <!-- Cabeçalho das Conquistas -->
         <div class="conquistas-header">
             <h1>🏆 Suas Conquistas 🏆</h1>
@@ -76,173 +326,63 @@
         <div class="conquistas-stats">
             <div class="stat-card">
                 <div class="stat-icon icon"><img src="img/medalha.png" alt="Conquistadas"/></div>
-                <div class="stat-number">8</div>
+                <div class="stat-number">0</div>
                 <div class="stat-label">Conquistadas</div>
             </div>
             <div class="stat-card">
                 <div class="stat-icon icon"><img src="img/cadeado.png" alt="Bloqueadas"/></div>
-                <div class="stat-number">15</div>
+                <div class="stat-number">12</div>
                 <div class="stat-label">Bloqueadas</div>
             </div>
             <div class="stat-card">
                 <div class="stat-icon icon"><img src="img/estrela.png" alt="Completado"/></div>
-                <div class="stat-number">34.8%</div>
+                <div class="stat-number">0%</div>
                 <div class="stat-label">Completado</div>
             </div>
             <div class="stat-card">
                 <div class="stat-icon icon"><img src="img/alvo.png" alt="Próximas"/></div>
-                <div class="stat-number">3</div>
+                <div class="stat-number">0</div>
                 <div class="stat-label">Próximas</div>
             </div>
         </div>
 
         <!-- Categorias de Conquistas -->
         <div class="badges-categories">
-            <!-- Alfabeto -->
+            <!-- Conquistas de Pontos -->
             <div class="category-section">
                 <h2 class="category-title">
                     🔤 Conquistas do Alfabeto
                 </h2>
                 <p class="category-description">Medalhas por aprender as letras e seus sons</p>
                 <div class="badges-grid">
-                    <div class="badge"
-                        onclick="showBadgeDetail('Primeira Letra', '🔤', 'Parabéns! Você aprendeu sua primeira letra!', 'Conquistado em 15/08/2024')">
-                        <div class="stat-icon icon"><img src="img/abc.png" alt="Alfabeto"/></div>
-                        <div class="badge-name">Primeira Letra</div>
-                        <div class="badge-description">Aprenda sua primeira letra</div>
-                    </div>
-                    <div class="badge"
-                        onclick="showBadgeDetail('ABC Completo', '🌟', 'Incrível! Você conhece todo o alfabeto!', 'Conquistado em 20/08/2024')">
-                        <div class="stat-icon icon"><img src="img/estrela.png" alt="Alfabeto"/></div>
-                        <div class="badge-name">ABC Completo</div>
-                        <div class="badge-description">Aprenda todas as 26 letras</div>
-                    </div>
-                    <div class="badge locked">
-                        <div class="stat-icon icon"><img src="img/som.png" alt="Som"/></div>
-                        <div class="badge-name">Cantando o ABC</div>
-                        <div class="badge-description">Cante o alfabeto 5 vezes</div>
-                    </div>
-                    <div class="badge locked">
-                        <div class="stat-icon icon"><img src="img/lupa.png" alt="Detetive"/></div>
-                        <div class="badge-name">Detetive das Letras</div>
-                        <div class="badge-description">Encontre 50 letras escondidas</div>
-                    </div>
+                    <!-- Conquistas serão inseridas dinamicamente aqui -->
                 </div>
             </div>
 
-            <!-- Palavras -->
+            <!-- Conquistas de Atividades -->
             <div class="category-section">
                 <h2 class="category-title">
-                    📝 Conquistas de Palavras
+                    📖 Conquistas das tarefas
                 </h2>
-                <p class="category-description">Medalhas por formar e escrever palavras</p>
+                <p class="category-description">Medalhas por realizar atividades</p>
                 <div class="badges-grid">
-                    <div class="badge"
-                        onclick="showBadgeDetail('Primeira Palavra', '📝', 'Você formou sua primeira palavra! Que emocionante!', 'Conquistado em 17/08/2024')">
-                        <div class="stat-icon icon"><img src="img/prancheta.png" alt="Palavra"/></div>
-                        <div class="badge-name">Primeira Palavra</div>
-                        <div class="badge-description">Forme sua primeira palavra</div>
-                    </div>
-                    <div class="badge new"
-                        onclick="showBadgeDetail('Colecionador', '📚', 'Você já conhece muitas palavras!', 'Conquistado hoje!')">
-                        <div class="stat-icon icon"><img src="img/livro.png" alt="Livro"/></div>
-                        <div class="badge-name">Colecionador</div>
-                        <div class="badge-description">Aprenda 50 palavras</div>
-                    </div>
-                    <div class="badge locked">
-                        <div class="stat-icon icon"><img src="img/construcao.png" alt="Construtor"/></div>
-                        <div class="badge-name">Construtor</div>
-                        <div class="badge-description">Monte 100 palavras</div>
-                    </div>
-                    <div class="badge locked">
-                        <div class="stat-icon icon"><img src="img/circo.png" alt="Malabarista"/></div>
-                        <div class="badge-name">Malabarista</div>
-                        <div class="badge-description">Forme 3 palavras em 1 minuto</div>
-                    </div>
+                    <!-- Conquistas serão inseridas dinamicamente aqui -->
                 </div>
             </div>
 
-            <!-- Leitura -->
-            <div class="category-section">
-                <h2 class="category-title">
-                    📖 Conquistas de Leitura
-                </h2>
-                <p class="category-description">Medalhas por ler histórias e textos</p>
-                <div class="badges-grid">
-                    <div class="badge"
-                        onclick="showBadgeDetail('Primeira História', '📖', 'Você leu sua primeira história completa!', 'Conquistado em 22/08/2024')">
-                        <div class="stat-icon icon"><img src="img/livro-leitura.png" alt="História"/></div>
-                        <div class="badge-name">Primeira História</div>
-                        <div class="badge-description">Leia sua primeira história</div>
-                    </div>
-                    <div class="badge"
-                        onclick="showBadgeDetail('Explorador', '🗺️', 'Você é um verdadeiro explorador de histórias!', 'Conquistado em 25/08/2024')">
-                        <div class="stat-icon icon"><img src="img/mapa.png" alt="Explorador"/></div>
-                        <div class="badge-name">Explorador</div>
-                        <div class="badge-description">Leia 10 histórias diferentes</div>
-                    </div>
-                    <div class="badge locked">
-                        <div class="stat-icon icon"><img src="img/livro-biblioteca.png" alt="Bibliotecário"/></div>
-                        <div class="badge-name">Bibliotecário</div>
-                        <div class="badge-description">Leia 25 histórias</div>
-                    </div>
-                    <div class="badge locked">
-                        <div class="stat-icon icon"><img src="img/raio.pngng" alt="Veloz"/></div>
-                        <div class="badge-name">Leitor Veloz</div>
-                        <div class="badge-description">Leia uma história em 3 minutos</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Jogos -->
+            <!-- Conquistas de Jogos -->
             <div class="category-section">
                 <h2 class="category-title">
                     🎮 Conquistas dos Jogos
                 </h2>
                 <p class="category-description">Medalhas por jogar e se divertir aprendendo</p>
                 <div class="badges-grid">
-                    <div class="badge"
-                        onclick="showBadgeDetail('Memória Excelente', '🧠', 'Sua memória é incrível!', 'Conquistado em 21/08/2024')">
-                        <div class="stat-icon icon"><img src="img/cerebro.png" alt="Memória"/></div>
-                        <div class="badge-name">Memória Excelente</div>
-                        <div class="badge-description">10 acertos seguidos na memória</div>
-                    </div>
-                    <div class="badge"
-                        onclick="showBadgeDetail('Quebra-Cabeça', '🧩', 'Você é expert em quebra-cabeças!', 'Conquistado em 24/08/2024')">
-                        <div class="stat-icon icon"><img src="img/quebracabeca.png" alt="Quebra-Cabeça"/></div>
-                        <div class="badge-name">Quebra-Cabeça</div>
-                        <div class="badge-description">Complete 5 quebra-cabeças</div>
-                    </div>
-                    <div class="badge locked">
-                        <div class="stat-icon icon"><img src="img/corredor.png" alt="Corredor"/></div>
-                        <div class="badge-name">Corredor</div>
-                        <div class="badge-description">Complete o jogo de corrida</div>
-                    </div>
-                    <div class="badge locked">
-                        <div class="stat-icon icon"><img src="img/alvo.png" alt="Alvo"/></div>
-                        <div class="badge-name">Mira Certeira</div>
-                        <div class="badge-description">Acerte 20 alvos seguidos</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Especiais -->
-            <div class="category-section">
-                <h2 class="category-title">
-                    ⭐ Conquistas Especiais
-                </h2>
-                <p class="category-description">Medalhas raras por dedicação e esforço</p>
-                <div class="badges-grid">
-                    <div class="badge"
-                        onclick="showBadgeDetail('Semana Completa', '🔥', 'Você é muito dedicado! Parabéns!', 'Conquistado em 26/08/2024')">
-                        <div class="stat-icon icon"><img src="img/fogo.png" alt="Sequência"/></div>
-                        <div class="badge-name">Semana Completa</div>
-                        <div class="badge-description">7 dias seguidos praticando</div>
-                    </div>
+                    <!-- Conquistas serão inseridas dinamicamente aqui -->
                 </div>
             </div>
         </div>
     </main>
+    
     <a href="#" class="ancora">
         <span class="material-symbols-outlined">anchor</span>
     </a>

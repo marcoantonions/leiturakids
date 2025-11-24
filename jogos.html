@@ -53,18 +53,18 @@
                     // Atualiza os elementos da interface
                     document.getElementById('total-score').textContent = data.pontos ?? 0;
                     document.getElementById('total-correct').textContent = data.acertos ?? 0;
-                    document.getElementById('games-played').textContent = data.atividades_concluidas ?? 0;
+                    document.getElementById('games-played').textContent = data.jogos_concluidos ?? 0;
 
                     // Salva no localStorage para sincronização com o JS
                     const gameStats = {
                         totalScore: data.pontos ?? 0,
                         totalCorrect: data.acertos ?? 0,
-                        gamesPlayed: data.atividades_concluidas ?? 0,
+                        gamesPlayed: data.jogos_concluidos ?? 0,
                     };
                     localStorage.setItem('gameStats', JSON.stringify(gameStats));
                     console.log(" Progresso sincronizado com localStorage");
                 } else {
-                    console.log("ℹ️ Nenhum progresso encontrado, usando valores padrão");
+                    console.log("Nenhum progresso encontrado, usando valores padrão");
                 }
             } catch (err) {
                 console.error(" Erro inesperado:", err);

@@ -83,10 +83,6 @@ document.addEventListener("DOMContentLoaded", function() {
     }, 3000);
 }
 
-function showBadgeInfo(badgeName) {
-    showNotification(`Conquista: ${badgeName}! 🏆`);
-}
-
     // Animação da barra de progresso
 window.addEventListener('load', () => {
     setTimeout(() => {

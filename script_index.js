@@ -203,87 +203,6 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 });
 
-// =====================================================
-// MODAL DE LOGIN
-// =====================================================
-const openBtn = document.getElementById("abrirLogin");
-const closeBtn = document.getElementById("closeModal");
-const modal = document.getElementById("modal");
-
-// Abrir modal
-openBtn.addEventListener("click", () => {
-  modal.style.display = "flex";
-});
-
-// Fechar modal
-closeBtn.addEventListener("click", () => {
-  modal.style.display = "none";
-});
-
-// Fechar ao clicar fora
-window.addEventListener("click", (e) => {
-  if (e.target === modal) {
-    modal.style.display = "none";
-  }
-});
-
-// Atalhos para abrir modal
-document.querySelectorAll(".abrirLogin").forEach(button => {
-  button.addEventListener("click", () => {
-    document.getElementById("modal").style.display = "flex";
-  });
-});
-
-// =====================================================
-// LOGIN SIMPLES (SIMULAÇÃO)
-// =====================================================
-function trocarlogin() {
-  cancelCadastro.addEventListener("click", () => {
-    modalCadastro.style.display = "none";
-    modalLogin.style.display = "flex";
-  });
-}
-
-function abrirPagina() {
-  window.open("home.html", "_self");
-}
-
-function reiniciar() {
-  window.open("index.html", "_self");
-}
-
-function login() {
-  var user = document.getElementById("user").value;
-  var senha = document.getElementById("senha").value;
-
-  if ((user === "ADM" && senha === "123") || (user === "adm" && senha === "123")) {
-    abrirPagina();
-  } else {
-    alert("Usuário ou Senha Inválidos. Tente Novamente.");
-  }
-}
-
-function dado() {
-  alert("Usuario = ADM  |  Senha = 123");
-}
-
-function cadastro() {
-  var nome = document.getElementById("nome").value;
-  var email = document.getElementById("email").value;
-  var usuario = document.getElementById("usuario").value;
-  var password = document.getElementById("password").value;
-
-  if (nome != "" && email != "" && usuario != "" && password != "") {
-    alert("Cadastro Realizado com Sucesso!\n\nFaça o Login na Sua Nova Conta!");
-    reiniciar();
-  } else {
-    alert("Dados Incompletos!");
-  }
-}
-
-// =====================================================
-// MODAIS DE CADASTRO E LOGIN
-// =====================================================
 document.addEventListener("DOMContentLoaded", () => {
   const modalCadastro = document.getElementById("modal-cadastro");
   const modalLogin = document.getElementById("modal-login");
@@ -330,7 +249,7 @@ document.addEventListener("DOMContentLoaded", () => {
     modalCadastro.style.display = "flex";
   });
 
-  // Fechar ao clicar fora do conteúdo
+  // Fechar ao clicar fora
   modalCadastro.addEventListener("click", (e) => {
     if (!cadastroContent.contains(e.target)) {
       modalCadastro.style.display = "none";
@@ -344,39 +263,6 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
-// =====================================================
-// MODAL DE CADASTRO ISOLADO
-// =====================================================
-document.addEventListener("DOMContentLoaded", () => {
-  const modalCadastro = document.getElementById("modal-cadastro");
-  const abrirCadastro = document.getElementById("abrirCadastro");
-  const closeCadastro = document.getElementById("closeCadastro");
-  const cancelCadastro = document.getElementById("cancelCadastro");
-  const modalContent = modalCadastro.querySelector(".modal-content");
-
-  // Abrir modal
-  abrirCadastro.addEventListener("click", () => {
-    modalCadastro.style.display = "flex";
-  });
-
-  // Fechar com botão X
-  closeCadastro.addEventListener("click", () => {
-    modalCadastro.style.display = "none";
-  });
-
-  // Trocar para login
-  cancelCadastro.addEventListener("click", () => {
-    modalCadastro.style.display = "none";
-    modal.style.display = "flex";
-  });
-
-  // Fechar ao clicar fora
-  modalCadastro.addEventListener("click", (e) => {
-    if (!modalContent.contains(e.target)) {
-      modalCadastro.style.display = "none";
-    }
-  });
-});
 
 // =====================================================
 // CONFIGURAÇÕES INICIAIS

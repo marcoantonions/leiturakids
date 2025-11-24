@@ -44,7 +44,7 @@
             <h1 class="hero-title">LeituraKids</h1>
             <p class="hero-subtitle">A Magia da Leitura Começa com um Clique!</p>
             <!-- Botão para abrir o modal -->
-            <button class="cta-button abrirLogin">Vamos lá!</button>
+            <button onclick="abrirModal('modal-login')" class="cta-button abrirLogin">Vamos lá!</button>
 
             <!-- Modal de Login -->
             <div id="modal-login" class="modal-overlay">
@@ -147,15 +147,22 @@
                     if (error || !data) {
                         alert("Usuário ou senha inválidos!");
                     } else {
-                        alert("Login realizado com sucesso!");
-                        localStorage.setItem("usuarioId", data.id); // salva id p/ usar no home.html
+                        localStorage.setItem("usuarioId", data.id);
                         window.location.href = "home.html";
                     }
                 }
 
-                // Funções para abrir/fechar modais
-                window.abrirModal = (id) => document.getElementById(id).style.display = "flex";
-                window.fecharModal = (id) => document.getElementById(id).style.display = "none";
+                window.abrirModal = (id) => {
+                    document.getElementById('modal-login').style.display = 'none';
+                    document.getElementById('modal-cadastro').style.display = 'none';
+
+                    document.getElementById(id).style.display = 'flex';
+                };
+
+                window.fecharModal = (id) => {
+                    document.getElementById(id).style.display = 'none';
+                };
+
             </script>
         </div>
     </section>
@@ -191,15 +198,16 @@
                     <img src="img/mergulhadora.png" alt="Garoto Nadando" class="about-img">
                 </div>
                 <div class="tutorial-text">
-                    <h2>Bem-vindo ao LeituraKids</h2>
-                    <p>Leitura Kids é uma plataforma interativa desenvolvida por estudantes de Desenvolvimento de
-                        Sistemas como parte do nosso Trabalho de Conclusão de Curso (TCC).</p>
-                    <p>Nossa missão é transformar o aprendizado da leitura em uma experiência mágica e divertida para
-                        crianças, formando assim leitores mais ativos, participativos e significativos.</p>
-                    <p>Acreditamos que aprender pode — e deve — ser uma experiência prazerosa. Por isso, criamos um
-                        ambiente digital com atividades lúdicas, que estimulam o interesse pela leitura desde cedo.</p>
-                    <p>Cada criança é alfabetizada via uma pequena jornada de conquista, um passo importante para o
-                        futuro educacional e pessoal de nossos pequenos estudiosos.</p>
+                    <h2>O que você encontra no LeituraKids</h2>
+                    <p>No LeituraKids, cada detalhe foi pensado para acompanhar o desenvolvimento da criança de forma leve, 
+                        segura e envolvente. Nossa plataforma oferece uma variedade de atividades educativas projetadas 
+                        especialmente para estimular a leitura, a criatividade e o raciocínio.</p>
+                    <p>Aqui, os pequenos encontram jogos interativos, desafios de interpretação, atividades de reconhecimento 
+                        de letras e sons, além de histórias curtas que ajudam a construir o hábito da leitura. Tudo é apresentado 
+                        de maneira divertida, com cores vibrantes, personagens amigáveis e uma navegação simples, pensada para o público infantil.</p>
+                    <p>Além disso, o site conta com um sistema de progresso onde as crianças ganham pontos, medalhas e conquistas 
+                        conforme avançam em suas atividades, tornando o aprendizado ainda mais motivador. Professores e responsáveis 
+                        também podem acompanhar o desenvolvimento dos alunos, fortalecendo a parceria entre escola e família.</p>
                 </div>
             </div>
         </div>
@@ -213,27 +221,27 @@
                 <div class="carousel-track-wrapper">
                     <div class="carousel-track" id="carousel-track">
                         <div class="service-card">
-                            <div class="service-icon">🎓</div>
+                            <div class="stat-icon icon"><img src="img/abc.png" /></div>
                             <h3>Aulas Explicativas</h3>
                             <p class="service-description">Nossos educadores foram especialmente preparados para
                                 desenvolver competências relacionadas à leitura inclusiva, proporcionando aprendizado
                                 significativo para todas as crianças.</p>
                         </div>
                         <div class="service-card">
-                            <div class="service-icon">🎮</div>
+                            <div class="stat-icon icon"><img src="img/lapis.png" /></div>
                             <h3>Atividades Interativas</h3>
                             <p class="service-description">Desenvolvemos uma variedade de atividades divertidas para
                                 tornar o aprendizado mais dinâmico e atrativo, com participação ativa de nossos pequenos
                                 leitores.</p>
                         </div>
                         <div class="service-card">
-                            <div class="service-icon">🎯</div>
+                            <div class="stat-icon icon"><img src="img/controle.png" /></div>
                             <h3>Jogos Divertidos</h3>
                             <p class="service-description">Nossa plataforma também possui jogos que desafiam ligações
                                 neurais específicas, promovendo o desenvolvimento cognitivo através da diversão.</p>
                         </div>
                         <div class="service-card">
-                            <div class="service-icon">💻</div>
+                            <div class="stat-icon icon"><img src="img/laptop.png" /></div>
                             <h3>Tecnologia Educativa</h3>
                             <p class="service-description">Utilizamos as mais modernas ferramentas tecnológicas para
                                 criar experiências de aprendizado imersivas e personalizadas para cada criança..</p>

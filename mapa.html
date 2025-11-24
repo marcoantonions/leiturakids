@@ -8,11 +8,311 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="script_mapa.js"></script>
-    <title>Leitura Kids</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <title>Leitura Kids - Mapa</title>
+    <style>
+        /* Estilos para os estados dos níveis */
+        .node-completed {
+            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+            box-shadow: 0 8px 20px rgba(46, 204, 113, 0.4);
+        }
+
+        .node-current {
+            background: linear-gradient(135deg, #f39c12 0%, #f1c40f 100%);
+            box-shadow: 0 8px 20px rgba(243, 156, 18, 0.4);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .node-locked {
+            background: linear-gradient(135deg, #8b4513 0%, #654321 100%);
+            box-shadow: 0 8px 20px rgba(139, 69, 19, 0.3);
+            opacity: 0.7;
+        }
+
+        .node-label {
+            margin-top: 12px;
+            margin-bottom: 8px;
+        }
+
+        .node-points {
+            font-size: 0.85rem;
+            color: #2ecc71;
+            font-weight: bold;
+            margin-top: 6px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+            display: block;
+        }
+
+        .node-locked-points {
+            font-size: 0.85rem;
+            color: #cd853f;
+            font-weight: bold;
+            margin-top: 6px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+            display: block;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+                box-shadow: 0 8px 20px rgba(243, 156, 18, 0.4);
+            }
+            50% {
+                transform: scale(1.05);
+                box-shadow: 0 12px 30px rgba(243, 156, 18, 0.6);
+            }
+        }
+
+        /* Loading spinner */
+        .loading-spinner {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 3rem;
+            animation: spin 1s linear infinite;
+            z-index: 9999;
+        }
+
+        @keyframes spin {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+    </style>
 </head>
 
 <body>
+    <script type="module">
+        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+
+        const SUPABASE_URL = 'https://dnphjoqmkvnjueiwjayu.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRucGhqb3Fta3ZuanVlaXdqYXl1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc5NjE3ODEsImV4cCI6MjA3MzUzNzc4MX0.r8-M9EZg73sIrwESfd61hyGITsEwv_TJFZOBYeXk3d8';
+        const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // ===============================
+        // SISTEMA DE NÍVEIS DO MAPA
+        // ===============================
+        const NIVEIS_MAPA = [
+            {
+                id: 1,
+                nome: 'Porto Inicial',
+                descricao: 'Sua jornada começa aqui',
+                pontosMinimos: 0,
+                icone: 'navio.png',
+                link: 'home.html'
+            },
+            {
+                id: 2,
+                nome: 'Ilha das Letras',
+                descricao: 'Descubra o alfabeto mágico',
+                pontosMinimos: 100,
+                icone: 'ilha.png',
+                link: 'aulas.html'
+            },
+            {
+                id: 3,
+                nome: 'Baía dos Piratas',
+                descricao: 'Pratique suas habilidades',
+                pontosMinimos: 500,
+                icone: 'pirata-bandeira.png',
+                link: 'atividades.html'
+            },
+            {
+                id: 4,
+                nome: 'Caverna do Tesouro',
+                descricao: 'Jogos e diversão',
+                pontosMinimos: 1000,
+                icone: 'bau.png',
+                link: 'jogos.html'
+            },
+            {
+                id: 5,
+                nome: 'Navio Fantasma',
+                descricao: 'Desafios assombrados',
+                pontosMinimos: 2000,
+                icone: '👻',
+                link: '#'
+            },
+            {
+                id: 6,
+                nome: 'Ilha do Capitão',
+                descricao: 'Teste final de perícia',
+                pontosMinimos: 3000,
+                icone: '⚓',
+                link: '#'
+            },
+            {
+                id: 7,
+                nome: 'Reino dos Leitores',
+                descricao: 'O tesouro supremo',
+                pontosMinimos: 5000,
+                icone: 'coroa.png',
+                link: '#'
+            }
+        ];
+
+        // ===============================
+        // CARREGA PROGRESSO DO USUÁRIO
+        // ===============================
+        async function carregarProgressoMapa() {
+            const loadingSpinner = document.createElement('div');
+            loadingSpinner.className = 'loading-spinner';
+            loadingSpinner.textContent = '⚓';
+            document.body.appendChild(loadingSpinner);
+
+            const usuarioId = localStorage.getItem('usuarioId');
+            console.log('🗺️ Carregando progresso do mapa para usuário:', usuarioId);
+            
+            if (!usuarioId) {
+                console.error('❌ Nenhum usuário logado');
+                loadingSpinner.remove();
+                showNotification('Erro: Faça login primeiro!');
+                setTimeout(() => window.location.href = 'index.html', 2000);
+                return;
+            }
+
+            const idConvertido = Number(usuarioId);
+            
+            try {
+                const { data, error } = await supabase
+                    .from('progresso')
+                    .select('pontos')
+                    .eq('user_id', idConvertido)
+                    .single();
+
+                if (error) {
+                    console.error('❌ Erro ao buscar progresso:', error.message);
+                    loadingSpinner.remove();
+                    return;
+                }
+
+                const pontos = data.pontos || 0;
+                console.log('✅ Pontos do usuário:', pontos);
+                
+                atualizarMapaNiveis(pontos);
+                loadingSpinner.remove();
+                
+            } catch (err) {
+                console.error('❌ Erro inesperado:', err);
+                loadingSpinner.remove();
+            }
+        }
+
+        // ===============================
+        // ATUALIZA VISUAL DO MAPA
+        // ===============================
+        function atualizarMapaNiveis(pontosUsuario) {
+            console.log('🎨 Atualizando mapa com', pontosUsuario, 'pontos');
+
+            // Encontra o nível atual (último nível desbloqueado)
+            let nivelAtual = NIVEIS_MAPA[0];
+            for (let i = NIVEIS_MAPA.length - 1; i >= 0; i--) {
+                if (pontosUsuario >= NIVEIS_MAPA[i].pontosMinimos) {
+                    nivelAtual = NIVEIS_MAPA[i];
+                    break;
+                }
+            }
+
+            // Atualiza cada nó do mapa
+            NIVEIS_MAPA.forEach((nivel, index) => {
+                const nodeNumber = index + 1;
+                const nodeElement = document.querySelector(`.node-${nodeNumber}`);
+                
+                if (!nodeElement) {
+                    console.warn(`⚠️ Nó ${nodeNumber} não encontrado`);
+                    return;
+                }
+
+                const nodeContent = nodeElement.querySelector('.node-content');
+                const nodeCircle = nodeElement.querySelector('.node-circle');
+                const nodeLabel = nodeElement.querySelector('.node-label');
+                const nodeProgress = nodeElement.querySelector('.node-progress');
+
+                // Atualiza o nome do nível
+                nodeLabel.textContent = nivel.nome;
+
+                // Determina o estado do nível
+                let estado = '';
+                let progressoTexto = '';
+
+                if (pontosUsuario >= nivel.pontosMinimos) {
+                    if (nivel.id === nivelAtual.id) {
+                        // Nível atual (último desbloqueado)
+                        estado = 'node-current';
+                        progressoTexto = '<div>Nível Atual!</div>';
+                    } else {
+                        // Nível completo
+                        estado = 'node-completed';
+                        progressoTexto = `<div>Completo!</div><div class="node-points">${nivel.pontosMinimos} pontos</div>`;
+                    }
+
+                    // Remove cadeado e adiciona link
+                    nodeCircle.innerHTML = `<div class="icon"><img src="img/${nivel.icone}" alt="${nivel.nome}"></div>`;
+                    
+                    if (nivel.link !== '#') {
+                        nodeContent.style.cursor = 'pointer';
+                        nodeContent.onclick = () => window.location.href = nivel.link;
+                    }
+                } else {
+                    // Nível bloqueado
+                    estado = 'node-locked';
+                    progressoTexto = `<div class="node-locked-points">🔒 ${nivel.pontosMinimos} pontos</div>`;
+                    nodeCircle.innerHTML = '🔒';
+                    nodeContent.style.cursor = 'not-allowed';
+                    nodeContent.onclick = () => {
+                        showNotification(`🔒 Você precisa de ${nivel.pontosMinimos} pontos!`);
+                    };
+                }
+
+                // Atualiza classes e conteúdo
+                nodeCircle.className = `node-circle ${estado}`;
+                
+                if (nodeProgress) {
+                    nodeProgress.innerHTML = progressoTexto;
+                }
+
+                console.log(`✅ Nível ${nivel.id} (${nivel.nome}): ${estado}`);
+            });
+
+            showNotification(`🗺️ Você está no ${nivelAtual.nome}!`);
+        }
+
+        // ===============================
+        // FUNÇÃO DE NOTIFICAÇÃO
+        // ===============================
+        window.showNotification = function(message) {
+            const notification = document.getElementById('notification');
+            if (notification) {
+                notification.textContent = message;
+                notification.classList.add('show');
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                }, 3000);
+            }
+        }
+
+        // ===============================
+        // FUNÇÕES DO MENU
+        // ===============================
+        window.toggleMenu = function() {
+            document.getElementById("menuDropdown").classList.toggle("show");
+        }
+
+        window.addEventListener("click", function (event) {
+            if (!event.target.closest(".dropdown")) {
+                const dropdown = document.getElementById("menuDropdown");
+                if (dropdown) dropdown.classList.remove("show");
+            }
+        });
+
+        // ===============================
+        // INICIALIZAÇÃO
+        // ===============================
+        window.addEventListener('DOMContentLoaded', () => {
+            console.log('🚀 Mapa carregado, inicializando...');
+            carregarProgressoMapa();
+        });
+    </script>
 
     <!-- Notificação -->
     <div class="notification" id="notification">
@@ -24,7 +324,6 @@
         <div class="nav-container">
             <a href="home.html" class="logo">LeituraKids</a>
             <nav>
-
                 <div class="dropdown">
                     <button onclick="toggleMenu()" class="btn btn-gray">
                         <span class="material-symbols-outlined">menu</span>
@@ -35,7 +334,6 @@
                     </div>
                 </div>
             </nav>
-        </div>
         </div>
     </header>
 
@@ -50,7 +348,7 @@
         <div class="side-nav-item" onclick="window.location.href='atividades.html'" title="Atividades">
             <img src="img/lapis.png" alt="Atividades">
         </div>
-        <div class="side-nav-item active" onclick="window.location.href='#.html'" title="Mapa">
+        <div class="side-nav-item active" onclick="window.location.href='mapa.html'" title="Mapa">
             <img src="img/mapa.png" alt="Mapa">
         </div>
         <div class="side-nav-item" onclick="window.location.href='jogos.html'" title="Jogos">
@@ -78,12 +376,6 @@
         </div>
 
         <div class="adventure-map">
-
-            <!-- ===========================================
-                 NOVOS ELEMENTOS: Rio, Lagos e Vegetação
-                 Adicionados para criar ambiente natural
-                 =========================================== -->
-
             <!-- Rio serpenteante de fundo -->
             <svg class="river" viewBox="0 0 800 1000">
                 <path class="river-path" d="M -50 200 Q 150 180 300 220 Q 450 260 600 200 Q 750 140 850 180 
@@ -117,7 +409,7 @@
             <div class="vegetation bush bush-3">🌿</div>
             <div class="vegetation bush bush-4">🌿</div>
 
-            <!-- SVG Path Tracejado Vermelho (mantido por cima da vegetação) -->
+            <!-- SVG Path Tracejado Vermelho -->
             <svg class="treasure-path" viewBox="0 0 800 1000">
                 <path class="path-stroke"
                     d="M 400 70 Q 200 150 200 220 Q 200 290 600 370 Q 160 450 160 520 Q 160 590 640 670 Q 280 750 280 820 Q 280 890 400 970" />
@@ -126,51 +418,43 @@
             <!-- Nível 1 - Porto Inicial -->
             <div class="map-node node-1">
                 <div class="node-content">
-                    <a href="home.html">
-                        <div class="node-circle node-completed" alt="Crie seu Perfil">
-                            <div class="icon"><img src="img/navio.png" alt="Crie seu Perfil"></div>
-                        </div>
-                    </a>
+                    <div class="node-circle">
+                        <div class="icon"><img src="img/navio.png" alt="Porto Inicial"></div>
+                    </div>
                     <div class="node-label">Porto Inicial</div>
-                    <div class="node-progress">Completo!</div>
                 </div>
             </div>
 
             <!-- Nível 2 - Ilha das Letras -->
             <div class="map-node node-2">
                 <div class="node-content">
-                    <a href="aulas.html">
-                        <div class="node-circle node-completed" alt="Aprendendo as Letras">
-                            <div class="icon"><img src="img/ilha.png" alt="Aprendendo as Letras"></div>
-                        </div>
-                    </a>
+                    <div class="node-circle">
+                        <div class="icon"><img src="img/ilha.png" alt="Ilha das Letras"></div>
+                    </div>
                     <div class="node-label">Ilha das Letras</div>
-                    <div class="node-progress">Completo!</div>
+                    <div class="node-progress">Carregando...</div>
                 </div>
             </div>
 
             <!-- Nível 3 - Baía dos Piratas -->
             <div class="map-node node-3">
                 <div class="node-content">
-                    <a href="atividades.html">
-                        <div class="node-circle node-completed" alt="Primeiras Atividades">
-                            <div class="icon"><img src="img/pirata-bandeira.png" alt="Primeiras Atividades"></div>
-                        </div>
-                    </a>
+                    <div class="node-circle">
+                        <div class="icon"><img src="img/pirata-bandeira.png" alt="Baía dos Piratas"></div>
+                    </div>
                     <div class="node-label">Baía dos Piratas</div>
+                    <div class="node-progress">Carregando...</div>
                 </div>
             </div>
 
             <!-- Nível 4 - Caverna do Tesouro -->
             <div class="map-node node-4">
                 <div class="node-content">
-                    <a href="jogos.html">
-                        <div class="node-circle node-current" alt="Hora da Jogatina">
-                            <div class="icon"><img src="img/bau.png" alt="Hora da Jogatina"></div>
-                        </div>
-                    </a>
+                    <div class="node-circle">
+                        <div class="icon"><img src="img/bau.png" alt="Caverna do Tesouro"></div>
+                    </div>
                     <div class="node-label">Caverna do Tesouro</div>
-                    <div class="node-progress0">3/6 Jogos Finalizados</div>
+                    <div class="node-progress">Carregando...</div>
                 </div>
             </div>
 
@@ -181,6 +465,7 @@
                         🔒
                     </div>
                     <div class="node-label">Navio Fantasma</div>
+                    <div class="node-progress"></div>
                 </div>
             </div>
 
@@ -191,6 +476,7 @@
                         🔒
                     </div>
                     <div class="node-label">Ilha do Capitão</div>
+                    <div class="node-progress"></div>
                 </div>
             </div>
 
@@ -198,11 +484,13 @@
             <div class="map-node node-7">
                 <div class="node-content">
                     <div class="node-circle node-locked" style="width: 120px; height: 120px; font-size: 3rem;">
-                        <div class="icon"><img src="img/coroa.png" alt="Reino dos Leitores"></div>
+                        🔒
                     </div>
                     <div class="node-label">Reino dos Leitores</div>
+                    <div class="node-progress"></div>
                 </div>
             </div>
+
             <!-- Papagaio -->
             <div class="papagaio">
                 <img src="img/papagaio.png" alt="papagaio">
@@ -211,7 +499,6 @@
             <div class="pirata">
                 <img src="img/pirata.png" alt="pirata">
             </div>
-
         </div>
 
         <!-- Elementos animados -->
@@ -219,6 +506,7 @@
         <div class="pirate-flag">🏴‍☠️</div>
         <div class="treasure-chest">💎</div>
     </main>
+    
     <a href="#" class="ancora">
         <span class="material-symbols-outlined">anchor</span>
     </a>

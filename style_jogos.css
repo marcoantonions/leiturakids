@@ -741,6 +741,9 @@ body {
     .matching-item {
         width: 80%;
     }
+    .ancora {
+        display: none !important;
+    }
 }
 
 /* Botões de Ação */
@@ -916,6 +919,9 @@ body {
 
     .constructed-word {
         font-size: 1.5rem;
+    }
+    .ancora {
+        display: none !important;
     }
 }
 

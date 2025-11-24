@@ -8,7 +8,7 @@ let savedStats = JSON.parse(localStorage.getItem('gameStats')) || {};
 let gameStats = {
     totalScore: savedStats.totalScore || 0,
     totalCorrect: savedStats.totalCorrect || 0,
-    gamesPlayed: savedStats.gamesPlayed || 0,
+    actCompleted: savedStats.actCompleted || 0,
     streak: savedStats.streak || 0,
     currentGame: null
 };
@@ -17,7 +17,7 @@ let gameStats = {
 function updateGlobalStats() {
     document.getElementById('total-score').textContent = gameStats.totalScore;
     document.getElementById('total-correct').textContent = gameStats.totalCorrect;
-    document.getElementById('games-played').textContent = gameStats.gamesPlayed;
+    document.getElementById('act-completed').textContent = gameStats.actCompleted;
     document.getElementById('streak').textContent = gameStats.streak;
     
     // Salva localmente
@@ -46,7 +46,7 @@ async function saveStatsToDatabase() {
             .upsert({
                 user_id: usuarioId,
                 pontos: gameStats.totalScore,
-                atividades_concluidas: gameStats.gamesPlayed,
+                atividades_concluidas: gameStats.actCompleted,
                 acertos: gameStats.totalCorrect,
             }, { 
                 onConflict: 'user_id',
@@ -88,7 +88,7 @@ async function loadStatsFromDatabase() {
         if (data) {
             console.log(" Progresso carregado do banco:", data);
             gameStats.totalScore = data.pontos ?? 0;
-            gameStats.gamesPlayed = data.atividades_concluidas ?? 0;
+            gameStats.actCompleted = data.atividades_concluidas ?? 0;
             gameStats.totalCorrect = data.acertos ?? 0;
             updateGlobalStats();
         }
@@ -102,7 +102,7 @@ function addPoints(points, correct = true) {
     if (correct) {
         gameStats.totalCorrect++;
         gameStats.streak++;
-        gameStats.gamesPlayed++;
+        gameStats.actCompleted++;
     } else {
         gameStats.streak = 0;
     }
@@ -144,7 +144,6 @@ let wordData = {
         { word: 'ARCO', hint: '🌈', missing: [0, 2] },
         { word: 'LIVRO', hint: '📖', missing: [1, 3] },
         { word: 'ESCOLA', hint: '🏫', missing: [0, 3] },
-        { word: 'BEBÊ', hint: '🍼', missing: [1, 2] },
         { word: 'CAMA', hint: '🛏️', missing: [0, 2] },
         { word: 'FOGÃO', hint: '🍳', missing: [1, 3] },
         { word: 'MAÇÃ', hint: '🍎', missing: [0, 2] },
@@ -231,7 +230,6 @@ let syllableData = {
         { word: 'MESA', syllables: ['ME', 'SA'] },
         { word: 'MACACO', syllables: ['MA', 'CA', 'CO'] },
         { word: 'CAVALO', syllables: ['CA', 'VA', 'LO'] },
-        { word: 'BEBÊ', syllables: ['BE', 'BÊ'] },
         { word: 'ESCOLA', syllables: ['ES', 'CO', 'LA'] },
         { word: 'CAMISA', syllables: ['CA', 'MI', 'SA'] },
         { word: 'CACHORRO', syllables: ['CA', 'CHOR', 'RO'] },

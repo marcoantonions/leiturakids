@@ -5,19 +5,6 @@ window.history.scrollRestoration = 'manual'; // Impede o navegador de lembrar a 
 window.scrollTo(0, 0); // Força voltar ao topo da página
 
 // =====================================================
-// SISTEMA DE NOTIFICAÇÕES
-// =====================================================
-function showNotification(message) {
-    const notification = document.getElementById('notification'); // Seleciona elemento de notificação
-    notification.textContent = message + ' 🏴‍☠️'; // Define texto da mensagem
-    notification.classList.add('show'); // Exibe a notificação
-
-    setTimeout(() => {
-        notification.classList.remove('show'); // Esconde após 3 segundos
-    }, 3000);
-}
-
-// =====================================================
 // MUDANÇA DE SEÇÃO NO MENU VERTICAL
 // =====================================================
 function changeSection(section, event) {

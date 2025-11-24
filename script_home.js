@@ -88,22 +88,6 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 // =====================================================
-// INFORMAÇÕES DO USUÁRIO (conquistas)
-// =====================================================
-function showNotification(message) {
-    const notification = document.getElementById('notification'); // Seleciona elemento de notificação
-    notification.textContent = message; // Define texto da mensagem
-    notification.classList.add('show'); // Mostra notificação
-    setTimeout(() => {
-        notification.classList.remove('show'); // Esconde após 3s
-    }, 3000);
-}
-
-function showBadgeInfo(badgeName) {
-    showNotification(`Conquista: ${badgeName}! 🏆`); // Mostra conquista desbloqueada
-}
-
-// =====================================================
 // ANIMAÇÃO DA BARRA DE PROGRESSO
 // =====================================================
 window.addEventListener('load', () => {

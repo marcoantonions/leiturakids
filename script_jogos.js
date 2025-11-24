@@ -250,8 +250,6 @@ function showGame(gameId) {
         container.classList.remove('active');
     });
     document.getElementById(gameId).classList.add('active');
-    
-    incrementGamesPlayed();
 
     // Inicializar jogos específicos
     if (gameId === 'animal-quiz') loadAnimalQuestion();
@@ -263,6 +261,14 @@ function showMenu() {
         container.classList.remove('active');
     });
     document.getElementById('games-menu').style.display = 'grid';
+}
+
+// Incrementa jogos completados e salva no banco
+function incrementGamesPlayed() {
+    gameStats.gamesPlayed++;
+    updateGlobalStats();
+    saveStatsToDatabase();
+    showNotification('🎮 Jogo concluído! Parabéns!');
 }
 
 // ============================
@@ -297,6 +303,7 @@ function checkAnimalAnswer(selected, correct) {
         messageEl.textContent = '🎉 Parabéns! Você acertou!';
         messageEl.className = 'game-message success-message';
         buttons.forEach(btn => btn.disabled = true);
+        incrementGamesPlayed();
     } else {
         addPoints(0, false);
         messageEl.textContent = '❌ Ops! Tente novamente!';
@@ -356,6 +363,7 @@ function addSyllable(syllable, button) {
             messageEl.textContent = '🎉 Muito bem! Palavra formada!';
             messageEl.className = 'game-message success-message';
             document.querySelectorAll('#syllables-container .syllable-btn').forEach(btn => btn.disabled = true);
+            incrementGamesPlayed();
         } else {
             addPoints(0, false);
             messageEl.textContent = '❌ Palavra incorreta! Tente novamente!';
@@ -549,6 +557,7 @@ function checkForWord() {
                 setTimeout(() => {
                     showFeedback('search-feedback', '🏆 Parabéns! Encontrou todas as palavras!', 'success');
                     addPoints(20, true);
+                    incrementGamesPlayed();
                 }, 1000);
             }
         }
@@ -592,6 +601,21 @@ function initMemoryGame() {
     });
 }
 
+setTimeout(() => {
+    document.querySelectorAll('.memory-card').forEach(card => {
+        card.classList.add('flipped');
+    });
+}, 100);
+
+// 🔥 ESCONDER DEPOIS DE 3s
+setTimeout(() => {
+    document.querySelectorAll('.memory-card').forEach(card => {
+        if (!card.classList.contains('matched')) {
+            card.classList.remove('flipped');
+        }
+    });
+}, 3000);
+
 function flipCard(index) {
     const card = document.querySelector(`[data-index="${index}"]`);
 
@@ -619,6 +643,7 @@ function checkMemoryMatch() {
         if (matchedPairs === 8) {
             showFeedback('memory-feedback', '🏆 Parabéns! Você encontrou todos os pares!', 'success');
             addPoints(30, true);
+            incrementGamesPlayed();
         }
     } else {
         card1.element.classList.remove('flipped');
@@ -698,6 +723,7 @@ function selectMatchingItem(element, type) {
                 setTimeout(() => {
                     showFeedback('matching-feedback', '🏆 Parabéns! Você completou todas as associações!', 'success');
                     addPoints(20, true);
+                    incrementGamesPlayed();
                 }, 1000);
             }
         } else {
@@ -720,9 +746,22 @@ function resetMatchingGame() {
 document.addEventListener("DOMContentLoaded", function () {
     console.log("🚀 Página de Jogos carregada!");
     
-    // Carrega progresso do banco de dados
-    setTimeout(() => {
-        loadStatsFromDatabase();
+    // Aguarda o Supabase estar disponível antes de carregar progresso
+    let attempts = 0;
+    const maxAttempts = 10;
+    
+    const waitForSupabase = setInterval(() => {
+        attempts++;
+        console.log(`⏳ Tentativa ${attempts} de carregar Supabase...`);
+        
+        if (window.supabaseClient) {
+            console.log("✅ Supabase conectado!");
+            clearInterval(waitForSupabase);
+            loadStatsFromDatabase();
+        } else if (attempts >= maxAttempts) {
+            console.warn("⚠️ Supabase não disponível após 10 tentativas, usando dados locais");
+            clearInterval(waitForSupabase);
+        }
     }, 500);
 
     const hamburger = document.querySelector(".hamburger");

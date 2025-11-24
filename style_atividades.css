@@ -893,6 +893,10 @@ body {
     .quiz-options {
         grid-template-columns: 1fr;
     }
+
+    .ancora {
+        display: none !important;
+    }
 }
 
 .score-item {

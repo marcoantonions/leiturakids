@@ -12,7 +12,6 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <title>Leitura Kids</title>
 </head>
-
 <body>
 
     <script type="module">
@@ -23,22 +22,126 @@
         const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         // ===============================
-        // CARREGA NOME DO USUÁRIO
+        // SISTEMA DE CONQUISTAS
+        // ===============================
+        const CONQUISTAS = [
+            {
+                id: 'leitor_iniciante',
+                nome: 'Leitor Iniciante',
+                descricao: 'Crie sua conta',
+                icone: 'livro-leitura.png',
+                requisito: 0, // Sempre desbloqueada
+                tipo: 'pontos'
+            },
+            {
+                id: 'explorador_historias',
+                nome: 'Explorador de Histórias',
+                descricao: 'Consiga 500 pontos',
+                icone: 'mapa.png',
+                requisito: 500,
+                tipo: 'pontos'
+            },
+            {
+                id: 'mestre_livros',
+                nome: 'Mestre dos Livros',
+                descricao: 'Faça 1000 pontos',
+                icone: 'livro-biblioteca.png',
+                requisito: 1000,
+                tipo: 'pontos'
+            },
+            {
+                id: 'sabio_leitura',
+                nome: 'Sábio da Leitura',
+                descricao: 'Alcance 2000 pontos',
+                icone: 'raio.png',
+                requisito: 2000,
+                tipo: 'pontos'
+            }
+        ];
+
+        function atualizarConquistas(pontos) {
+            console.log('🏆 Atualizando conquistas com', pontos, 'pontos');
+            
+            const badgesGrid = document.querySelector('.badges-grid');
+            if (!badgesGrid) {
+                console.error('❌ Grid de badges não encontrado');
+                return;
+            }
+
+            // Limpa o conteúdo atual
+            badgesGrid.innerHTML = '';
+
+            let conquistasDesbloqueadas = 0;
+
+            // Cria cada conquista
+            CONQUISTAS.forEach(conquista => {
+                const desbloqueada = pontos >= conquista.requisito;
+                if (desbloqueada) conquistasDesbloqueadas++;
+
+                const badgeDiv = document.createElement('div');
+                badgeDiv.className = desbloqueada ? 'badge unlocked' : 'badge locked';
+                
+                badgeDiv.innerHTML = `
+                    <div class="stat-icon icon">
+                        <img src="img/${conquista.icone}" alt="${conquista.nome}"/>
+                    </div>
+                    <div class="badge-name">${conquista.nome}</div>
+                    <div class="badge-description">${conquista.descricao}</div>
+                `;
+
+                badgesGrid.appendChild(badgeDiv);
+            });
+
+            // Atualiza as estatísticas das conquistas
+            atualizarEstatisticasConquistas(conquistasDesbloqueadas);
+
+            console.log('✅ Conquistas atualizadas:', conquistasDesbloqueadas, 'desbloqueadas');
+        }
+
+        function atualizarEstatisticasConquistas(conquistasDesbloqueadas) {
+            const totalConquistas = CONQUISTAS.length;
+            const conquistasBloqueadas = totalConquistas - conquistasDesbloqueadas;
+            const percentualCompleto = ((conquistasDesbloqueadas / totalConquistas) * 100).toFixed(0);
+
+            // Atualiza os cards de estatísticas (se existirem na página)
+            const statsCards = document.querySelectorAll('.conquistas-stats .stat-card');
+            if (statsCards.length >= 3) {
+                statsCards[0].querySelector('.stat-number').textContent = conquistasDesbloqueadas;
+                statsCards[1].querySelector('.stat-number').textContent = conquistasBloqueadas;
+                statsCards[2].querySelector('.stat-number').textContent = percentualCompleto + '%';
+            }
+        }
+
+        // ===============================
+        // CARREGA NOME DO USUÁRIO E AVATAR
         // ===============================
         async function carregarNomeUsuario() {
             const usuarioId = localStorage.getItem('usuarioId');
-            if (!usuarioId) return;
+            console.log('🔍 Carregando dados do usuário:', usuarioId);
+            
+            if (!usuarioId) {
+                console.error('❌ Nenhum usuário logado');
+                return;
+            }
 
+            const idConvertido = Number(usuarioId);
+            
             const { data, error } = await supabase
                 .from('usuarios')
-                .select('nome')
-                .eq('id', usuarioId)
+                .select('nome, avatar')
+                .eq('id', idConvertido)
                 .single();
 
             if (error) {
-                console.error('Erro ao buscar usuário:', error.message);
+                console.error('❌ Erro ao buscar usuário:', error.message);
             } else if (data) {
+                console.log('✅ Dados do usuário carregados:', data);
                 document.querySelector('.profile-name').textContent = data.nome;
+                
+                const avatar = data.avatar || 'avatar-default.png';
+                document.querySelector('.profile-avatar').innerHTML = 
+                    `<img src="img/${avatar}" alt="Avatar">
+                    <div class="avatar-edit-icon">✏️</div>`;
             }
         }
 
@@ -46,30 +149,29 @@
         // CRIA PROGRESSO INICIAL (se não existir)
         // ===============================
         async function inicializarProgresso() {
-            console.log("Função inicializarProgresso chamada!");
+            console.log("📊 Função inicializarProgresso chamada!");
             const usuarioId = localStorage.getItem('usuarioId');
-            console.log("Usuário ID:", usuarioId);
+            const idConvertido = Number(usuarioId);
+            
             if (!usuarioId) return;
 
-            // Verifica se já existe um progresso
             const { data: progressoExistente, error: selectError } = await supabase
                 .from('progresso')
                 .select('id')
-                .eq('user_id', usuarioId)
+                .eq('user_id', idConvertido)
                 .maybeSingle();
 
             if (selectError) {
-                console.error('Erro ao verificar progresso:', selectError.message);
+                console.error('❌ Erro ao verificar progresso:', selectError.message);
                 return;
             }
 
-            // Se não existir, cria o progresso inicial
             if (!progressoExistente) {
                 const { data: insertData, error: insertError } = await supabase
                     .from('progresso')
                     .insert([
                         {
-                            user_id: usuarioId,
+                            user_id: idConvertido,
                             jogos_concluidos: 0,
                             pontos: 0,
                             atividades_concluidas: 0,
@@ -80,12 +182,12 @@
                     .select(); 
 
                 if (insertError) {
-                    console.error('Erro ao criar progresso:', insertError);
+                    console.error('❌ Erro ao criar progresso:', insertError);
                 } else {
-                    console.log('Progresso inicial criado com sucesso:', insertData);
+                    console.log('✅ Progresso inicial criado com sucesso:', insertData);
                 }
             } else {
-                console.log('Progresso já existente.');
+                console.log('✅ Progresso já existente.');
             }
 
             carregarProgresso();
@@ -95,19 +197,16 @@
         // ATUALIZA BARRAS DE PROGRESSO
         // ===============================
         function atualizarBarrasProgresso(data) {
-            // Constantes de progresso máximo
             const MAX_PONTOS = 2000;
             const MAX_ATIVIDADES = 120;
             const MAX_JOGOS = 100;
             const MAX_CONQUISTAS = 15;
 
-            // Calcula percentuais
             const progressoAprendizado = Math.min((data.pontos / MAX_PONTOS) * 100, 100);
             const progressoAtividades = Math.min((data.atividades_concluidas / MAX_ATIVIDADES) * 100, 100);
             const progressoJogos = Math.min((data.jogos_concluidos / MAX_JOGOS) * 100, 100);
             const progressoConquistas = Math.min((data.numero_conquistas / MAX_CONQUISTAS) * 100, 100);
 
-            // Atualiza as barras e labels
             atualizarBarra(0, progressoAprendizado);
             atualizarBarra(1, progressoAtividades);
             atualizarBarra(2, progressoJogos);
@@ -122,10 +221,8 @@
                 const fill = barraItem.querySelector('.progress-fill');
                 const label = barraItem.querySelector('.progress-label span:last-child');
 
-                // Arredonda o percentual
                 const percentualArredondado = Math.round(percentual);
 
-                // Atualiza a barra e o texto
                 if (fill) {
                     fill.style.width = percentualArredondado + '%';
                     fill.setAttribute('data-progress', percentualArredondado);
@@ -142,35 +239,115 @@
         // ===============================
         async function carregarProgresso() {
             const usuarioId = localStorage.getItem('usuarioId');
+            const idConvertido = Number(usuarioId);
             if (!usuarioId) return;
 
             const { data, error } = await supabase
                 .from('progresso')
                 .select('*')
-                .eq('user_id', usuarioId)
+                .eq('user_id', idConvertido)
                 .single();
 
             if (error) {
-                console.error('Erro ao carregar progresso:', error.message);
+                console.error('❌ Erro ao carregar progresso:', error.message);
                 return;
             }
+
+            console.log('📊 Progresso carregado:', data);
 
             // Atualiza os elementos do HTML
             document.getElementById('jogos_concluidos').textContent = data.jogos_concluidos;
             document.getElementById('pontos').textContent = data.pontos;
             document.getElementById('atividades_concluidas').textContent = data.atividades_concluidas;
             document.getElementById('numero_conquistas').textContent = data.numero_conquistas;
-            document.getElementById('nivel_usuario').textContent = `Nível ${data.nivel_usuario} - Leitor Iniciante`;
+            
+            // Determina o nível baseado nos pontos
+            let nivelTexto = '';
+            if (data.pontos < 500) {
+                nivelTexto = 'Nível 1 - Leitor Iniciante';
+            } else if (data.pontos >= 500 && data.pontos < 1000) {
+                nivelTexto = 'Nível 2 - Explorador de Histórias';
+            } else if (data.pontos >= 1000 && data.pontos < 2000) {
+                nivelTexto = 'Nível 3 - Mestre dos Livros';
+            } else if (data.pontos >= 2000) {
+                nivelTexto = 'Nível 4 - Sábio da Leitura';
+            }
+            
+            document.getElementById('nivel_usuario').textContent = nivelTexto;
             
             // Atualiza as barras de progresso
             atualizarBarrasProgresso(data);
+
+            // ⭐ ATUALIZA AS CONQUISTAS BASEADO NOS PONTOS
+            atualizarConquistas(data.pontos);
+        }
+        
+        // ===============================
+        // FUNÇÕES DO MODAL DE AVATAR
+        // ===============================
+        window.abrirModalAvatar = function() {
+            console.log('🎨 Abrindo modal de avatar');
+            document.getElementById('avatarModal').style.display = 'block';
         }
 
+        window.fecharModalAvatar = function() {
+            console.log('❌ Fechando modal de avatar');
+            document.getElementById('avatarModal').style.display = 'none';
+        }
+
+        window.selecionarAvatar = async function(nomeImagem) {
+            const usuarioId = localStorage.getItem('usuarioId');
+            const idConvertido = Number(usuarioId);
+            
+            console.log('🎯 Selecionando avatar:', nomeImagem);
+            
+            if (!usuarioId) {
+                console.error('❌ Erro: Usuário não identificado');
+                showNotification('Erro: Usuário não identificado');
+                return;
+            }
+
+            try {
+                const { data, error } = await supabase
+                    .from('usuarios')
+                    .update({ avatar: nomeImagem })
+                    .eq('id', idConvertido)
+                    .select();
+
+                if (error) {
+                    console.error('❌ Erro ao salvar avatar:', error);
+                    showNotification('Erro ao salvar avatar: ' + error.message);
+                } else {
+                    console.log('✅ Avatar salvo com sucesso!');
+                    
+                    document.querySelector('.profile-avatar').innerHTML = 
+                        `<img src="img/${nomeImagem}" alt="Avatar">
+                        <div class="avatar-edit-icon">✏️</div>`;
+                    
+                    fecharModalAvatar();
+                    showNotification('Avatar atualizado com sucesso! 🎉');
+                }
+            } catch (err) {
+                console.error('❌ Erro inesperado:', err);
+                showNotification('Erro inesperado ao salvar avatar');
+            }
+        }
+
+        window.onclick = function(event) {
+            const modal = document.getElementById('avatarModal');
+            if (event.target === modal) {
+                fecharModalAvatar();
+            }
+        }
+        
         // ===============================
         // EXECUTA AO CARREGAR A PÁGINA
         // ===============================
-        carregarNomeUsuario();
-        inicializarProgresso();
+        window.addEventListener('DOMContentLoaded', () => {
+            console.log('🚀 Página carregada, inicializando...');
+            carregarNomeUsuario();
+            inicializarProgresso();
+        });
     </script>
 
 
@@ -184,7 +361,6 @@
         <div class="nav-container">
             <a href="home.html" class="logo">LeituraKids</a>
             <nav>
-
                 <div class="dropdown">
                     <button onclick="toggleMenu()" class="btn btn-gray">
                         <span class="material-symbols-outlined">menu</span>
@@ -195,7 +371,6 @@
                     </div>
                 </div>
             </nav>
-        </div>
         </div>
     </header>
 
@@ -218,12 +393,52 @@
         </div>
     </nav>
 
+    <!-- Modal de Seleção de Avatar -->
+    <div id="avatarModal" class="modal-avatar">
+        <div class="modal-avatar-content">
+            <span class="close-avatar" onclick="fecharModalAvatar()">&times;</span>
+            <h2>Escolha seu Avatar</h2>
+            <div class="avatars-grid">
+                <div class="avatar-option" onclick="selecionarAvatar('menino-marinheiro0.png')">
+                    <img src="img/menino-marinheiro0.png" alt="Menino Marinheiro">
+                </div>
+                <div class="avatar-option" onclick="selecionarAvatar('menina-marinheiro.png')">
+                    <img src="img/menina-marinheiro.png" alt="Menina Marinheiro">
+                </div>
+                <div class="avatar-option" onclick="selecionarAvatar('menino-pirata.png')">
+                    <img src="img/menino-pirata.png" alt="Menino Pirata">
+                </div>
+                <div class="avatar-option" onclick="selecionarAvatar('menina-pirata.png')">
+                    <img src="img/menina-pirata.png" alt="Menina Pirata">
+                </div>
+                <div class="avatar-option" onclick="selecionarAvatar('avatar-cachorro.png')">
+                    <img src="img/avatar-cachorro.png" alt="Cachorro">
+                </div>
+                <div class="avatar-option" onclick="selecionarAvatar('avatar-gato.png')">
+                    <img src="img/avatar-gato.png" alt="Gato">
+                </div>
+                <div class="avatar-option" onclick="selecionarAvatar('avatar-menino2.png')">
+                    <img src="img/avatar-menino2.png" alt="Menino 2">
+                </div>
+                <div class="avatar-option" onclick="selecionarAvatar('menino-marinhei.png')">
+                    <img src="img/menino-marinhei.png" alt="Menino Marinheiro 2">
+                </div>
+                <div class="avatar-option" onclick="selecionarAvatar('avatar-menina2.png')">
+                    <img src="img/avatar-menina2.png" alt="Menina 2">
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Conteúdo Principal -->
     <main class="main-content">
         <div class="profile-container">
             <!-- Cabeçalho do Perfil -->
             <div class="profile-header">
-                <div class="profile-avatar">🧒</div>
+                <div class="profile-avatar" onclick="abrirModalAvatar()" title="Clique para trocar o avatar">
+                    <img src="img/avatar-default.png" alt="Avatar">
+                    <div class="avatar-edit-icon">✏️</div>
+                </div>
                 <h1 class="profile-name">Nome</h1>
                 <div class="profile-level" id="nivel_usuario">Nível 1 - Leitor Iniciante</div>
             </div>
@@ -314,7 +529,7 @@
                 </div>
                 <div class="stat-card">
                     <div class="stat-icon icon"><img src="img/cadeado.png" alt="Bloqueado" /></div>
-                    <div class="stat-number">15</div>
+                    <div class="stat-number">4</div>
                     <div class="stat-label">Bloqueadas</div>
                 </div>
                 <div class="stat-card">
@@ -324,7 +539,7 @@
                 </div>
                 <div class="stat-card">
                     <div class="stat-icon icon"><img src="img/alvo.png" alt="Alvo" /></div>
-                    <div class="stat-number">3</div>
+                    <div class="stat-number">4</div>
                     <div class="stat-label">Próximas</div>
                 </div>
             </div>
@@ -334,36 +549,11 @@
                 <!-- Alfabeto -->
                 <div class="category-section">
                     <h2 class="category-title">
-                        🔤 Conquistas Recentes
+                        Principais Conquistas
                     </h2>
                     <p class="category-description">Medalhas por aprender as letras e seus sons</p>
                     <div class="badges-grid">
-                        <div class="badge new"
-                            onclick="showBadgeDetail('Colecionador', '📚', 'Você já conhece muitas palavras!', 'Conquistado hoje!')">
-                            <div class="badge-icon icon"><img src="img/livro.png" alt="Palavras" /></div>
-                            <div class="badge-name">Colecionador</div>
-                            <div class="badge-description">Aprenda 50 palavras</div>
-                        </div>
-                        <div class="badge"
-                            onclick="showBadgeDetail('Primeira Letra', '🔤', 'Parabéns! Você aprendeu sua primeira letra!', 'Conquistado em 15/08/2024')">
-                            <div class="badge-icon icon"><img src="img/abc.png" alt="Alfabeto" /></div>
-                            <div class="badge-name">Primeira Letra</div>
-                            <div class="badge-description">Aprenda sua primeira letra</div>
-                        </div>
-                        <div class="badges-grid">
-                            <div class="badge"
-                                onclick="showBadgeDetail('Semana Completa', '🔥', 'Você é muito dedicado! Parabéns!', 'Conquistado em 26/08/2024')">
-                                <div class="badge-icon icon"><img src="img/fogo.png" alt="Sequência" /></div>
-                                <div class="badge-name">Semana Completa</div>
-                                <div class="badge-description">7 dias seguidos praticando</div>
-                            </div>
-                        </div>
-                        <div class="badge"
-                            onclick="showBadgeDetail('Quebra-Cabeça', '🧩', 'Você é expert em quebra-cabeças!', 'Conquistado em 24/08/2024')">
-                            <div class="badge-icon icon"><img src="img/quebracabeca.png" alt="Quebra-Cabeça" /></div>
-                            <div class="badge-name">Quebra-Cabeça</div>
-                            <div class="badge-description">Complete 5 quebra-cabeças</div>
-                        </div>
+                        <!-- As conquistas serão inseridas dinamicamente aqui -->
                     </div>
                     <div class="button-container">
                         <button class="back-button" onclick="location.href='conquistas.html'">Ver Todas</button>

@@ -466,6 +466,12 @@ nav a::after {
     overflow: hidden;
 }
 
+.service-card {
+    flex: 0 0 calc(33.33% - 20px);
+    margin-right: 20px;
+}
+
+
 .service-icon {
     font-size: 3.5rem;
     margin-bottom: 1.5rem;
@@ -473,6 +479,11 @@ nav a::after {
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+}
+
+.stat-icon {
+    font-size: 3.5rem;
+    margin: 1.5rem;
 }
 
 .service-card::before {
@@ -753,13 +764,22 @@ nav a::after {
         box-shadow: -5px 0 15px rgba(0, 0, 0, 0.3);
         transform: translateX(100%);
         display: flex;
-        /* precisa estar flex para aplicar o transform */
         z-index: 1050;
     }
 
     .auth-buttons {
         display: none;
-        /* escondemos os botões no mobile, podem ser incluídos no menu se quiser depois */
+    }
+
+    .carousel-track {
+        gap: 20px;
+    }
+
+    /* Mobile: 1 card por vez */
+    .service-card {
+        flex: 0 0 100%;
+        min-width: 100%;
+        margin-right: 0;
     }
 
     .nav-menu {
@@ -792,5 +812,8 @@ nav a::after {
 
     .form-buttons {
         flex-direction: column;
+    }
+    .ancora {
+        display: none !important;
     }
 }

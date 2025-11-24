@@ -675,9 +675,9 @@ nav a::after {
 }
 
 .badge.locked {
-    background: linear-gradient(135deg, #bdc3c7 0%, #95a5a6 100%);
-    cursor: not-allowed;
-    opacity: 0.7;
+    opacity: 0.5;
+    filter: grayscale(100%);
+    position: relative;
 }
 
 .badge.locked .badge-icon {
@@ -938,5 +938,8 @@ nav a::after {
         width: 50px;
         height: 50px;
         font-size: 1.2rem;
+    }
+    .ancora {
+        display: none !important;
     }
 }

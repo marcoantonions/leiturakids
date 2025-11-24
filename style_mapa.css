@@ -475,6 +475,9 @@ nav a::after {
         height: 50px;
         font-size: 1.2rem;
     }
+    .ancora {
+        display: none !important;
+    }
 }
 
 .btn {
@@ -800,6 +803,8 @@ nav a::after {
     color: #DC143C;
     font-weight: bold;
     text-shadow: 1px 1px 2px rgba(244, 228, 188, 0.8);
+    margin-top: 8px;
+    min-height: 20px;
 }
 
 .node-progress0 {
@@ -1141,6 +1146,9 @@ nav a::after {
         font-size: 0.9rem;
         padding: 0.8rem 1.5rem;
         top: -50px;
+    }
+    .ancora {
+        display: none !important;
     }
 }
 
