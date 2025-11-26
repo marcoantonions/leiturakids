@@ -22,45 +22,115 @@
         const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         // ===============================
-        // SISTEMA DE CONQUISTAS
+        // SISTEMA DE CONQUISTAS - TODAS AS 12 CONQUISTAS
         // ===============================
-        const CONQUISTAS = [
-            {
-                id: 'leitor_iniciante',
-                nome: 'Leitor Iniciante',
-                descricao: 'Crie sua conta',
-                icone: 'livro-leitura.png',
-                requisito: 0, // Sempre desbloqueada
-                tipo: 'pontos'
-            },
-            {
-                id: 'explorador_historias',
-                nome: 'Explorador de Histórias',
-                descricao: 'Consiga 500 pontos',
-                icone: 'mapa.png',
-                requisito: 500,
-                tipo: 'pontos'
-            },
-            {
-                id: 'mestre_livros',
-                nome: 'Mestre dos Livros',
-                descricao: 'Faça 1000 pontos',
-                icone: 'livro-biblioteca.png',
-                requisito: 1000,
-                tipo: 'pontos'
-            },
-            {
-                id: 'sabio_leitura',
-                nome: 'Sábio da Leitura',
-                descricao: 'Alcance 2000 pontos',
-                icone: 'raio.png',
-                requisito: 2000,
-                tipo: 'pontos'
-            }
-        ];
+        const CONQUISTAS = {
+            pontos: [
+                {
+                    id: 'leitor_iniciante_pontos',
+                    nome: 'Leitor Iniciante',
+                    descricao: 'Crie sua conta',
+                    icone: 'livro-leitura.png',
+                    requisito: 0,
+                    tipo: 'pontos'
+                },
+                {
+                    id: 'explorador_historias',
+                    nome: 'Explorador de Histórias',
+                    descricao: 'Consiga 1000 pontos',
+                    icone: 'mapa.png',
+                    requisito: 1000,
+                    tipo: 'pontos'
+                },
+                {
+                    id: 'mestre_livros',
+                    nome: 'Mestre dos Livros',
+                    descricao: 'Faça 2000 pontos',
+                    icone: 'livro-biblioteca.png',
+                    requisito: 2000,
+                    tipo: 'pontos'
+                },
+                {
+                    id: 'sabio_leitura',
+                    nome: 'Sábio da Leitura',
+                    descricao: 'Alcance 3000 pontos',
+                    icone: 'raio.png',
+                    requisito: 3000,
+                    tipo: 'pontos'
+                }
+            ],
+            atividades: [
+                {
+                    id: 'leitor_iniciante_ativ',
+                    nome: 'Leitor Iniciante',
+                    descricao: 'Conclua 50 atividades',
+                    icone: 'livro-leitura.png',
+                    requisito: 50,
+                    tipo: 'atividades'
+                },
+                {
+                    id: 'explorador_ativ',
+                    nome: 'Explorador',
+                    descricao: 'Conclua 100 atividades',
+                    icone: 'mapa.png',
+                    requisito: 100,
+                    tipo: 'atividades'
+                },
+                {
+                    id: 'bibliotecario',
+                    nome: 'Bibliotecário',
+                    descricao: 'Conclua 150 atividades',
+                    icone: 'livro-biblioteca.png',
+                    requisito: 150,
+                    tipo: 'atividades'
+                },
+                {
+                    id: 'monge_leitura',
+                    nome: 'Monge da leitura',
+                    descricao: 'Conclua 200 atividades',
+                    icone: 'raio.png',
+                    requisito: 200,
+                    tipo: 'atividades'
+                }
+            ],
+            jogos: [
+                {
+                    id: 'pequeno_amador',
+                    nome: 'Pequeno Amador',
+                    descricao: 'Jogue 50 jogos',
+                    icone: 'cerebro.png',
+                    requisito: 50,
+                    tipo: 'jogos'
+                },
+                {
+                    id: 'mago_jogos',
+                    nome: 'Mago dos Jogos',
+                    descricao: 'Jogue 100 jogos',
+                    icone: 'quebracabeca.png',
+                    requisito: 100,
+                    tipo: 'jogos'
+                },
+                {
+                    id: 'gigante_games',
+                    nome: 'Gigante dos Games',
+                    descricao: 'Jogue 150 jogos',
+                    icone: 'corredor.png',
+                    requisito: 150,
+                    tipo: 'jogos'
+                },
+                {
+                    id: 'rei_diversao',
+                    nome: 'Rei da Diversão',
+                    descricao: 'Jogue 200 jogos',
+                    icone: 'alvo.png',
+                    requisito: 200,
+                    tipo: 'jogos'
+                }
+            ]
+        };
 
-        function atualizarConquistas(pontos) {
-            console.log('🏆 Atualizando conquistas com', pontos, 'pontos');
+        function atualizarConquistas(progresso) {
+            console.log('🏆 Atualizando conquistas com progresso:', progresso);
             
             const badgesGrid = document.querySelector('.badges-grid');
             if (!badgesGrid) {
@@ -71,13 +141,13 @@
             // Limpa o conteúdo atual
             badgesGrid.innerHTML = '';
 
-            let conquistasDesbloqueadas = 0;
+            let totalConquistasDesbloqueadas = 0;
+            let totalConquistas = 0;
 
-            // Cria cada conquista
-            CONQUISTAS.forEach(conquista => {
-                const desbloqueada = pontos >= conquista.requisito;
-                if (desbloqueada) conquistasDesbloqueadas++;
-
+            // Exibe apenas as 4 conquistas PRINCIPAIS (de pontos) na home
+            CONQUISTAS.pontos.forEach(conquista => {
+                const desbloqueada = progresso.pontos >= conquista.requisito;
+                
                 const badgeDiv = document.createElement('div');
                 badgeDiv.className = desbloqueada ? 'badge unlocked' : 'badge locked';
                 
@@ -92,24 +162,76 @@
                 badgesGrid.appendChild(badgeDiv);
             });
 
-            // Atualiza as estatísticas das conquistas
-            atualizarEstatisticasConquistas(conquistasDesbloqueadas);
+            // MAS calcula as estatísticas considerando TODAS AS 12 CONQUISTAS
+            // Conquistas de pontos
+            CONQUISTAS.pontos.forEach(c => {
+                totalConquistas++;
+                if (progresso.pontos >= c.requisito) totalConquistasDesbloqueadas++;
+            });
 
-            console.log('✅ Conquistas atualizadas:', conquistasDesbloqueadas, 'desbloqueadas');
+            // Conquistas de atividades
+            CONQUISTAS.atividades.forEach(c => {
+                totalConquistas++;
+                if (progresso.atividades_concluidas >= c.requisito) totalConquistasDesbloqueadas++;
+            });
+
+            // Conquistas de jogos
+            CONQUISTAS.jogos.forEach(c => {
+                totalConquistas++;
+                if (progresso.jogos_concluidos >= c.requisito) totalConquistasDesbloqueadas++;
+            });
+
+            // Atualiza as estatísticas das conquistas
+            atualizarEstatisticasConquistas(totalConquistasDesbloqueadas, totalConquistas, progresso);
+
+            console.log('✅ Conquistas atualizadas:', totalConquistasDesbloqueadas, 'de', totalConquistas, 'desbloqueadas');
         }
 
-        function atualizarEstatisticasConquistas(conquistasDesbloqueadas) {
-            const totalConquistas = CONQUISTAS.length;
-            const conquistasBloqueadas = totalConquistas - conquistasDesbloqueadas;
-            const percentualCompleto = ((conquistasDesbloqueadas / totalConquistas) * 100).toFixed(0);
+        function atualizarEstatisticasConquistas(desbloqueadas, total, progresso) {
+            const bloqueadas = total - desbloqueadas;
+            const percentualCompleto = ((desbloqueadas / total) * 100).toFixed(1);
+            
+            // Calcula próximas conquistas (conquistas que faltam pouco para desbloquear)
+            let proximas = 0;
+            
+            // Verifica conquistas de pontos
+            CONQUISTAS.pontos.forEach(c => {
+                if (progresso.pontos < c.requisito && progresso.pontos >= c.requisito * 0.7) {
+                    proximas++;
+                }
+            });
+            
+            // Verifica conquistas de atividades
+            CONQUISTAS.atividades.forEach(c => {
+                if (progresso.atividades_concluidas < c.requisito && 
+                    progresso.atividades_concluidas >= c.requisito * 0.7) {
+                    proximas++;
+                }
+            });
+            
+            // Verifica conquistas de jogos
+            CONQUISTAS.jogos.forEach(c => {
+                if (progresso.jogos_concluidos < c.requisito && 
+                    progresso.jogos_concluidos >= c.requisito * 0.7) {
+                    proximas++;
+                }
+            });
 
-            // Atualiza os cards de estatísticas (se existirem na página)
+            // Atualiza os cards de estatísticas das conquistas
             const statsCards = document.querySelectorAll('.conquistas-stats .stat-card');
-            if (statsCards.length >= 3) {
-                statsCards[0].querySelector('.stat-number').textContent = conquistasDesbloqueadas;
-                statsCards[1].querySelector('.stat-number').textContent = conquistasBloqueadas;
+            if (statsCards.length >= 4) {
+                statsCards[0].querySelector('.stat-number').textContent = desbloqueadas;
+                statsCards[1].querySelector('.stat-number').textContent = bloqueadas;
                 statsCards[2].querySelector('.stat-number').textContent = percentualCompleto + '%';
+                statsCards[3].querySelector('.stat-number').textContent = proximas;
             }
+
+            console.log('📊 Estatísticas:', {
+                desbloqueadas,
+                bloqueadas,
+                percentualCompleto: percentualCompleto + '%',
+                proximas
+            });
         }
 
         // ===============================
@@ -197,10 +319,10 @@
         // ATUALIZA BARRAS DE PROGRESSO
         // ===============================
         function atualizarBarrasProgresso(data) {
-            const MAX_PONTOS = 2000;
-            const MAX_ATIVIDADES = 120;
-            const MAX_JOGOS = 100;
-            const MAX_CONQUISTAS = 15;
+            const MAX_PONTOS = 5000;
+            const MAX_ATIVIDADES = 320;
+            const MAX_JOGOS = 300;
+            const MAX_CONQUISTAS = 12; // Total de conquistas
 
             const progressoAprendizado = Math.min((data.pontos / MAX_PONTOS) * 100, 100);
             const progressoAtividades = Math.min((data.atividades_concluidas / MAX_ATIVIDADES) * 100, 100);
@@ -255,21 +377,49 @@
 
             console.log('📊 Progresso carregado:', data);
 
+            // Calcula o número real de conquistas desbloqueadas
+            let conquistasDesbloqueadas = 0;
+            
+            CONQUISTAS.pontos.forEach(c => {
+                if (data.pontos >= c.requisito) conquistasDesbloqueadas++;
+            });
+            CONQUISTAS.atividades.forEach(c => {
+                if (data.atividades_concluidas >= c.requisito) conquistasDesbloqueadas++;
+            });
+            CONQUISTAS.jogos.forEach(c => {
+                if (data.jogos_concluidos >= c.requisito) conquistasDesbloqueadas++;
+            });
+
+            // Atualiza o número de conquistas no banco de dados se estiver diferente
+            if (conquistasDesbloqueadas !== data.numero_conquistas) {
+                const { error: updateError } = await supabase
+                    .from('progresso')
+                    .update({ numero_conquistas: conquistasDesbloqueadas })
+                    .eq('user_id', idConvertido);
+                
+                if (updateError) {
+                    console.error('❌ Erro ao atualizar número de conquistas:', updateError);
+                } else {
+                    console.log('✅ Número de conquistas atualizado:', conquistasDesbloqueadas);
+                    data.numero_conquistas = conquistasDesbloqueadas;
+                }
+            }
+
             // Atualiza os elementos do HTML
             document.getElementById('jogos_concluidos').textContent = data.jogos_concluidos;
             document.getElementById('pontos').textContent = data.pontos;
             document.getElementById('atividades_concluidas').textContent = data.atividades_concluidas;
-            document.getElementById('numero_conquistas').textContent = data.numero_conquistas;
+            document.getElementById('numero_conquistas').textContent = conquistasDesbloqueadas;
             
             // Determina o nível baseado nos pontos
             let nivelTexto = '';
-            if (data.pontos < 500) {
+            if (data.pontos < 1000) {
                 nivelTexto = 'Nível 1 - Leitor Iniciante';
-            } else if (data.pontos >= 500 && data.pontos < 1000) {
-                nivelTexto = 'Nível 2 - Explorador de Histórias';
             } else if (data.pontos >= 1000 && data.pontos < 2000) {
+                nivelTexto = 'Nível 2 - Explorador de Histórias';
+            } else if (data.pontos >= 2000 && data.pontos < 3000) {
                 nivelTexto = 'Nível 3 - Mestre dos Livros';
-            } else if (data.pontos >= 2000) {
+            } else if (data.pontos >= 3000) {
                 nivelTexto = 'Nível 4 - Sábio da Leitura';
             }
             
@@ -278,8 +428,8 @@
             // Atualiza as barras de progresso
             atualizarBarrasProgresso(data);
 
-            // ⭐ ATUALIZA AS CONQUISTAS BASEADO NOS PONTOS
-            atualizarConquistas(data.pontos);
+            // ⭐ ATUALIZA AS CONQUISTAS BASEADO NO PROGRESSO
+            atualizarConquistas(data);
         }
         
         // ===============================
@@ -366,7 +516,6 @@
                         <span class="material-symbols-outlined">menu</span>
                     </button>
                     <div id="menuDropdown" class="dropdown-content">
-                        <a href="index.html#contact">Ajuda</a>
                         <a href="index.html">Sair</a>
                     </div>
                 </div>

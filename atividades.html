@@ -87,7 +87,6 @@
                         <span class="material-symbols-outlined">menu</span>
                     </button>
                     <div id="menuDropdown" class="dropdown-content">
-                        <a href="index.html#contact">Ajuda</a>
                         <a href="index.html">Sair</a>
                     </div>
                 </div>
@@ -213,8 +212,7 @@
                 <div class="letter-options" id="letter-options"></div>
 
                 <div class="action-buttons">
-                    <button class="action-button" onclick="checkWord()">Verificar</button>
-                    <button class="action-button" onclick="nextWord()">Próxima Palavra</button>
+                    <button class="action-button" id="word-action-btn" onclick="checkWord()">Verificar</button>
                 </div>
                 <div class="feedback" id="word-feedback"></div>
             </div>
@@ -233,8 +231,8 @@
                 <div class="letter-options" id="sentence-words"></div>
 
                 <div class="action-buttons">
-                    <button class="action-button" onclick="checkSentence()">Verificar Frase</button>
-                    <button class="action-button" onclick="nextSentence()">Nova Frase</button>
+                    <button class="action-button" id="sentence-action-btn" onclick="checkSentence()">Verificar
+                        Frase</button>
                 </div>
                 <div class="feedback" id="sentence-feedback"></div>
             </div>
@@ -286,8 +284,8 @@
                 <div class="letter-options" id="syllable-options"></div>
 
                 <div class="action-buttons">
-                    <button class="action-button" onclick="checkSyllableOrder()">Verificar</button>
-                    <button class="action-button" onclick="nextSyllableWord()">Nova Palavra</button>
+                    <button class="action-button" id="syllable-action-btn"
+                        onclick="checkSyllableOrder()">Verificar</button>
                 </div>
                 <div class="feedback" id="syllable-feedback"></div>
             </div>

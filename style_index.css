@@ -70,17 +70,14 @@ body {
 .material-symbols-outlined {
     font-size: 20px;
     vertical-align: middle;
-
 }
 
 .icon img {
     width: 55px;
     height: 55px;
     object-fit: contain;
-    /* mantém proporção */
     display: block;
     margin: 0 auto 10px auto;
-    /* centraliza e dá espaçamento embaixo */
 }
 
 .nav-container {
@@ -127,7 +124,6 @@ nav a::after {
     height: 3px;
     background-color: #298ac1;
     border-radius: 2px;
-
     transform: scaleX(0);
     transform-origin: left;
     transition: transform 0.5s ease;
@@ -145,9 +141,6 @@ nav a::after {
     border-radius: 0;
     color: white;
     padding: 5px 0;
-    transform: scaleX(0);
-    transform-origin: left;
-    transition: transform 0.5s ease;
     transition: color 0.3s ease;
 }
 
@@ -202,7 +195,6 @@ nav a::after {
     flex-direction: column;
     position: fixed;
     top: 70px;
-    /* abaixo do header */
     right: 0;
     background: rgba(111, 241, 254, 0.8);
     width: 70vw;
@@ -214,7 +206,7 @@ nav a::after {
     transition: transform 0.5s ease;
 }
 
-/* Para esconder o menu mobile inicialmente, vamos fazer o nav-menu padrão mobile ficar deslocado para direita */
+/* Para esconder o menu mobile inicialmente */
 .nav-menu {
     transition: transform 0.5s ease;
 }
@@ -233,105 +225,161 @@ nav a::after {
     z-index: 1000;
 }
 
-/* Modal box */
+/* Modal box - ARREDONDADO */
 .modal-content {
     background: white;
-    border-radius: 10px;
+    border-radius: 20px;
     width: 90%;
-    max-width: 400px;
+    max-width: 450px;
     padding: 2rem;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
+    max-height: 80vh;
+    overflow-y: auto;
 }
 
-/* Header */
+/* Header - ALINHADO À ESQUERDA */
 .modal-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem;
 }
 
 .modal-header h2 {
-    color: black;
+    color: #2c3e50;
     margin: 0;
-    font-size: 1.5rem;
+    font-size: 1.8rem;
+    text-align: left;
 }
 
 .close-btn {
-    color: black;
+    color: #888;
     font-size: 2rem;
     cursor: pointer;
+    transition: color 0.3s ease;
+    line-height: 1;
 }
 
-/* Body */
+.close-btn:hover {
+    color: #298ac1;
+}
+
+/* Body - LABELS ALINHADAS À ESQUERDA */
 .modal-body {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 1.2rem;
 }
 
 .modal-body label {
-    flex: 1;
     display: flex;
     flex-direction: column;
     font-weight: bold;
-    font-size: 0.9rem;
+    font-size: 0.95rem;
+    color: #2c3e50;
+    gap: 0.5rem;
+    text-align: left;
 }
 
 .modal-body input {
-    margin-top: -10%;
     width: 100%;
-    padding: 0.7rem;
-    border: 1px solid #ccc;
-    border-radius: 8px;
+    padding: 0.8rem;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
     font-size: 1rem;
+    transition: all 0.3s ease;
+    font-family: 'Comic Sans MS';
 }
 
-/* Footer */
+.modal-body input:focus {
+    outline: none;
+    border-color: #298ac1;
+    box-shadow: 0 0 0 3px rgba(41, 138, 193, 0.1);
+}
+
+/* Password wrapper para o ícone de olho */
+.password-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.password-wrapper input {
+    width: 100%;
+    padding-right: 45px;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 12px;
+    cursor: pointer;
+    color: #888;
+    transition: color 0.3s ease;
+    display: flex;
+    align-items: center;
+    user-select: none;
+}
+
+.toggle-password:hover {
+    color: #298ac1;
+}
+
+.toggle-password .material-symbols-outlined {
+    font-size: 22px;
+}
+
+/* Footer - BOTÕES CENTRALIZADOS E ARREDONDADOS */
 .modal-footer {
     display: flex;
-    justify-content: flex-end;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     gap: 1rem;
+    margin-top: 0.5rem;
 }
 
 .btn {
-    padding: 0.5rem 1rem;
+    padding: 0.8rem 2rem;
     border: none;
-    border-radius: 5px;
+    border-radius: 25px;
     font-weight: bold;
     cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+    width: 100%;
+    max-width: 280px;
 }
 
 .btn-blue {
     background-color: #298ac1;
     color: white;
-    border: none;
-    padding: 0.6rem 1.2rem;
-    border-radius: 8px;
-    font-size: 1rem;
-    font-weight: bold;
-    cursor: pointer;
+}
+
+.btn-blue:hover {
+    background-color: #1f7499;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(41, 138, 193, 0.4);
 }
 
 .btn-gray {
-    background-color: #bdc3c7;
-    color: black;
-    border: none;
-    padding: 0.6rem 1.2rem;
-    border-radius: 8px;
-    font-weight: bold;
-    cursor: pointer;
+    background-color: #95a5a6;
+    color: white;
 }
 
+.btn-gray:hover {
+    background-color: #7f8c8d;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(149, 165, 166, 0.4);
+}
 
 /* Hero Section */
 .hero {
     background-image: url(img/fundo.png);
     background-position: center;
-    /* Centraliza a imagem */
     background-repeat: no-repeat;
     background-size: cover;
     min-height: 100vh;
@@ -392,7 +440,6 @@ nav a::after {
         opacity: 0;
         transform: translateY(30px);
     }
-
     to {
         opacity: 1;
         transform: translateY(0);
@@ -432,7 +479,6 @@ nav a::after {
     border-radius: 2px;
 }
 
-
 .carousel-wrapper {
     overflow: hidden;
     max-width: 100%;
@@ -471,7 +517,6 @@ nav a::after {
     margin-right: 20px;
 }
 
-
 .service-icon {
     font-size: 3.5rem;
     margin-bottom: 1.5rem;
@@ -499,12 +544,9 @@ nav a::after {
 }
 
 @keyframes gradientShift {
-
-    0%,
-    100% {
+    0%, 100% {
         background-position: 0% 50%;
     }
-
     50% {
         background-position: 100% 50%;
     }
@@ -586,7 +628,6 @@ nav a::after {
     text-align: right;
 }
 
-
 .contact video {
     position: relative;
     top: 0;
@@ -652,16 +693,6 @@ nav a::after {
     display: flex;
     gap: 1rem;
     justify-content: center;
-}
-
-.btn {
-    padding: 1rem 2rem;
-    border: none;
-    border-radius: 50px;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-weight: bold;
 }
 
 .btn-primary {
@@ -738,14 +769,7 @@ nav a::after {
     transform: scale(1.1);
 }
 
-.material-symbols-outlined {
-    font-size: 24px;
-    margin-left: 5%;
-    vertical-align: middle;
-}
-
 /* Mobile Responsiveness */
-
 @media (max-width: 1000px) {
     .hamburger {
         display: block;
@@ -775,7 +799,6 @@ nav a::after {
         gap: 20px;
     }
 
-    /* Mobile: 1 card por vez */
     .service-card {
         flex: 0 0 100%;
         min-width: 100%;
@@ -798,12 +821,32 @@ nav a::after {
         font-size: 1.2rem;
     }
 
+    /* ABOUT SECTION - MANTÉM AS IMAGENS VISÍVEIS */
     .about-content {
         grid-template-columns: 1fr;
+        gap: 2rem;
     }
 
+    .about-image {
+        display: block !important;
+        order: -1; /* Coloca a imagem antes do texto */
+    }
+
+    .about-image .about-img {
+        width: 100%;
+        height: 300px;
+        object-fit: contain;
+    }
+
+    /* TUTORIAL SECTION - MANTÉM AS IMAGENS VISÍVEIS */
     .tutorial-content {
         grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+
+    .tutorial-text h2,
+    .tutorial-text p {
+        text-align: left; /* Alinha o texto à esquerda no mobile */
     }
 
     .services-grid {
@@ -813,7 +856,22 @@ nav a::after {
     .form-buttons {
         flex-direction: column;
     }
+    
     .ancora {
         display: none !important;
+    }
+
+    .modal-content {
+        width: 95%;
+        max-width: 380px;
+        padding: 1.5rem;
+    }
+
+    .password-wrapper input {
+        padding-right: 45px;
+    }
+
+    .btn {
+        max-width: 100%;
     }
 }

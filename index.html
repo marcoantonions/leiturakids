@@ -21,7 +21,6 @@
                     <ul class="nav-menu">
                         <li><a href="#inicio" class="nav-link active">Início</a></li>
                         <li><a href="#about" class="nav-link">Sobre</a></li>
-                        <li><a href="#tutorial" class="nav-link">Tutorial</a></li>
                         <li><a href="#services" class="nav-link">Serviços</a></li>
                         <li><a href="#contact" class="nav-link">Contato</a></li>
                     </ul>
@@ -38,12 +37,12 @@
             </div>
         </div>
     </header>
+    
     <!-- Hero Section -->
     <section id="inicio" class="hero" data-color="rgba(111, 241, 254, 0.8)">
         <div class="hero-content">
             <h1 class="hero-title">LeituraKids</h1>
             <p class="hero-subtitle">A Magia da Leitura Começa com um Clique!</p>
-            <!-- Botão para abrir o modal -->
             <button onclick="abrirModal('modal-login')" class="cta-button abrirLogin">Vamos lá!</button>
 
             <!-- Modal de Login -->
@@ -58,7 +57,12 @@
                             <input type="text" id="login-usuario" placeholder="Nome de usuário" required>
                         </label>
                         <label>Senha
-                            <input type="password" id="login-senha" placeholder="Senha" required>
+                            <div class="password-wrapper">
+                                <input type="password" id="login-senha" placeholder="Senha" required>
+                                <span class="toggle-password" onclick="togglePasswordVisibility('login-senha', this)">
+                                    <span class="material-symbols-outlined">visibility</span>
+                                </span>
+                            </div>
                         </label>
                     </div>
                     <div class="modal-footer">
@@ -80,7 +84,7 @@
                             <input type="text" id="cad-nome" placeholder="Nome da criança" required>
                         </label>
                         <label>Idade
-                            <input type="number" id="cad-idade" placeholder="Idade" required>
+                            <input type="number" id="cad-idade" placeholder="Idade" min="1" max="10" required>
                         </label>
                         <label>Responsável
                             <input type="text" id="cad-responsavel" placeholder="Nome do responsável" required>
@@ -92,7 +96,20 @@
                             <input type="text" id="cad-usuario" placeholder="Nome de usuário" required>
                         </label>
                         <label>Senha
-                            <input type="password" id="cad-senha" placeholder="Crie uma senha" required>
+                            <div class="password-wrapper">
+                                <input type="password" id="cad-senha" placeholder="Crie uma senha" required>
+                                <span class="toggle-password" onclick="togglePasswordVisibility('cad-senha', this)">
+                                    <span class="material-symbols-outlined">visibility</span>
+                                </span>
+                            </div>
+                        </label>
+                        <label>Confirmar Senha
+                            <div class="password-wrapper">
+                                <input type="password" id="cad-confirmar-senha" placeholder="Confirme a senha" required>
+                                <span class="toggle-password" onclick="togglePasswordVisibility('cad-confirmar-senha', this)">
+                                    <span class="material-symbols-outlined">visibility</span>
+                                </span>
+                            </div>
                         </label>
                     </div>
                     <div class="modal-footer">
@@ -110,15 +127,65 @@
                 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRucGhqb3Fta3ZuanVlaXdqYXl1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc5NjE3ODEsImV4cCI6MjA3MzUzNzc4MX0.r8-M9EZg73sIrwESfd61hyGITsEwv_TJFZOBYeXk3d8';
                 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+                // Função para validar email
+                function validarEmail(email) {
+                    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                    return regex.test(email);
+                }
+
                 // Cadastro
                 window.cadastrar = async function () {
-                    const nome = document.getElementById('cad-nome').value;
+                    const nome = document.getElementById('cad-nome').value.trim();
                     const idade = parseInt(document.getElementById('cad-idade').value);
-                    const responsavel = document.getElementById('cad-responsavel').value;
-                    const email = document.getElementById('cad-email').value;
-                    const usuario = document.getElementById('cad-usuario').value;
+                    const responsavel = document.getElementById('cad-responsavel').value.trim();
+                    const email = document.getElementById('cad-email').value.trim();
+                    const usuario = document.getElementById('cad-usuario').value.trim();
                     const senha = document.getElementById('cad-senha').value;
+                    const confirmarSenha = document.getElementById('cad-confirmar-senha').value;
 
+                    // Validação de campos vazios
+                    if (!nome || !idade || !responsavel || !email || !usuario || !senha || !confirmarSenha) {
+                        alert("Por favor, preencha todos os campos!");
+                        return;
+                    }
+
+                    // Validação de idade negativa ou zero
+                    if (idade <= 0) {
+                        alert("Por favor, insira uma idade válida!");
+                        return;
+                    }
+
+                    // Validação de idade máxima
+                    if (idade > 10) {
+                        alert("Desculpe! O LeituraKids é destinado para crianças pequenas em processo de alfabetização (até 10 anos).");
+                        return;
+                    }
+
+                    // Validação de email
+                    if (!validarEmail(email)) {
+                        alert("Por favor, insira um e-mail válido! (exemplo: email@exemplo.com)");
+                        return;
+                    }
+
+                    // Validação de senhas correspondentes
+                    if (senha !== confirmarSenha) {
+                        alert("As senhas não coincidem! Por favor, verifique.");
+                        return;
+                    }
+
+                    // Verificar se o usuário já existe
+                    const { data: usuarioExistente, error: erroConsulta } = await supabase
+                        .from('usuarios')
+                        .select('usuario')
+                        .eq('usuario', usuario)
+                        .single();
+
+                    if (usuarioExistente) {
+                        alert("Este nome de usuário já está em uso! Por favor, escolha outro.");
+                        return;
+                    }
+
+                    // Cadastrar novo usuário
                     const { data, error } = await supabase
                         .from('usuarios')
                         .insert([{ nome, idade, nome_responsavel: responsavel, email_responsavel: email, usuario, senha }]);
@@ -126,7 +193,7 @@
                     if (error) {
                         alert("Erro ao cadastrar: " + error.message);
                     } else {
-                        alert("Cadastro realizado com sucesso!");
+                        alert("Cadastro realizado com sucesso! 🎉");
                         fecharModal('modal-cadastro');
                         abrirModal('modal-login');
                     }
@@ -134,8 +201,13 @@
 
                 // Login
                 window.fazerLogin = async function () {
-                    const usuario = document.getElementById('login-usuario').value;
+                    const usuario = document.getElementById('login-usuario').value.trim();
                     const senha = document.getElementById('login-senha').value;
+
+                    if (!usuario || !senha) {
+                        alert("Por favor, preencha todos os campos!");
+                        return;
+                    }
 
                     const { data, error } = await supabase
                         .from('usuarios')
@@ -147,6 +219,8 @@
                     if (error || !data) {
                         alert("Usuário ou senha inválidos!");
                     } else {
+                        // NOTA: localStorage está sendo usado aqui conforme o código original
+                        // mas idealmente deveria ser evitado em artifacts
                         localStorage.setItem("usuarioId", data.id);
                         window.location.href = "home.html";
                     }
@@ -155,7 +229,6 @@
                 window.abrirModal = (id) => {
                     document.getElementById('modal-login').style.display = 'none';
                     document.getElementById('modal-cadastro').style.display = 'none';
-
                     document.getElementById(id).style.display = 'flex';
                 };
 
@@ -163,6 +236,19 @@
                     document.getElementById(id).style.display = 'none';
                 };
 
+                // Função para alternar visibilidade da senha
+                window.togglePasswordVisibility = function(inputId, iconElement) {
+                    const input = document.getElementById(inputId);
+                    const icon = iconElement.querySelector('.material-symbols-outlined');
+                    
+                    if (input.type === 'password') {
+                        input.type = 'text';
+                        icon.textContent = 'visibility_off';
+                    } else {
+                        input.type = 'password';
+                        icon.textContent = 'visibility';
+                    }
+                }
             </script>
         </div>
     </section>
@@ -186,7 +272,6 @@
                     <img src="img/nadador.png" alt="Garoto Nadando" class="about-img">
                 </div>
             </div>
-        </div>
         </div>
     </section>
 

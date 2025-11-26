@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="script_jogos.js"></script>
     <title>Jogos - Leitura Kids</title>
 </head>
 
@@ -21,59 +20,40 @@
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRucGhqb3Fta3ZuanVlaXdqYXl1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc5NjE3ODEsImV4cCI6MjA3MzUzNzc4MX0.r8-M9EZg73sIrwESfd61hyGITsEwv_TJFZOBYeXk3d8';
         const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        // Exporta o supabase globalmente para uso no script_atividades.js
         window.supabaseClient = supabase;
 
         async function carregarPontuacaoGlobal() {
-            console.log("Carregando pontuação global...");
-
             const usuarioId = localStorage.getItem('usuarioId');
-            console.log("ID do usuário:", usuarioId);
-
-            if (!usuarioId) {
-                console.warn(" Nenhum usuário logado");
-                return;
-            }
+            if (!usuarioId) return;
 
             try {
                 const { data, error } = await supabase
                     .from('progresso')
-                    .select('pontos, atividades_concluidas, acertos')
+                    .select('pontos, jogos_concluidos, acertos')
                     .eq('user_id', usuarioId)
                     .maybeSingle();
 
-                if (error) {
-                    console.error(" Erro ao buscar pontuação global:", error);
-                    return;
-                }
-
-                console.log(" Dados recebidos:", data);
-
                 if (data) {
-                    // Atualiza os elementos da interface
                     document.getElementById('total-score').textContent = data.pontos ?? 0;
                     document.getElementById('total-correct').textContent = data.acertos ?? 0;
                     document.getElementById('games-played').textContent = data.jogos_concluidos ?? 0;
 
-                    // Salva no localStorage para sincronização com o JS
                     const gameStats = {
                         totalScore: data.pontos ?? 0,
                         totalCorrect: data.acertos ?? 0,
                         gamesPlayed: data.jogos_concluidos ?? 0,
                     };
                     localStorage.setItem('gameStats', JSON.stringify(gameStats));
-                    console.log(" Progresso sincronizado com localStorage");
-                } else {
-                    console.log("Nenhum progresso encontrado, usando valores padrão");
                 }
             } catch (err) {
-                console.error(" Erro inesperado:", err);
+                console.error("Erro:", err);
             }
         }
 
-        // Carrega quando a página estiver pronta
         window.addEventListener('DOMContentLoaded', carregarPontuacaoGlobal);
     </script>
+
+    <script src="script_jogos.js"></script>
 
     <!-- Notificação -->
     <div class="notification" id="notification">
@@ -85,18 +65,15 @@
         <div class="nav-container">
             <a href="home.html" class="logo">LeituraKids</a>
             <nav>
-
                 <div class="dropdown">
                     <button onclick="toggleMenu()" class="btn btn-gray">
                         <span class="material-symbols-outlined">menu</span>
                     </button>
                     <div id="menuDropdown" class="dropdown-content">
-                        <a href="index.html#contact">Ajuda</a>
                         <a href="index.html">Sair</a>
                     </div>
                 </div>
             </nav>
-        </div>
         </div>
     </header>
 
@@ -185,10 +162,10 @@
                     </p>
                 </div>
 
-                <div class="game-card coming-soon">
-                    <div class="icon"><img src="img/quebracabeca.png" alt="Quebra-Cabeça de Palavras"></div>
-                    <h3 class="game-title">Quebra-Cabeça de Palavras</h3>
-                    <p class="game-description">Monte as peças do quebra-cabeça para revelar palavras e imagens!</p>
+                <div class="game-card" onclick="showGame('drag-drop-game')">
+                    <div class="icon"><img src="img/quebracabeca.png" alt="Arrastar e Soltar"></div>
+                    <h3 class="game-title">Arrastar e Soltar Letras</h3>
+                    <p class="game-description">Arraste as letras para os lugares certos e forme a palavra da imagem!</p>
                 </div>
             </div>
 
@@ -304,6 +281,31 @@
                 <div class="action-buttons">
                     <button class="action-button" onclick="nextSyllableQuestion()">Próxima Pergunta</button>
                 </div>
+            </div>
+
+            <!-- Jogo 6: Arrastar e Soltar Letras -->
+            <div class="game-container" id="drag-drop-game">
+                <div class="game-header">
+                    <h2 class="game-title-header">
+                        <div class="icon0"><img src="img/quebracabeca.png" alt="Arrastar e Soltar"></div> Arrastar e Soltar Letras
+                    </h2>
+                    <button class="back-button" onclick="showMenu()">Voltar</button>
+                </div>
+
+                <div class="drag-drop-container">
+                    <div class="game-question">Arraste as letras para formar a palavra!</div>
+                    <img class="drag-image" id="drag-image" src="" alt="Imagem">
+                    
+                    <div class="drop-zones" id="drop-zones"></div>
+                    
+                    <div class="letter-bank" id="letter-bank"></div>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="action-button" onclick="nextDragDropQuestion()">Próxima Palavra</button>
+                </div>
+
+                <div class="feedback" id="drag-feedback"></div>
             </div>
         </div>
     </main>

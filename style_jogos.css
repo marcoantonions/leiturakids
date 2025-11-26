@@ -932,3 +932,118 @@ body {
 .score-item :last-child {
     margin-bottom: 0;
 }
+
+/* ============================
+           ESTILOS DO JOGO DE ARRASTAR
+        ============================ */
+        .drag-drop-container {
+            max-width: 600px;
+            margin: 2rem auto;
+        }
+
+        .drag-image {
+            max-width: 200px;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 15px;
+            margin: 1rem auto;
+            display: block;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .drop-zones {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+
+        .drop-zone {
+            width: 60px;
+            height: 80px;
+            background: #ecf0f1;
+            border: 3px dashed #3498db;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: bold;
+            color: #2c3e50;
+            transition: all 0.3s ease;
+        }
+
+        .drop-zone.drag-over {
+            background: #d4edda;
+            border-color: #2ecc71;
+            transform: scale(1.05);
+        }
+
+        .drop-zone.filled {
+            background: linear-gradient(135deg, #4ECDC4 0%, #44A08D 100%);
+            border-color: #2ecc71;
+            color: white;
+        }
+
+        .letter-bank {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin: 2rem 0;
+            padding: 1.5rem;
+            background: #f8f9fa;
+            border-radius: 15px;
+            min-height: 100px;
+        }
+
+        .draggable-letter {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: white;
+            cursor: move;
+            user-select: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .draggable-letter:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .draggable-letter.dragging {
+            opacity: 0.5;
+            transform: rotate(5deg);
+        }
+
+        .draggable-letter.hidden {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .drop-zone {
+                width: 50px;
+                height: 70px;
+                font-size: 1.6rem;
+            }
+
+            .draggable-letter {
+                width: 50px;
+                height: 50px;
+                font-size: 1.5rem;
+            }
+
+            .drag-image {
+                max-width: 150px;
+                height: 150px;
+            }
+        }

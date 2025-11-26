@@ -26,6 +26,23 @@ let gameStats = {
 let selectedMatchingItem = null;
 
 // ============================
+//  FUNÇÕES DE ÁUDIO
+// ============================
+
+function playSound(text) {
+    if ('speechSynthesis' in window) {
+        // Cancela qualquer áudio anterior antes de iniciar um novo
+        speechSynthesis.cancel();
+        
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'pt-BR';
+        utterance.rate = 0.7;
+        utterance.pitch = 1.2;
+        speechSynthesis.speak(utterance);
+    }
+}
+
+// ============================
 //  FUNÇÕES DE SINCRONIZAÇÃO COM BANCO DE DADOS
 // ============================
 
@@ -188,19 +205,19 @@ const syllableData = shuffle([
 ]);
 
 
-// Dados do jogo 1: Caça Palavras
+// Dados do jogo: Caça Palavras
 let wordSearchData = {
     words: ['SOL', 'LUA', 'CÉU', 'MAR'],
     grid: [],
     foundWords: []
 };
 
-// Dados do jogo 2: Jogo da Memória
+// Dados do jogo: Jogo da Memória
 let memoryCards = [];
 let flippedCards = [];
 let matchedPairs = 0;
 
-// Dados do jogo 3: Associar Palavra e Emoji
+// Dados do jogo: Associar Palavra e Emoji
 const matchingPairs = [
     { word: 'CASA', emoji: '🏠' },
     { word: 'GATO', emoji: '🐱' },
@@ -211,6 +228,22 @@ const matchingPairs = [
 ];
 
 let selectedCells = [];
+
+//  Dados do jogo: ARRASTAR E SOLTAR
+    const dragDropData = [
+        { imagem: "img/gato.png", palavra: "GATO" },
+        { imagem: "img/cachorro.png", palavra: "CACHORRO" },
+        { imagem: "img/pato.png", palavra: "PATO" },
+        { imagem: "img/leao.png", palavra: "LEÃO" },
+        { imagem: "img/vaca.png", palavra: "VACA" },
+        { imagem: "img/urso.png", palavra: "URSO" },
+        { imagem: "img/peixe.png", palavra: "PEIXE" },
+        { imagem: "img/onca.png", palavra: "ONÇA" },
+        { imagem: "img/arara.png", palavra: "ARARA" }
+    ];
+
+let currentDragQuestion = 0;
+let draggedElement = null;
 
 // ============================
 //  FUNÇÕES DE INTERFACE
@@ -245,6 +278,11 @@ function showFeedback(elementId, message, type) {
 }
 
 function showGame(gameId) {
+    // Interrompe qualquer áudio em execução
+    if ('speechSynthesis' in window) {
+        speechSynthesis.cancel();
+    }
+    
     document.getElementById('games-menu').style.display = 'none';
     document.querySelectorAll('.game-container').forEach(container => {
         container.classList.remove('active');
@@ -254,9 +292,31 @@ function showGame(gameId) {
     // Inicializar jogos específicos
     if (gameId === 'animal-quiz') loadAnimalQuestion();
     if (gameId === 'syllable-game') loadSyllableQuestion();
+    
+    // Preview de 3 segundos ao entrar no jogo da memória
+    if (gameId === 'memory-game') {
+        setTimeout(() => {
+            document.querySelectorAll('.memory-card').forEach(card => {
+                card.classList.add('flipped');
+            });
+        }, 100);
+
+        setTimeout(() => {
+            document.querySelectorAll('.memory-card').forEach(card => {
+                if (!card.classList.contains('matched')) {
+                    card.classList.remove('flipped');
+                }
+            });
+        }, 3100);
+    }
 }
 
 function showMenu() {
+    // Interrompe qualquer áudio em execução
+    if ('speechSynthesis' in window) {
+        speechSynthesis.cancel();
+    }
+    
     document.querySelectorAll('.game-container').forEach(container => {
         container.classList.remove('active');
     });
@@ -269,6 +329,7 @@ function incrementGamesPlayed() {
     updateGlobalStats();
     saveStatsToDatabase();
     showNotification('🎮 Jogo concluído! Parabéns!');
+    playSound('Jogo concluído! Parabéns!');
 }
 
 // ============================
@@ -303,12 +364,14 @@ function checkAnimalAnswer(selected, correct) {
         messageEl.textContent = '🎉 Parabéns! Você acertou!';
         messageEl.className = 'game-message success-message';
         buttons.forEach(btn => btn.disabled = true);
+        playSound('Parabéns! Você acertou!');
         incrementGamesPlayed();
     } else {
         addPoints(0, false);
         messageEl.textContent = '❌ Ops! Tente novamente!';
         messageEl.className = 'game-message error-message';
         buttons.forEach(btn => btn.disabled = true);
+        playSound('Ops! Tente novamente!');
         document.getElementById('reset-btn-animal').style.display = 'block';
     }
 }
@@ -316,6 +379,7 @@ function checkAnimalAnswer(selected, correct) {
 function resetAnimalQuestion() {
     loadAnimalQuestion();
     showNotification('Vamos tentar novamente! 💪');
+    playSound('Vamos tentar novamente!');
 }
 
 function nextAnimalQuestion() {
@@ -326,6 +390,28 @@ function nextAnimalQuestion() {
 // ============================
 //  JOGO 2: MONTE AS SÍLABAS
 // ============================
+
+// Função auxiliar para embaralhar garantindo que não fique na ordem original
+function shuffleWithoutCorrectOrder(array) {
+    let shuffled;
+    let attempts = 0;
+    const maxAttempts = 100;
+    
+    do {
+        shuffled = [...array].sort(() => Math.random() - 0.5);
+        attempts++;
+        
+        // Verifica se a ordem embaralhada é diferente da original
+        const isDifferent = shuffled.some((item, index) => item !== array[index]);
+        
+        if (isDifferent || attempts >= maxAttempts) {
+            break;
+        }
+    } while (true);
+    
+    return shuffled;
+}
+
 function loadSyllableQuestion() {
     const question = syllableData[gameStats.currentSyllableIndex];
     document.getElementById('syllable-image').src = question.imagem;
@@ -337,7 +423,10 @@ function loadSyllableQuestion() {
     const container = document.getElementById('syllables-container');
     container.innerHTML = '';
 
-    shuffle([...question.silabas]).forEach(syllable => {
+    // Embaralha garantindo que nunca fique na ordem correta
+    const shuffledSyllables = shuffleWithoutCorrectOrder(question.silabas);
+
+    shuffledSyllables.forEach(syllable => {
         const button = document.createElement('button');
         button.className = 'syllable-btn';
         button.textContent = syllable;
@@ -363,12 +452,14 @@ function addSyllable(syllable, button) {
             messageEl.textContent = '🎉 Muito bem! Palavra formada!';
             messageEl.className = 'game-message success-message';
             document.querySelectorAll('#syllables-container .syllable-btn').forEach(btn => btn.disabled = true);
+            playSound('Muito bem! Palavra formada!');
             incrementGamesPlayed();
         } else {
             addPoints(0, false);
             messageEl.textContent = '❌ Palavra incorreta! Tente novamente!';
             messageEl.className = 'game-message error-message';
             document.querySelectorAll('#syllables-container .syllable-btn').forEach(btn => btn.disabled = true);
+            playSound('Palavra incorreta! Tente novamente!');
             document.getElementById('reset-btn-syllable').style.display = 'block';
         }
     }
@@ -378,6 +469,7 @@ function resetSyllableQuestion() {
     gameStats.currentWordFormed = '';
     loadSyllableQuestion();
     showNotification('Vamos tentar novamente! 💪');
+    playSound('Vamos tentar novamente!');
 }
 
 function nextSyllableQuestion() {
@@ -524,6 +616,7 @@ function selectGridCell(row, col) {
             });
             selectedCells = [];
             showFeedback('search-feedback', '⚠️ Selecione as letras em linha reta!', 'error');
+            playSound('Selecione as letras em linha reta!');
             return;
         }
 
@@ -550,12 +643,14 @@ function checkForWord() {
             document.getElementById(`word-${word}`).classList.add('found');
             addPoints(10, true);
             showFeedback('search-feedback', `🎉 Você encontrou: ${word}!`, 'success');
+            playSound(`Você encontrou: ${word}!`);
 
             selectedCells = [];
 
             if (wordSearchData.foundWords.length === wordSearchData.words.length) {
                 setTimeout(() => {
                     showFeedback('search-feedback', '🏆 Parabéns! Encontrou todas as palavras!', 'success');
+                    playSound('Parabéns! Encontrou todas as palavras!');
                     addPoints(20, true);
                     incrementGamesPlayed();
                 }, 1000);
@@ -601,21 +696,6 @@ function initMemoryGame() {
     });
 }
 
-setTimeout(() => {
-    document.querySelectorAll('.memory-card').forEach(card => {
-        card.classList.add('flipped');
-    });
-}, 100);
-
-// 🔥 ESCONDER DEPOIS DE 3s
-setTimeout(() => {
-    document.querySelectorAll('.memory-card').forEach(card => {
-        if (!card.classList.contains('matched')) {
-            card.classList.remove('flipped');
-        }
-    });
-}, 3000);
-
 function flipCard(index) {
     const card = document.querySelector(`[data-index="${index}"]`);
 
@@ -639,15 +719,18 @@ function checkMemoryMatch() {
         card2.element.classList.add('matched');
         matchedPairs++;
         addPoints(10, true);
+        playSound('Parabéns! Par encontrado!');
 
         if (matchedPairs === 8) {
             showFeedback('memory-feedback', '🏆 Parabéns! Você encontrou todos os pares!', 'success');
+            playSound('Parabéns! Você encontrou todos os pares!');
             addPoints(30, true);
             incrementGamesPlayed();
         }
     } else {
         card1.element.classList.remove('flipped');
         card2.element.classList.remove('flipped');
+        playSound('Não foi dessa vez, tente novamente!');
     }
 
     flippedCards = [];
@@ -658,6 +741,21 @@ function resetMemoryGame() {
         card.classList.remove('flipped', 'matched');
     });
     initMemoryGame();
+    
+    // Mostrar preview ao resetar (botão "Novo Jogo")
+    setTimeout(() => {
+        document.querySelectorAll('.memory-card').forEach(card => {
+            card.classList.add('flipped');
+        });
+    }, 100);
+
+    setTimeout(() => {
+        document.querySelectorAll('.memory-card').forEach(card => {
+            if (!card.classList.contains('matched')) {
+                card.classList.remove('flipped');
+            }
+        });
+    }, 3100);
 }
 
 function showAllCards() {
@@ -717,11 +815,13 @@ function selectMatchingItem(element, type) {
 
             addPoints(5, true);
             showFeedback('matching-feedback', '🎉 Combinação perfeita!', 'success');
+            playSound('Combinação perfeita!');
 
             const allMatched = document.querySelectorAll('.matching-item:not(.matched)').length === 0;
             if (allMatched) {
                 setTimeout(() => {
                     showFeedback('matching-feedback', '🏆 Parabéns! Você completou todas as associações!', 'success');
+                    playSound('Parabéns! Você completou todas as associações!');
                     addPoints(20, true);
                     incrementGamesPlayed();
                 }, 1000);
@@ -729,6 +829,7 @@ function selectMatchingItem(element, type) {
         } else {
             selectedMatchingItem.element.classList.remove('selected');
             showFeedback('matching-feedback', '❌ Essa combinação não está correta. Tente novamente!', 'error');
+            playSound('Essa combinação não está correta. Tente novamente!');
         }
 
         selectedMatchingItem = null;
@@ -739,6 +840,152 @@ function resetMatchingGame() {
     selectedMatchingItem = null;
     initMatchingGame();
 }
+
+// ============================
+// JOGO 6: ARRASTAR E SOLTAR LETRAS
+// ============================
+
+function shuffleArray(array) {
+    return array.sort(() => Math.random() - 0.5);
+}
+
+function initDragDropGame() {
+    loadDragDropQuestion();
+}
+
+function loadDragDropQuestion() {
+    const question = dragDropData[currentDragQuestion];
+    document.getElementById('drag-image').src = question.imagem;
+    document.getElementById('drag-feedback').textContent = '';
+    document.getElementById('drag-feedback').className = 'feedback';
+
+    const dropZones = document.getElementById('drop-zones');
+    dropZones.innerHTML = '';
+
+    const letterBank = document.getElementById('letter-bank');
+    letterBank.innerHTML = '';
+
+    // Criar zonas de drop para cada letra
+    for (let i = 0; i < question.palavra.length; i++) {
+        const zone = document.createElement('div');
+        zone.className = 'drop-zone';
+        zone.dataset.index = i;
+        zone.dataset.letter = question.palavra[i];
+        
+        zone.addEventListener('dragover', handleDragOver);
+        zone.addEventListener('drop', handleDrop);
+        zone.addEventListener('dragleave', handleDragLeave);
+        
+        dropZones.appendChild(zone);
+    }
+
+    // Criar letras embaralhadas + letras extras
+    const letters = question.palavra.split('');
+    const extraLetters = ['B', 'C', 'D', 'F', 'H', 'J', 'K', 'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'V', 'X', 'Z'];
+    const randomExtras = shuffleArray([...extraLetters]).slice(0, 3);
+    const allLetters = shuffleArray([...letters, ...randomExtras]);
+
+    allLetters.forEach((letter, index) => {
+        const letterElement = document.createElement('div');
+        letterElement.className = 'draggable-letter';
+        letterElement.textContent = letter;
+        letterElement.draggable = true;
+        letterElement.dataset.letter = letter;
+        letterElement.dataset.id = `letter-${index}`;
+
+        letterElement.addEventListener('dragstart', handleDragStart);
+        letterElement.addEventListener('dragend', handleDragEnd);
+
+        letterBank.appendChild(letterElement);
+    });
+}
+
+function handleDragStart(e) {
+    draggedElement = e.target;
+    e.target.classList.add('dragging');
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/html', e.target.innerHTML);
+}
+
+function handleDragEnd(e) {
+    e.target.classList.remove('dragging');
+}
+
+function handleDragOver(e) {
+    if (e.preventDefault) {
+        e.preventDefault();
+    }
+    e.dataTransfer.dropEffect = 'move';
+    
+    if (!e.target.classList.contains('filled')) {
+        e.target.classList.add('drag-over');
+    }
+    return false;
+}
+
+function handleDragLeave(e) {
+    e.target.classList.remove('drag-over');
+}
+
+function handleDrop(e) {
+    if (e.stopPropagation) {
+        e.stopPropagation();
+    }
+
+    e.target.classList.remove('drag-over');
+
+    const dropZone = e.target;
+    
+    if (dropZone.classList.contains('filled')) {
+        return false;
+    }
+
+    const droppedLetter = draggedElement.dataset.letter;
+    const correctLetter = dropZone.dataset.letter;
+
+    if (droppedLetter === correctLetter) {
+        dropZone.textContent = droppedLetter;
+        dropZone.classList.add('filled');
+        draggedElement.classList.add('hidden');
+
+        checkDragDropComplete();
+    } else {
+        showFeedback('drag-feedback', '❌ Letra incorreta! Tente outra.', 'error');
+        playSound('Letra incorreta! Tente outra.');
+    }
+
+    return false;
+}
+
+function checkDragDropComplete() {
+    const dropZones = document.querySelectorAll('.drop-zone');
+    const allFilled = Array.from(dropZones).every(zone => zone.classList.contains('filled'));
+
+    if (allFilled) {
+        const formedWord = Array.from(dropZones).map(zone => zone.textContent).join('');
+        const correctWord = dragDropData[currentDragQuestion].palavra;
+
+        if (formedWord === correctWord) {
+            addPoints(15, true);
+            showFeedback('drag-feedback', '🎉 Parabéns! Você formou a palavra corretamente!', 'success');
+            playSound('Parabéns! Você formou a palavra corretamente!');
+            incrementGamesPlayed();
+        }
+    }
+}
+
+function nextDragDropQuestion() {
+    currentDragQuestion = (currentDragQuestion + 1) % dragDropData.length;
+    loadDragDropQuestion();
+}
+
+// Inicializar quando a página carregar
+document.addEventListener('DOMContentLoaded', function() {
+    const dragGameContainer = document.getElementById('drag-drop-game');
+    if (dragGameContainer) {
+        initDragDropGame();
+    }
+});
 
 // ============================
 //  MENU RESPONSIVO
@@ -791,4 +1038,5 @@ window.onload = function () {
     initMemoryGame();
     initMatchingGame();
     showNotification('Vamos jogar e aprender! 🎮');
+    playSound('Vamos jogar e aprender!');
 };

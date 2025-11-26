@@ -38,7 +38,7 @@ function toggleMenu() {
 // Animação de entrada
 window.addEventListener('load', () => {
     setTimeout(() => {
-        showNotification('Bem-vindo ao Leitura Kids!');
+        showNotification('Suas Conquistas!');
     }, 1000);
 });
 

@@ -260,6 +260,11 @@ let letterHuntData = {
 // =====================================================
 
 function showMenu() {
+    // Interrompe qualquer áudio em execução
+    if ('speechSynthesis' in window) {
+        speechSynthesis.cancel();
+    }
+    
     document.querySelectorAll('.game-container').forEach(container => {
         container.classList.remove('active');
     });
@@ -268,6 +273,11 @@ function showMenu() {
 }
 
 function showGame(gameId) {
+    // Interrompe qualquer áudio em execução
+    if ('speechSynthesis' in window) {
+        speechSynthesis.cancel();
+    }
+    
     document.getElementById('activities-menu').style.display = 'none';
     document.querySelectorAll('.game-container').forEach(container => {
         container.classList.remove('active');
@@ -288,6 +298,9 @@ function showGame(gameId) {
 
 function playSound(text) {
     if ('speechSynthesis' in window) {
+        // Cancela qualquer áudio anterior antes de iniciar um novo
+        speechSynthesis.cancel();
+        
         const utterance = new SpeechSynthesisUtterance(text);
         utterance.lang = 'pt-BR';
         utterance.rate = 0.7;
@@ -327,7 +340,8 @@ function initWordGame() {
         slot.dataset.index = i;
 
         if (current.missing.includes(i)) {
-            slot.onclick = () => selectSlot(i);
+            slot.ondragover = (e) => e.preventDefault();
+            slot.ondrop = (e) => dropLetter(e, i);
         } else {
             slot.textContent = current.word[i];
             slot.classList.add('filled');
@@ -343,7 +357,8 @@ function initWordGame() {
         const btn = document.createElement('button');
         btn.className = 'letter-option';
         btn.textContent = letter;
-        btn.onclick = () => placeLetter(letter, btn);
+        btn.draggable = true;
+        btn.ondragstart = (e) => dragStart(e, letter);
         options.appendChild(btn);
     });
 
@@ -355,26 +370,29 @@ function initWordGame() {
     }
 }
 
-function selectSlot(index) {
-    document.querySelectorAll('.letter-slot').forEach(slot => {
-        slot.classList.remove('selected');
-    });
-    wordData.selectedSlot = index;
-    document.querySelector(`[data-index="${index}"]`).classList.add('selected');
+function dragStart(e, letter) {
+    e.dataTransfer.setData('letter', letter);
+    e.dataTransfer.setData('buttonId', e.target.id || `btn-${Date.now()}`);
+    e.target.id = e.dataTransfer.getData('buttonId');
 }
 
-function placeLetter(letter, button) {
-    if (wordData.selectedSlot === null) {
-        showFeedback('word-feedback', 'Primeiro selecione um espaço vazio!', false);
-        return;
+function dropLetter(e, index) {
+    e.preventDefault();
+    const letter = e.dataTransfer.getData('letter');
+    const buttonId = e.dataTransfer.getData('buttonId');
+    
+    const slot = document.querySelector(`[data-index="${index}"]`);
+    if (!slot.classList.contains('filled')) {
+        slot.textContent = letter;
+        slot.classList.add('filled');
+        
+        const button = document.getElementById(buttonId);
+        if (button) {
+            button.classList.add('used');
+            button.style.opacity = '0.3';
+            button.draggable = false;
+        }
     }
-
-    const slot = document.querySelector(`[data-index="${wordData.selectedSlot}"]`);
-    slot.textContent = letter;
-    slot.classList.add('filled');
-    slot.classList.remove('selected');
-    button.classList.add('used');
-    wordData.selectedSlot = null;
 }
 
 function checkWord() {
@@ -388,9 +406,9 @@ function checkWord() {
         addPoints(10, true);
         playSound('Parabéns! Palavra correta!');
     } else {
-        showFeedback('word-feedback', 'Tente novamente!', false);
+        showFeedback('word-feedback', 'Palavra errada, mais sorte da próxima vez!', false);
         addPoints(0, false);
-        playSound('Tente novamente');
+        playSound('Palavra errada! Vamos continuar');
     }
 
     if (actionBtn) {
@@ -427,6 +445,13 @@ function initSentenceGame() {
     });
 
     updateSentenceDropZone();
+    
+    // Restaura o botão
+    const actionBtn = document.getElementById('sentence-action-btn');
+    if (actionBtn) {
+        actionBtn.textContent = 'Verificar Frase';
+        actionBtn.onclick = checkSentence;
+    }
 }
 
 function addWordToSequence(word, button) {
@@ -465,6 +490,7 @@ function removeWordFromSequence(index) {
 function checkSentence() {
     const current = sentenceData.sentences[sentenceData.currentIndex];
     const userSentence = sentenceData.sequence.join(' ');
+    const actionBtn = document.getElementById('sentence-action-btn');
 
     if (userSentence === current.target) {
         showFeedback('sentence-feedback', '🎉 Frase perfeita!', true);
@@ -474,6 +500,11 @@ function checkSentence() {
         showFeedback('sentence-feedback', '❌ A ordem não está correta!', false);
         addPoints(0, false);
         playSound('Tente organizar as palavras corretamente');
+    }
+    
+    if (actionBtn) {
+        actionBtn.textContent = 'Nova Frase';
+        actionBtn.onclick = nextSentence;
     }
 }
 
@@ -608,7 +639,25 @@ function initSyllableGame() {
     const optionsContainer = document.getElementById('syllable-options');
     optionsContainer.innerHTML = '';
 
-    const shuffled = [...current.syllables].sort(() => Math.random() - 0.5);
+    // Embaralha as sílabas garantindo que não fiquem na ordem correta
+    let shuffled;
+    let attempts = 0;
+    const maxAttempts = 100;
+    
+    do {
+        shuffled = [...current.syllables].sort(() => Math.random() - 0.5);
+        attempts++;
+        
+        // Se tentar muito e não conseguir, força uma troca manual
+        if (attempts >= maxAttempts) {
+            // Troca pelo menos as duas primeiras posições se forem iguais
+            if (shuffled.length >= 2 && shuffled[0] === current.syllables[0] && shuffled[1] === current.syllables[1]) {
+                [shuffled[0], shuffled[1]] = [shuffled[1], shuffled[0]];
+            }
+            break;
+        }
+    } while (shuffled.join('') === current.syllables.join('')); // Verifica se ficou igual à resposta
+    
     shuffled.forEach(syllable => {
         const btn = document.createElement('button');
         btn.className = 'syllable-option';
@@ -618,6 +667,13 @@ function initSyllableGame() {
     });
 
     updateSyllableDropZone();
+    
+    // Restaura o botão
+    const actionBtn = document.getElementById('syllable-action-btn');
+    if (actionBtn) {
+        actionBtn.textContent = 'Verificar';
+        actionBtn.onclick = checkSyllableOrder;
+    }
 }
 
 function addSyllableToSequence(syllable, button) {
@@ -656,6 +712,7 @@ function removeSyllableFromSequence(index) {
 function checkSyllableOrder() {
     const current = syllableData.words[syllableData.currentIndex];
     const userWord = syllableData.sequence.join('');
+    const actionBtn = document.getElementById('syllable-action-btn');
 
     if (userWord === current.word) {
         showFeedback('syllable-feedback', '🎉 Perfeito! Palavra formada!', true);
@@ -666,6 +723,17 @@ function checkSyllableOrder() {
         addPoints(0, false);
         playSound('Tente colocar as sílabas na ordem correta');
     }
+    
+    if (actionBtn) {
+        actionBtn.textContent = 'Nova Palavra';
+        actionBtn.onclick = nextSyllableWord;
+    }
+}
+
+function nextSyllableWord() {
+    syllableData.currentIndex = (syllableData.currentIndex + 1) % syllableData.words.length;
+    initSyllableGame();
+    document.getElementById('syllable-feedback').classList.remove('show');
 }
 
 function nextSyllableWord() {

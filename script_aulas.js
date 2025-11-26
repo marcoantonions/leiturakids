@@ -240,7 +240,6 @@ function showLesson(lessonIndex) {
 function nextLesson() {
     if (currentLesson < totalLessons - 1) {
         showLesson(currentLesson + 1);
-        showNotification('Parabéns! Vamos para a próxima lição! 🎉');
     } else if (currentLesson = totalLessons) {
         showNotification('Parabéns! Você concluiu a atividade! 🎉');
         window.open('aulas.html', '_self');

@@ -500,7 +500,49 @@ body {
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
 }
 
+.letter-slot {
+    width: 60px;
+    height: 60px;
+    border: 3px dashed #3498db;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    background: white;
+    transition: all 0.3s ease;
+    font-weight: bold;
+}
 
+.letter-slot.filled {
+    background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+    color: white;
+    border-color: #2ecc71;
+    box-shadow: 0 5px 15px rgba(46, 204, 113, 0.3);
+}
+
+.letter-option {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    border-radius: 15px;
+    padding: 15px 20px;
+    color: white;
+    font-size: 1.8rem;
+    font-weight: bold;
+    cursor: move;
+    transition: all 0.3s ease;
+    min-width: 60px;
+}
+
+.letter-option:hover {
+    transform: scale(1.1);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.letter-option.used {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
 
 /* Jogo 2: Formar Frases */
 .sentence-target {

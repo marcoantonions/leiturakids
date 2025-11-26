@@ -11,13 +11,11 @@ window.addEventListener("scroll", () => {
     const sectionTop = section.offsetTop;
     const sectionHeight = section.offsetHeight;
 
-    // Verifica se o scroll está dentro da área da seção
     if (scrollY >= sectionTop - sectionHeight / 3) {
       current = section.getAttribute("id");
     }
   });
 
-  // Atualiza os links do menu com a classe "active"
   navLinks.forEach((link) => {
     link.classList.remove("active");
     if (link.getAttribute("href") === "#" + current) {
@@ -39,34 +37,29 @@ document.addEventListener("DOMContentLoaded", function () {
   const cardCount = cards.length;
   let currentIndex = 0;
 
-  // Duplica os cards para dar efeito de loop
   cards.forEach(card => {
     const clone = card.cloneNode(true);
     track.appendChild(clone);
   });
 
-  // Calcula largura total de cada card (inclui margem)
   function getCardWidth() {
     const style = window.getComputedStyle(cards[0]);
     const margin = parseInt(style.marginRight);
     return cards[0].offsetWidth + margin;
   }
 
-  // Move o carrossel para o card no índice atual
   function scrollToIndex(index) {
     const cardWidth = getCardWidth();
     track.style.transition = "transform 0.5s ease-in-out";
     track.style.transform = `translateX(-${index * cardWidth}px)`;
   }
 
-  // Reseta o carrossel para o início (efeito infinito)
   function resetToStart() {
     track.style.transition = "none";
     track.style.transform = `translateX(0px)`;
     currentIndex = 0;
   }
 
-  // Avança automaticamente o carrossel
   function autoScroll() {
     currentIndex++;
     scrollToIndex(currentIndex);
@@ -78,10 +71,8 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  // Roda a cada 2 segundos
   setInterval(autoScroll, 2000);
 
-  // Recalcula largura quando a tela é redimensionada
   window.addEventListener("resize", () => scrollToIndex(currentIndex));
 });
 
@@ -108,7 +99,6 @@ const form = document.getElementById('contactForm');
 
 form.addEventListener('submit', function (event) {
   event.preventDefault();
-
   alert("Obrigado pelo seu Feedback, Entraremos em Contato em Breve!");
   form.reset();
 });
@@ -176,11 +166,9 @@ document.addEventListener("DOMContentLoaded", function () {
   const hamburger = document.querySelector(".hamburger");
   const navMenu = document.querySelector(".nav-menu");
 
-  // Abrir/fechar menu
   hamburger.addEventListener("click", () => {
     navMenu.classList.toggle("mobile-active");
 
-    // Troca ícone entre "menu" e "close"
     const icon = hamburger.querySelector(".material-symbols-outlined");
     if (navMenu.classList.contains("mobile-active")) {
       icon.textContent = "close";
@@ -191,7 +179,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
-  // Fechar menu ao clicar em um link
   navMenu.querySelectorAll("a").forEach(link => {
     link.addEventListener("click", () => {
       if (navMenu.classList.contains("mobile-active")) {
@@ -203,76 +190,12 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 });
 
-document.addEventListener("DOMContentLoaded", () => {
-  const modalCadastro = document.getElementById("modal-cadastro");
-  const modalLogin = document.getElementById("modal-login");
-
-  const abrirCadastro = document.getElementById("abrirCadastro");
-  const abrirLogin = document.getElementById("abrirLogin");
-
-  const closeCadastro = document.getElementById("closeCadastro");
-  const closeLogin = document.getElementById("closeLogin");
-
-  const cancelCadastro = document.getElementById("cancelCadastro");
-  const cancelLogin = document.getElementById("cancelLogin");
-
-  const cadastroContent = modalCadastro.querySelector(".modal-content");
-  const loginContent = modalLogin.querySelector(".modal-content");
-
-  // Abrir modais
-  abrirCadastro.addEventListener("click", () => {
-    modalCadastro.style.display = "flex";
-  });
-
-  abrirLogin.addEventListener("click", () => {
-    modalCadastro.style.display = "none";
-    modalLogin.style.display = "flex";
-  });
-
-  // Fechar modais
-  closeCadastro.addEventListener("click", () => {
-    modalCadastro.style.display = "none";
-  });
-
-  closeLogin.addEventListener("click", () => {
-    modalLogin.style.display = "none";
-  });
-
-  // Trocar entre login e cadastro
-  cancelCadastro.addEventListener("click", () => {
-    modalCadastro.style.display = "none";
-    modalLogin.style.display = "flex";
-  });
-
-  cancelLogin.addEventListener("click", () => {
-    modalLogin.style.display = "none";
-    modalCadastro.style.display = "flex";
-  });
-
-  // Fechar ao clicar fora
-  modalCadastro.addEventListener("click", (e) => {
-    if (!cadastroContent.contains(e.target)) {
-      modalCadastro.style.display = "none";
-    }
-  });
-
-  modalLogin.addEventListener("click", (e) => {
-    if (!loginContent.contains(e.target)) {
-      modalLogin.style.display = "none";
-    }
-  });
-});
-
-
 // =====================================================
 // CONFIGURAÇÕES INICIAIS
 // =====================================================
-
-// Sempre iniciar no topo ao carregar
 window.history.scrollRestoration = 'manual';
 window.scrollTo(0, 0);
 
-// Animação do título "Leitura Kids"
 setTimeout(() => {
   const heroTitle = document.querySelector('.hero-title');
   if (heroTitle) {
